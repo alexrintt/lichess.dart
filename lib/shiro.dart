@@ -1,28 +1,28 @@
-import 'package:http/http.dart' as http;
-import 'package:json_annotation/json_annotation.dart';
+// import 'package:http/http.dart' as http;
+// import 'package:json_annotation/json_annotation.dart';
 
-class ShiroAuth {}
+// class ShiroAuth {}
 
-class ShiroClient {
-  ShiroClient({
-    this.accessToken,
-    http.Client? httpClient,
-  }) : httpClient = httpClient ?? http.Client();
+// class ShiroClient {
+//   ShiroClient({
+//     this.accessToken,
+//     http.Client? httpClient,
+//   }) : httpClient = httpClient ?? http.Client();
 
-  final http.Client httpClient;
+//   final http.Client httpClient;
 
-  final String? accessToken;
+//   final String? accessToken;
 
-  /// Whether or not [this] client can perform authenticated requests.
-  bool get isLogged => accessToken != null;
+//   /// Whether or not [this] client can perform authenticated requests.
+//   bool get isLogged => accessToken != null;
 
-  /// Public information about the logged in user.
-  Future<User?> getMyProfile() async {
-    throw NotImplementedError();
-  }
-}
+//   /// Public information about the logged in user.
+//   Future<User?> getMyProfile() async {
+//     throw NotImplementedError();
+//   }
+// }
 
-class NotImplementedError extends Error {}
+// class NotImplementedError extends Error {}
 
-@JsonSerializable()
-class User {}
+// @JsonSerializable()
+// class User {}
