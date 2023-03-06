@@ -5,8 +5,6 @@ part 'challenge_request.freezed.dart';
 
 @freezed
 class ChallengeRequest with _$ChallengeRequest {
-  const ChallengeRequest._();
-
   const factory ChallengeRequest({
     /// Clock initial time
     required Duration time,
@@ -18,6 +16,8 @@ class ChallengeRequest with _$ChallengeRequest {
     Side? side,
   }) = _ChallengeRequest;
 
+  const ChallengeRequest._();
+
   Map<String, dynamic> get toRequestBody => {
         'clock.limit': time.inSeconds.toString(),
         'clock.increment': increment.inSeconds.toString(),
@@ -27,14 +27,13 @@ class ChallengeRequest with _$ChallengeRequest {
 
 @freezed
 class AiChallengeRequest with _$AiChallengeRequest {
-  const AiChallengeRequest._();
-
   const factory AiChallengeRequest({
     required ChallengeRequest challenge,
 
     /// AI Strength
     required int level,
   }) = _AiChallengeRequest;
+  const AiChallengeRequest._();
 
   Map<String, dynamic> get toRequestBody => {
         'level': level.toString(),

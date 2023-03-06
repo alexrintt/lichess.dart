@@ -1,16 +1,12 @@
 import 'dart:convert';
-import 'package:flutter/foundation.dart';
 import 'package:async/async.dart';
 import 'package:logging/logging.dart';
 import 'package:http/http.dart';
-import 'package:result_extensions/result_extensions.dart';
 import 'package:http/retry.dart';
-import 'package:package_info_plus/package_info_plus.dart';
-import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-import 'package:lichess_mobile/src/model/auth/user_session.dart';
-import 'package:lichess_mobile/src/model/user/user.dart';
-import 'package_info.dart';
+import 'package:shiro/src/extensions/result.dart';
+import '../extensions/future_result.dart';
+import '../model/user/user.dart';
 import 'errors.dart';
 
 part 'api_client.g.dart';
@@ -22,33 +18,6 @@ const defaultRetries = [
   Duration(milliseconds: 800),
   Duration(milliseconds: 1300),
 ];
-
-@Riverpod(keepAlive: true)
-Client httpClient(HttpClientRef ref) {
-  final client = Client();
-  ref.onDispose(() {
-    client.close();
-  });
-  return client;
-}
-
-@Riverpod(keepAlive: true)
-ApiClient apiClient(ApiClientRef ref) {
-  final httpClient = ref.watch(httpClientProvider);
-  final authClient = _AuthClient(
-    ref,
-    httpClient,
-    Logger('AuthClient'),
-  );
-  final apiClient = ApiClient(
-    Logger('ApiClient'),
-    authClient,
-  );
-  ref.onDispose(() {
-    apiClient.close();
-  });
-  return apiClient;
-}
 
 /// Convenient client that captures and returns API errors.
 class ApiClient {
@@ -68,9 +37,9 @@ class ApiClient {
   final Client _client;
   final RetryClient _retryClient;
 
-  /// Makes app user agent
-  static String userAgent(PackageInfo info, LightUser? user) =>
-      '${info.appName}/${info.version} $defaultTargetPlatform ${user != null ? user.id : 'anon.'}';
+  // /// Makes app user agent
+  // static String userAgent(PackageInfo info, LightUser? user) =>
+  //     '${info.appName}/${info.version} $defaultTargetPlatform ${user != null ? user.id : 'anon.'}';
 
   FutureResult<Response> get(
     Uri url, {
@@ -166,30 +135,5 @@ class ApiClient {
     _log.info('Closing ApiClient.');
     _client.close();
     _retryClient.close();
-  }
-}
-
-/// Http client that sets the Authorization header when a token has been stored.
-class _AuthClient extends BaseClient {
-  _AuthClient(this.ref, this._inner, this._logger);
-
-  final ApiClientRef ref;
-  final Client _inner;
-  final Logger _logger;
-
-  @override
-  Future<StreamedResponse> send(BaseRequest request) async {
-    final session = ref.read(userSessionStateProvider);
-    final info = ref.read(packageInfoProvider);
-
-    if (session != null && !request.headers.containsKey('Authorization')) {
-      request.headers['Authorization'] = 'Bearer ${session.token}';
-    }
-
-    request.headers['user-agent'] = ApiClient.userAgent(info, session?.user);
-
-    _logger.info('${request.method} ${request.url} ${request.headers}');
-
-    return _inner.send(request);
   }
 }

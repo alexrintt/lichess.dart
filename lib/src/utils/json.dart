@@ -1,10 +1,10 @@
 import 'dart:convert';
-import 'package:async/async.dart';
-import 'package:logging/logging.dart';
-import 'package:deep_pick/deep_pick.dart';
-import 'package:dartchess/dartchess.dart';
-import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 
+import 'package:async/async.dart';
+import 'package:dartchess/dartchess.dart';
+import 'package:deep_pick/deep_pick.dart';
+import 'package:fast_immutable_collections/fast_immutable_collections.dart';
+import 'package:logging/logging.dart';
 import 'package:shiro/src/common/errors.dart';
 import 'package:shiro/src/common/models.dart';
 import 'package:shiro/src/model/game/game.dart';
@@ -71,7 +71,9 @@ extension Dartchess on Pick {
   }
 
   Move? asUciMoveOrNull() {
-    if (value == null) return null;
+    if (value == null) {
+      return null;
+    }
     try {
       return asUciMoveOrThrow();
     } catch (_) {
@@ -93,7 +95,9 @@ extension Dartchess on Pick {
   }
 
   Side? asSideOrNull() {
-    if (value == null) return null;
+    if (value == null) {
+      return null;
+    }
     try {
       return asSideOrThrow();
     } catch (_) {
@@ -118,7 +122,9 @@ extension GameExtension on Pick {
   }
 
   Speed? asSpeedOrNull() {
-    if (value == null) return null;
+    if (value == null) {
+      return null;
+    }
     try {
       return asSpeedOrThrow();
     } catch (_) {
@@ -141,7 +147,9 @@ extension GameExtension on Pick {
   }
 
   Perf? asPerfOrNull() {
-    if (value == null) return null;
+    if (value == null) {
+      return null;
+    }
     try {
       return asPerfOrThrow();
     } catch (_) {
@@ -164,7 +172,9 @@ extension GameExtension on Pick {
   }
 
   GameStatus? asGameStatusOrNull() {
-    if (value == null) return null;
+    if (value == null) {
+      return null;
+    }
     try {
       return asGameStatusOrThrow();
     } catch (_) {
@@ -187,7 +197,9 @@ extension GameExtension on Pick {
   }
 
   Variant? asVariantOrNull() {
-    if (value == null) return null;
+    if (value == null) {
+      return null;
+    }
     try {
       return asVariantOrNull();
     } catch (_) {
@@ -213,7 +225,9 @@ extension TimeExtension on Pick {
 
   /// Matches a DateTime from milliseconds since unix epoch.
   DateTime? asDateTimeFromMillisecondsOrNull() {
-    if (value == null) return null;
+    if (value == null) {
+      return null;
+    }
     try {
       return asDateTimeFromMillisecondsOrThrow();
     } catch (_) {
@@ -237,7 +251,9 @@ extension TimeExtension on Pick {
 
   /// Matches a DateTime from milliseconds since unix epoch.
   Duration? asDurationFromSecondsOrNull() {
-    if (value == null) return null;
+    if (value == null) {
+      return null;
+    }
     try {
       return asDurationFromSecondsOrThrow();
     } catch (_) {
@@ -261,7 +277,9 @@ extension ModelsPick on Pick {
   }
 
   UserId? asUserIdOrNull() {
-    if (value == null) return null;
+    if (value == null) {
+      return null;
+    }
     try {
       return asUserIdOrThrow();
     } catch (_) {
@@ -283,7 +301,9 @@ extension ModelsPick on Pick {
   }
 
   GameId? asGameIdOrNull() {
-    if (value == null) return null;
+    if (value == null) {
+      return null;
+    }
     try {
       return asGameIdOrThrow();
     } catch (_) {
@@ -305,7 +325,9 @@ extension ModelsPick on Pick {
   }
 
   GameFullId? asGameFullIdOrNull() {
-    if (value == null) return null;
+    if (value == null) {
+      return null;
+    }
     try {
       return asGameFullIdOrThrow();
     } catch (_) {
@@ -327,7 +349,9 @@ extension ModelsPick on Pick {
   }
 
   PuzzleId? asPuzzleIdOrNull() {
-    if (value == null) return null;
+    if (value == null) {
+      return null;
+    }
     try {
       return asPuzzleIdOrThrow();
     } catch (_) {

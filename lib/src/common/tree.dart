@@ -3,6 +3,8 @@ import 'package:dartchess/dartchess.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:fast_immutable_collections/fast_immutable_collections.dart'
     hide Tuple2;
+import 'package:shiro/src/common/models.dart';
+import 'package:shiro/src/common/uci.dart';
 
 part 'tree.freezed.dart';
 

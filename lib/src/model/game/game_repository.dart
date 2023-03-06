@@ -1,17 +1,18 @@
 import 'dart:convert';
+
 import 'package:async/async.dart';
-import 'package:http/http.dart' as http;
-import 'package:result_extensions/result_extensions.dart';
-import 'package:logging/logging.dart';
 import 'package:dartchess/dartchess.dart';
 import 'package:deep_pick/deep_pick.dart';
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
-
-import 'package:lichess_mobile/src/common/models.dart';
-import 'package:lichess_mobile/src/common/errors.dart';
-import 'package:lichess_mobile/src/common/api_client.dart';
-import 'package:lichess_mobile/src/constants.dart';
-import 'package:lichess_mobile/src/utils/json.dart';
+import 'package:http/http.dart' as http;
+import 'package:logging/logging.dart';
+import 'package:shiro/src/common/api_client.dart';
+import 'package:shiro/src/common/errors.dart';
+import 'package:shiro/src/common/models.dart';
+import 'package:shiro/src/constants.dart';
+import 'package:shiro/src/extensions/future_result.dart';
+import 'package:shiro/src/extensions/result.dart';
+import 'package:shiro/src/utils/json.dart';
 
 import 'game.dart';
 import 'player.dart';

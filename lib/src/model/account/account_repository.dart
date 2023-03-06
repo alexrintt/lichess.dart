@@ -1,20 +1,12 @@
 import 'package:async/async.dart';
 import 'package:logging/logging.dart';
-import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:result_extensions/result_extensions.dart';
 
-import 'package:lichess_mobile/src/constants.dart';
-import 'package:lichess_mobile/src/common/api_client.dart';
-import 'package:lichess_mobile/src/model/user/user.dart';
-import 'package:lichess_mobile/src/utils/json.dart';
-import 'package:lichess_mobile/src/utils/riverpod.dart';
 import 'package:shiro/src/common/api_client.dart';
 import 'package:shiro/src/constants.dart';
 import 'package:shiro/src/extensions/future_result.dart';
+import 'package:shiro/src/extensions/result.dart';
 import 'package:shiro/src/model/user/user.dart';
 import 'package:shiro/src/utils/json.dart';
-
-part 'account_repository.g.dart';
 
 class AccountRepository {
   const AccountRepository({

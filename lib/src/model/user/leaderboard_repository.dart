@@ -1,7 +1,6 @@
 import 'package:logging/logging.dart';
 import 'package:deep_pick/deep_pick.dart';
 
-import 'package:riverpod/riverpod.dart';
 import 'package:shiro/src/common/api_client.dart';
 import 'package:shiro/src/constants.dart';
 import 'package:shiro/src/model/user/leaderboard.dart';

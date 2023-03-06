@@ -1,10 +1,7 @@
-import 'package:result_extensions/result_extensions.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-import 'package:lichess_mobile/src/common/api_client.dart';
-import 'package:lichess_mobile/src/constants.dart';
-
 import './challenge_request.dart';
+import '../../common/api_client.dart';
+import '../../constants.dart';
+import '../../extensions/future_result.dart';
 
 class ChallengeRepository {
   const ChallengeRepository({
@@ -31,10 +28,3 @@ class ChallengeRepository {
     apiClient.close();
   }
 }
-
-final challengeRepositoryProvider = Provider<ChallengeRepository>((ref) {
-  final apiClient = ref.watch(apiClientProvider);
-  final repo = ChallengeRepository(apiClient: apiClient);
-  ref.onDispose(() => repo.dispose());
-  return repo;
-});

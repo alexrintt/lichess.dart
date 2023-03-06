@@ -9,6 +9,7 @@ import 'package:dartchess/dartchess.dart';
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 
 import 'package:shiro/src/common/api_client.dart';
+import 'package:shiro/src/common/models.dart';
 import 'package:shiro/src/constants.dart';
 import 'package:shiro/src/extensions/future_result.dart';
 import 'package:shiro/src/utils/json.dart';

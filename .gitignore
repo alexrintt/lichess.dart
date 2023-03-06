@@ -4,3 +4,5 @@
 
 # Libraries should not commit pubspec.lock.
 pubspec.lock
+*.g.dart
+*.freezed.dart
