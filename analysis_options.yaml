@@ -8,7 +8,6 @@ analyzer:
   exclude:
     # - "**/*.g.dart"
     # - "**/*.freezed.dart"
-    - lib/src/common/lichess_icons.dart
   errors:
     invalid_annotation_target: ignore
   plugins:
