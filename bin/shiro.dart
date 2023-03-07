@@ -12,15 +12,15 @@ Future<void> main(List<String> arguments) async {
     'You need to define your personal token inside the file .env, use .env.example as template.',
   );
 
-  final ShiroClient client = ShiroClient.create(accessToken: token);
+  final ShiroClient shiro = ShiroClient.create(accessToken: token);
 
-  final User user = await client.getMyProfile();
-  final String email = await client.getMyEmailAddress();
-  final UserPreferences prefs = await client.getMyPreferences();
-  final bool isKidMode = await client.getMyKidModeStatus();
-  final User publicUser = await client.getUserPublicData(username: 'alexrintt');
+  final User user = await shiro.getMyProfile();
+  final String email = await shiro.getMyEmailAddress();
+  final UserPreferences prefs = await shiro.getMyPreferences();
+  final bool isKidMode = await shiro.getMyKidModeStatus();
+  final User publicUser = await shiro.getUserPublicData(username: 'alexrintt');
 
-  await client.close();
+  await shiro.close();
 
   print('user: $user');
   print('email: $email');
