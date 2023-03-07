@@ -1,6 +1,6 @@
 ## Lichess API Wrapper for Dart
 
-Shiro is a Dart wrapper for [Lichess API](https://lichess.org/api).
+Shirou is a Dart wrapper for [Lichess API](https://lichess.org/api).
 This Dart package handles API calls and data classes.
 This package does **not** handle authentication.
 
@@ -9,12 +9,12 @@ This package does **not** handle authentication.
 The usage is pretty straightforward:
 
 ```dart
-final shiro = ShiroClient.create();
-final user = await shiro.getUserPublicData(username: 'alexrintt');
+final shirou = ShirouClient.create();
+final user = await shirou.getUserPublicData(username: 'alexrintt');
 
 // If you wanna make authenticated requests:
-final shiro = ShiroClient.create(accessToken: '<your-access-token>');
-final email = await shiro.getMyEmailAddress();
+final shirou = ShirouClient.create(accessToken: '<your-access-token>');
+final email = await shirou.getMyEmailAddress();
 ```
 
 ### Custom Dio instance
@@ -23,26 +23,26 @@ By default, this package uses fresh [Dio](https://pub.dev/packages/dio) instance
 
 ```dart
 final myDioInstance = Dio();
-final shiro = ShiroClient.create(dio: myDioInstance);
+final shirou = ShirouClient.create(dio: myDioInstance);
 ```
 
 ### Custom client
 
-`ShiroClient` is just an abstract class, you can always extend or implement it.
+`ShirouClient` is just an abstract class, you can always extend or implement it.
 
 ```dart
-class MyCustomLichessClient implements ShiroClient {
+class MyCustomLichessClient implements ShirouClient {
   // TODO: Implement/override methods.
 }
 ```
 
 Now you can do your own implementation and re-use the data models.
 
-This can also be used to mock the `ShiroClient` class.
+This can also be used to mock the `ShirouClient` class.
 
 ## Retrieve access token
 
-TL;DR: **Shiro doesn't handle authentication for Lichess**.
+TL;DR: **Shirou doesn't handle authentication for Lichess**.
 
 <details>
   <summary>Why?</summary>
@@ -80,6 +80,10 @@ Dart SDK version: 2.19.2 (stable) (Tue Feb 7 18:37:17 2023 +0000) on "windows_x6
 
 ### Getting started
 
+> **Warning** Before starting, remember to put your personal token in a file called `.env` at in the project root; use `.env.example` as template, you may already know, but never let this token leak, and if it does, [revoke it immediatelly](https://lichess.org/account/oauth/token).
+
+---
+
 This package uses code generation from `retrofit` and `freezed` package, so first off run:
 
 ```bash
@@ -93,5 +97,5 @@ dart pub run build_runner watch --delete-conflicting-outputs
 Now, when there are no more errors due missing generated code, run the example:
 
 ```bash
-dart bin/shiro.dart
+dart bin/shirou.dart
 ```
