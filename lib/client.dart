@@ -45,7 +45,8 @@ abstract class ShiroClient {
 
   /// Read public data of a user.
   ///
-  /// If the request is [authenticated with OAuth2](https://lichess.org/api#section/Introduction/Authentication), then extra fields might be present in the response: `followable`, `following`, `blocking`, `followsYou`.
+  /// If the request is [authenticated with OAuth2](https://lichess.org/api#section/Introduction/Authentication),
+  /// then extra fields might be present in the response: `followable`, `following`, `blocking`, `followsYou`.
   ///
   /// https://lichess.org/api#tag/Users/operation/apiUser
   Future<User> getUserPublicData({
