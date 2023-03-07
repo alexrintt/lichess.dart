@@ -1,7 +1,10 @@
 import 'dart:convert';
 
-import 'package:http/http.dart' as http;
+import 'package:dio/dio.dart';
+import 'package:retrofit/http.dart';
 import 'package:shiro/models.dart';
+
+part 'client.g.dart';
 
 Map<String, dynamic> parseRawResponseToMap(dynamic raw) {
   return Map<String, Object>.from(raw as Map<dynamic, dynamic>);
@@ -11,85 +14,101 @@ Map<String, dynamic> parseBodyStringToMap(String body) {
   return parseRawResponseToMap(jsonDecode(body));
 }
 
-class ShiroClient {
-  static final Uri kLichessBaseUri = Uri.parse('https://lichess.org');
+abstract class ShiroClient {
+  /// Interface for this client, if you are looking for a concrete implementation
+  /// use [ShiroClient.create] instead.
+  const ShiroClient();
 
-  ShiroClient({
-    this.accessToken,
-    http.Client? httpClient,
-  }) : httpClient = httpClient ?? http.Client();
-
-  final http.Client httpClient;
-
-  final String? accessToken;
+  factory ShiroClient.create({String? accessToken, Dio? dio, String? baseUrl}) =
+      ShiroClientImpl;
 
   /// Whether or not [this] client can perform authenticated requests.
-  bool get isLogged => accessToken != null;
-
-  Map<String, String> get _authHeader => <String, String>{
-        'Authorization': 'Bearer $accessToken',
-      };
+  bool get isLogged;
 
   /// Public information about the logged in user.
-  Future<User> getAccount() async {
-    _throwUnauthExceptionIfAccessTokenIsNotDefined();
-
-    final Uri accountEndpoint =
-        kLichessBaseUri.replace(pathSegments: <String>['api', 'account']);
-
-    final http.Response response =
-        await httpClient.get(accountEndpoint, headers: _authHeader);
-
-    return User.fromJson(parseBodyStringToMap(response.body));
-  }
+  Future<User> getMyProfile();
 
   /// Read the email address of the logged in user.
-  Future<String> getAccountEmail() async {
-    _throwUnauthExceptionIfAccessTokenIsNotDefined();
-
-    final Uri accountEmailEndpoint = kLichessBaseUri
-        .replace(pathSegments: <String>['api', 'account', 'email']);
-
-    final http.Response response =
-        await httpClient.get(accountEmailEndpoint, headers: _authHeader);
-
-    return parseBodyStringToMap(response.body)['email'] as String;
-  }
+  Future<String> getMyEmailAddress();
 
   /// Read the preferences of the logged in user.
   ///
   /// - https://lichess.org/account/preferences/game-display.
   /// - https://github.com/ornicar/lila/blob/master/modules/pref/src/main/Pref.scala.
-  Future<UserPreferences> getAccountPreferences() async {
-    _throwUnauthExceptionIfAccessTokenIsNotDefined();
+  Future<UserPreferences> getMyPreferences();
+  Future<bool> getMyKidModeStatus();
+  Future<void> setMyKidModeStatus({required bool enableKidMode});
+  Future<void> close({bool force = false});
+}
 
-    final Uri accountEmailEndpoint = kLichessBaseUri
-        .replace(pathSegments: <String>['api', 'account', 'preferences']);
+@RestApi(baseUrl: 'https://lichess.org/api')
+abstract class ShiroClientImpl implements ShiroClient {
+  factory ShiroClientImpl({String? accessToken, Dio? dio, String? baseUrl}) {
+    final Dio dioClient = dio ?? Dio();
 
-    final http.Response response =
-        await httpClient.get(accountEmailEndpoint, headers: _authHeader);
-
-    final Map<String, dynamic> raw = parseBodyStringToMap(response.body);
-
-    // Merge [prefs] fields and [language] from /account/preferences response.
-    final Map<String, Object?> complete = <String, Object?>{
-      ...Map<String, Object>.from(raw['prefs'] as Map<dynamic, dynamic>),
-      'language': raw['language'] as String?,
-    };
-
-    return UserPreferences.fromJson(complete);
-  }
-
-  void _throwUnauthExceptionIfAccessTokenIsNotDefined() {
-    if (!isLogged) {
-      throw const LichessUnauthenticatedException();
+    if (accessToken != null) {
+      dioClient.options.headers['Authorization'] = 'Bearer $accessToken';
     }
+
+    final _ShiroClientImpl shiro = _ShiroClientImpl._(
+      dioClient,
+      dioClient,
+      accessToken != null,
+      baseUrl: baseUrl,
+    );
+
+    return shiro
+      ..dio.options =
+          dioClient.options.copyWith(baseUrl: baseUrl ?? shiro.baseUrl!);
   }
 
-  /// Closes the client and cleans up any resources associated with it.
-  ///
-  /// It's important to close each client when it's done being used; failing to do so can cause the Dart process to hang.
-  Future<void> close() async => httpClient.close();
+  ShiroClientImpl._({required this.dio, required this.hasAccessToken});
+
+  final Dio dio;
+  final bool hasAccessToken;
+
+  @override
+  bool get isLogged => hasAccessToken;
+
+  @override
+  @GET('/account')
+  Future<User> getMyProfile();
+
+  @override
+  Future<String> getMyEmailAddress() async {
+    final Response<Map<String, dynamic>> response =
+        await dio.get<Map<String, dynamic>>('/account/email');
+
+    return response.data!['email'] as String;
+  }
+
+  @override
+  Future<UserPreferences> getMyPreferences() async {
+    final Response<Map<String, dynamic>> response =
+        await dio.get<Map<String, dynamic>>('/account/preferences');
+
+    return UserPreferences.fromJson(
+      <String, dynamic>{
+        'language': response.data!['language'] as String,
+        ...response.data!['prefs'] as Map<String, dynamic>,
+      },
+    );
+  }
+
+  @override
+  Future<bool> getMyKidModeStatus() async {
+    final Response<Map<String, dynamic>> response =
+        await dio.get<Map<String, dynamic>>('/account/kid');
+
+    return response.data!['kid'] as bool;
+  }
+
+  @override
+  @POST('/account/kid')
+  Future<void> setMyKidModeStatus({@Query('v') required bool enableKidMode});
+
+  @override
+  Future<void> close({bool force = false}) async => dio.close(force: force);
 }
 
 class LichessException implements Exception {

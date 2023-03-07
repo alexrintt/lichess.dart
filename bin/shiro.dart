@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:dotenv/dotenv.dart';
 import 'package:shiro/shiro.dart';
 
@@ -11,15 +12,17 @@ Future<void> main(List<String> arguments) async {
     'You need to define your personal token inside the file .env, use .env.example as template.',
   );
 
-  final ShiroClient lichessClient = ShiroClient(accessToken: token);
+  final ShiroClient client = ShiroClient.create(accessToken: token);
 
-  final User user = await lichessClient.getAccount();
-  final String email = await lichessClient.getAccountEmail();
-  final UserPreferences prefs = await lichessClient.getAccountPreferences();
+  final User user = await client.getMyProfile();
+  final String email = await client.getMyEmailAddress();
+  final UserPreferences prefs = await client.getMyPreferences();
+  final bool isKidMode = await client.getMyKidModeStatus();
 
-  lichessClient.close();
+  await client.close();
 
-  print(user);
-  print(email);
-  print(prefs);
+  print('user: $user');
+  print('email: $email');
+  print('prefs: $prefs');
+  print('isKidMode: $isKidMode');
 }
