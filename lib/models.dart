@@ -7,7 +7,9 @@ part 'models.freezed.dart';
 class User with _$User {
   const factory User({
     final String? id,
+    final String? name,
     final String? username,
+    final Perfs? perfs,
     final int? createdAt,
     final bool? disabled,
     final bool? tosViolation,
@@ -15,17 +17,143 @@ class User with _$User {
     final int? seenAt,
     final bool? patron,
     final bool? verified,
-    final String? title,
+    final PlayTime? playTime,
+    final Title? title,
     final String? url,
-    final String? playing,
-    final bool? streaming,
+    @Default(false) final String? playing,
+    final Count? count,
+    @Default(false) final bool? streaming,
     final bool? followable,
     final bool? following,
     final bool? blocking,
     final bool? followsYou,
+    final LiveStream? stream,
+    final LiveStreamer? streamer,
   }) = _User;
 
   factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);
+}
+
+@freezed
+class Count with _$Count {
+  const factory Count({
+    final int? all,
+    final int? rated,
+    final int? ai,
+    final int? draw,
+    final int? drawH,
+    final int? loss,
+    final int? lossH,
+    final int? win,
+    final int? winH,
+    final int? bookmark,
+    final int? playing,
+    final int? import,
+    final int? me,
+  }) = _Count;
+
+  factory Count.fromJson(Map<String, dynamic> json) => _$CountFromJson(json);
+}
+
+@freezed
+class PlayTime with _$PlayTime {
+  const factory PlayTime({
+    final int? total,
+    final int? tv,
+  }) = _PlayTime;
+
+  factory PlayTime.fromJson(Map<String, dynamic> json) =>
+      _$PlayTimeFromJson(json);
+}
+
+@freezed
+class RatingHistory with _$RatingHistory {
+  const factory RatingHistory({
+    final String? name,
+    final List<List<int>>? points,
+  }) = _RatingHistory;
+
+  factory RatingHistory.fromJson(Map<String, dynamic> json) =>
+      _$RatingHistoryFromJson(json);
+
+  /// Alias for [this.parseRawPointsAsRatingHistoryEntries].
+  List<RatingHistoryEntry>? entries() => parseRawPointsAsRatingHistoryEntries();
+
+  /// The [RatingHistory] of user consists in a array of [points] that per se is already
+  /// a [List] that represents the user rating at a point in the time.
+  ///
+  /// This function parses the each point `List<int>` to a data class that holds
+  /// a [DateTime] and a [rating] following the Lichess API reference.
+  ///
+  /// https://lichess.org/api#tag/Users/operation/apiUserRatingHistory
+  List<RatingHistoryEntry>? parseRawPointsAsRatingHistoryEntries() {
+    return points?.map((List<int> point) {
+      final int year = point[0];
+      final int month = point[1];
+      final int day = point[2];
+      final int rating = point[3];
+
+      return RatingHistoryEntry(
+        date: DateTime.utc(year, month + 1, day),
+        rating: rating,
+      );
+    }).toList();
+  }
+}
+
+@freezed
+class RatingHistoryEntry with _$RatingHistoryEntry {
+  const factory RatingHistoryEntry({
+    final DateTime? date,
+    final int? rating,
+  }) = _RatingHistoryEntry;
+
+  factory RatingHistoryEntry.fromJson(Map<String, dynamic> json) =>
+      _$RatingHistoryEntryFromJson(json);
+}
+
+@freezed
+class LiveStream with _$LiveStream {
+  const factory LiveStream({
+    final String? service,
+    final String? status,
+    final String? lang,
+  }) = _LiveStream;
+
+  factory LiveStream.fromJson(Map<String, dynamic> json) =>
+      _$LiveStreamFromJson(json);
+}
+
+@freezed
+class LiveStreamer with _$LiveStreamer {
+  const factory LiveStreamer({
+    final String? name,
+    final String? headline,
+    final String? description,
+    final String? twitch,
+    final String? youTube,
+    final String? image,
+  }) = _LiveStreamer;
+
+  factory LiveStreamer.fromJson(Map<String, dynamic> json) =>
+      _$LiveStreamerFromJson(json);
+}
+
+@freezed
+class RealTimeUserStatus with _$RealTimeUserStatus {
+  const factory RealTimeUserStatus({
+    final String? id,
+    final String? name,
+    final String? title,
+    final bool? online,
+    final bool? playing,
+    final bool? streaming,
+    final bool? patron,
+    final String? playingId,
+  }) = _RealTimeUserStatus;
+
+  factory RealTimeUserStatus.fromJson(Map<String, dynamic> json) =>
+      _$RealTimeUserStatusFromJson(json);
 }
 
 @freezed
@@ -39,7 +167,6 @@ class Profile with _$Profile {
     int? fideRating,
     int? uscfRating,
     int? ecfRating,
-    // TODO: Handle link line break.
     String? links,
   }) = _Profile;
 
@@ -90,6 +217,71 @@ class UserPreferences with _$UserPreferences {
 
   factory UserPreferences.fromJson(Map<String, dynamic> json) =>
       _$UserPreferencesFromJson(json);
+}
+
+@freezed
+class Perf with _$Perf {
+  const factory Perf({
+    final int? games,
+    final int? rating,
+    final int? rd,
+    final int? prog,
+    final bool? prov,
+  }) = _Perf;
+
+  factory Perf.fromJson(Map<String, dynamic> json) => _$PerfFromJson(json);
+}
+
+@freezed
+class StormPerf with _$StormPerf {
+  const factory StormPerf({
+    final int? runs,
+    final int? score,
+  }) = _StormPerf;
+
+  factory StormPerf.fromJson(Map<String, dynamic> json) =>
+      _$StormPerfFromJson(json);
+}
+
+@freezed
+class Perfs with _$Perfs {
+  const factory Perfs({
+    final Perf? chess960,
+    final Perf? atomic,
+    final Perf? racingKings,
+    final Perf? ultraBullet,
+    final Perf? blitz,
+    final Perf? kingOfTheHill,
+    final Perf? bullet,
+    final Perf? correspondence,
+    final Perf? horde,
+    final Perf? puzzle,
+    final Perf? classical,
+    final Perf? rapid,
+    final StormPerf? storm,
+  }) = _Perfs;
+
+  factory Perfs.fromJson(Map<String, dynamic> json) => _$PerfsFromJson(json);
+}
+
+@JsonEnum(valueField: 'raw')
+enum Title {
+  gm('GM'),
+  wgm('WGM'),
+  im('IM'),
+  wim('WIM'),
+  fm('FM'),
+  wfm('WFM'),
+  nm('NM'),
+  cm('CM'),
+  wcm('WCM'),
+  wnm('WNM'),
+  lm('LM'),
+  bot('BOT');
+
+  const Title(this.raw);
+
+  final String raw;
 }
 
 @JsonEnum(valueField: 'raw')

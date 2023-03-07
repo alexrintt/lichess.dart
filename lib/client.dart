@@ -54,6 +54,67 @@ abstract class ShiroClient {
     bool trophies = false,
   });
 
+  /// Provides autocompletion options for an incomplete username.
+  ///
+  /// This method set the endpoint [object] param as [true], so it
+  /// returns an array of user objects `{id,name,title,patron,online}`.
+  ///
+  /// https://lichess.org/api#tag/Users/operation/apiPlayerAutocomplete
+  Future<List<User>> autocompleteUsers({
+    required String term,
+    bool friend = false,
+  });
+
+  /// Provides autocompletion options for an incomplete username.
+  ///
+  /// This method set the endpoint [object] param as [false], so it only
+  /// returns an array of user usernames `String`.
+  ///
+  /// https://lichess.org/api#tag/Users/operation/apiPlayerAutocomplete
+  Future<List<User>> autocompleteUsernames({
+    required String term,
+    bool friend = false,
+  });
+
+  /// Read rating history of a user, for all perf types.
+  ///
+  /// There is at most one entry per day. Format of an entry is `[year, month, day, rating]`.
+  /// `month` starts at zero (January).
+  ///
+  /// https://lichess.org/api#tag/Users/operation/apiUserRatingHistory
+  Future<List<RatingHistory>> getUserRatingHistory({required String username});
+
+  /// Read the `online`, `playing` and `streaming` flags of several users.
+  ///
+  /// This API is very fast and cheap on lichess side. So you can call it quite often (like once every 5 seconds).
+  ///
+  /// Use it to track players and know when they're connected on lichess and playing games.
+  ///
+  /// https://lichess.org/api#tag/Users/operation/apiUsersStatus
+  Future<List<RealTimeUserStatus>> getRealTimeStatusOfSeveralUsers({
+    required List<String> ids,
+    bool withGameIds = false,
+  });
+
+  /// Get up to 300 users by their IDs. Users are returned in the same order as the IDs.
+  ///
+  /// The method is `POST` to allow a longer list of IDs to be sent in the request body.
+  ///
+  /// Please do not try to download all the Lichess users with this endpoint, or any other endpoint.
+  /// An API is not a way to fully export a website. We do not provide a full download of the Lichess users.
+  ///
+  /// This endpoint is limited to 8,000 users every 10 minutes, and 120,000 every day.
+  ///
+  /// https://lichess.org/api#tag/Users/operation/apiUsers
+  Future<List<User>> getSeveralUsersById({required List<String> ids});
+
+  /// Get basic info about currently streaming users.
+  ///
+  /// This API is very fast and cheap on lichess side. So you can call it quite often (like once every 5 seconds).
+  ///
+  /// https://lichess.org/api#tag/Users/operation/streamerLive
+  Future<List<User>> getLiveStreamers();
+
   /// Release and clear any HTTP resources associated with [this] client.
   Future<void> close({bool force = false});
 }
