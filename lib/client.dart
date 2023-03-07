@@ -3,8 +3,6 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:shiro/models.dart';
 
-class ShiroAuth {}
-
 Map<String, dynamic> parseRawResponseToMap(dynamic raw) {
   return Map<String, Object>.from(raw as Map<dynamic, dynamic>);
 }
