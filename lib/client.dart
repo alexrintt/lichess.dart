@@ -220,7 +220,7 @@ abstract class ShirouClientImpl implements ShirouClient {
   /// retrofit generator can't generate the object.
   ///
   /// This is a workaround to fix this issue by using the [Dio] instance
-  /// directly.
+  /// directly, see https://github.com/lichess-org/api/issues/231.
   Future<Map<String, dynamic>> _customAutocompleteUsers({
     required String term,
     bool friend = false,
