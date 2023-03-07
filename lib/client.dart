@@ -71,10 +71,10 @@ abstract class ShiroClient {
   /// returns an array of user usernames `String`.
   ///
   /// https://lichess.org/api#tag/Users/operation/apiPlayerAutocomplete
-  // Future<List<String>> autocompleteUsernames({
-  //   required String term,
-  //   bool friend = false,
-  // });
+  Future<List<String>> autocompleteUsernames({
+    required String term,
+    bool friend = false,
+  });
 
   /// Read rating history of a user, for all perf types.
   ///
@@ -82,7 +82,7 @@ abstract class ShiroClient {
   /// `month` starts at zero (January).
   ///
   /// https://lichess.org/api#tag/Users/operation/apiUserRatingHistory
-  // Future<List<RatingHistory>> getUserRatingHistory({required String username});
+  Future<List<RatingHistory>> getUserRatingHistory({required String username});
 
   /// Read the `online`, `playing` and `streaming` flags of several users.
   ///
@@ -91,10 +91,10 @@ abstract class ShiroClient {
   /// Use it to track players and know when they're connected on lichess and playing games.
   ///
   /// https://lichess.org/api#tag/Users/operation/apiUsersStatus
-  // Future<List<RealTimeUserStatus>> getRealTimeStatusOfSeveralUsers({
-  //   required List<String> ids,
-  //   bool withGameIds = false,
-  // });
+  Future<List<RealTimeUserStatus>> getRealTimeStatusOfSeveralUsers({
+    required List<String> ids,
+    bool withGameIds = false,
+  });
 
   /// Get up to 300 users by their IDs. Users are returned in the same order as the IDs.
   ///
@@ -106,14 +106,14 @@ abstract class ShiroClient {
   /// This endpoint is limited to 8,000 users every 10 minutes, and 120,000 every day.
   ///
   /// https://lichess.org/api#tag/Users/operation/apiUsers
-  // Future<List<User>> getSeveralUsersById({required List<String> ids});
+  Future<List<User>> getSeveralUsersById({required List<String> ids});
 
   /// Get basic info about currently streaming users.
   ///
   /// This API is very fast and cheap on lichess side. So you can call it quite often (like once every 5 seconds).
   ///
   /// https://lichess.org/api#tag/Users/operation/streamerLive
-  // Future<List<User>> getLiveStreamers();
+  Future<List<User>> getLiveStreamers();
 
   /// Release and clear any HTTP resources associated with [this] client.
   Future<void> close({bool force = false});
@@ -195,13 +195,85 @@ abstract class ShiroClientImpl implements ShiroClient {
     @Query('trophies') bool trophies = false,
   });
 
+  /// Workaround to fix the [autocompleteUsers] method because the lichess API
+  /// wrong. read [_customAutocompleteUsers] for more info.
   @override
-  @GET('/player/autocomplete')
   Future<List<User>> autocompleteUsers({
     @Query('term') required String term,
     @Query('friend') bool friend = false,
     @Query('object') bool object = true,
+  }) async {
+    final rawData = await _customAutocompleteUsers(
+      term: term,
+      friend: friend,
+      object: object,
+    );
+    final results = rawData['result'] as List;
+    return results
+        .map((e) => User.fromJson(e as Map<String, dynamic>))
+        .toList();
+  }
+
+  /// Custom implementation of [autocompleteUsers] because lichess API
+  /// is returning a `Map<String, dynamic>` instead of a `List<User>` so
+  /// retrofit generator can't generate the object.
+  ///
+  /// This is a workaround to fix this issue by using the [Dio] instance
+  /// directly.
+  Future<Map<String, dynamic>> _customAutocompleteUsers({
+    required String term,
+    bool friend = false,
+    bool object = true,
+  }) async {
+    final Response<Map<String, dynamic>> response =
+        await dio.get<Map<String, dynamic>>(
+      '/player/autocomplete',
+      queryParameters: <String, dynamic>{
+        'term': term,
+        'friend': friend,
+        'object': object,
+      },
+    );
+
+    return response.data!;
+  }
+
+  @override
+  @GET('/player/autocomplete')
+  Future<List<String>> autocompleteUsernames({
+    @Query('term') required String term,
+    @Query('friend') bool friend = false,
   });
+
+  @override
+  @GET('/user/{username}/rating-history')
+  Future<List<RatingHistory>> getUserRatingHistory({
+    @Path('username') required String username,
+  });
+
+  @override
+  @GET('/users/status')
+  Future<List<RealTimeUserStatus>> getRealTimeStatusOfSeveralUsers({
+    @Query('ids') required List<String> ids,
+    @Query('withGameIds') bool withGameIds = false,
+  });
+
+  @override
+  Future<List<User>> getSeveralUsersById({
+    required List<String> ids,
+  }) async {
+    final formattedIds = ids.join(',');
+    final Response<List<dynamic>> response =
+        await dio.post<List<dynamic>>('/users', data: formattedIds);
+
+    return response.data!
+        .map((e) => User.fromJson(e as Map<String, dynamic>))
+        .toList();
+  }
+
+  @override
+  @GET('/streamer/live')
+  Future<List<User>> getLiveStreamers();
 
   @override
   Future<void> close({bool force = false}) async => dio.close(force: force);
