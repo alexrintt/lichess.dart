@@ -22,7 +22,7 @@ class User with _$User {
     final String? url,
     final String? playing,
     final Count? count,
-    @Default(null) final bool? streaming,
+    final bool? streaming,
     final bool? followable,
     final bool? following,
     final bool? blocking,
