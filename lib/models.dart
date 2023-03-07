@@ -20,7 +20,7 @@ class User with _$User {
     final PlayTime? playTime,
     final Title? title,
     final String? url,
-    @Default(null) final String? playing,
+    final String? playing,
     final Count? count,
     @Default(null) final bool? streaming,
     final bool? followable,
