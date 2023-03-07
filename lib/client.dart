@@ -1,16 +1,16 @@
 import 'package:dio/dio.dart';
 import 'package:retrofit/http.dart';
-import 'package:shiro/models.dart';
+import 'package:shirou/shirou.dart';
 
 part 'client.g.dart';
 
-abstract class ShiroClient {
+abstract class ShirouClient {
   /// Interface for this client, if you are looking for a concrete implementation
   /// use [ShiroClient.create] instead.
-  const ShiroClient();
+  const ShirouClient();
 
-  factory ShiroClient.create({String? accessToken, Dio? dio, String? baseUrl}) =
-      ShiroClientImpl;
+  factory ShirouClient.create(
+      {String? accessToken, Dio? dio, String? baseUrl}) = ShirouClientImpl;
 
   /// Whether or not [this] client can perform authenticated requests.
   bool get isLogged;
@@ -120,15 +120,15 @@ abstract class ShiroClient {
 }
 
 @RestApi(baseUrl: 'https://lichess.org/api')
-abstract class ShiroClientImpl implements ShiroClient {
-  factory ShiroClientImpl({String? accessToken, Dio? dio, String? baseUrl}) {
+abstract class ShirouClientImpl implements ShirouClient {
+  factory ShirouClientImpl({String? accessToken, Dio? dio, String? baseUrl}) {
     final Dio dioClient = dio ?? Dio();
 
     if (accessToken != null) {
       dioClient.options.headers['Authorization'] = 'Bearer $accessToken';
     }
 
-    final _ShiroClientImpl shiro = _ShiroClientImpl._(
+    final _ShirouClientImpl shirou = _ShirouClientImpl._(
       // For some reason the [retrofit] package hide their [dio] instance,
       // so we need to define one by ourselves, see the [ShiroClientImpl._] constructor.
       // And by doing that, the [retrofit] generator creates 2 dio args, one for them and one for us.
@@ -138,12 +138,13 @@ abstract class ShiroClientImpl implements ShiroClient {
       baseUrl: baseUrl,
     );
 
-    return shiro
-      ..dio.options =
-          dioClient.options.copyWith(baseUrl: baseUrl ?? shiro.baseUrl!);
+    return shirou
+      ..dio.options = dioClient.options.copyWith(
+        baseUrl: baseUrl ?? shirou.baseUrl!,
+      );
   }
 
-  ShiroClientImpl._({required this.dio, required this.hasAccessToken});
+  ShirouClientImpl._({required this.dio, required this.hasAccessToken});
 
   final Dio dio;
   final bool hasAccessToken;
@@ -194,6 +195,86 @@ abstract class ShiroClientImpl implements ShiroClient {
     @Path() required String username,
     @Query('trophies') bool trophies = false,
   });
+
+  /// Workaround to fix the [autocompleteUsers] method because the lichess API
+  /// wrong. Read [_customAutocompleteUsers] for more info.
+  @override
+  Future<List<User>> autocompleteUsers({
+    @Query('term') required String term,
+    @Query('friend') bool friend = false,
+    @Query('object') bool object = true,
+  }) async {
+    final rawData = await _customAutocompleteUsers(
+      term: term,
+      friend: friend,
+      object: object,
+    );
+    final results = rawData['result'] as List;
+    return results
+        .map((e) => User.fromJson(e as Map<String, dynamic>))
+        .toList();
+  }
+
+  /// Custom implementation of [autocompleteUsers] because lichess API
+  /// is returning a `Map<String, dynamic>` instead of a `List<User>` so
+  /// retrofit generator can't generate the object.
+  ///
+  /// This is a workaround to fix this issue by using the [Dio] instance
+  /// directly, see https://github.com/lichess-org/api/issues/231.
+  Future<Map<String, dynamic>> _customAutocompleteUsers({
+    required String term,
+    bool friend = false,
+    bool object = true,
+  }) async {
+    final Response<Map<String, dynamic>> response =
+        await dio.get<Map<String, dynamic>>(
+      '/player/autocomplete',
+      queryParameters: <String, dynamic>{
+        'term': term,
+        'friend': friend,
+        'object': object,
+      },
+    );
+
+    return response.data!;
+  }
+
+  @override
+  @GET('/player/autocomplete')
+  Future<List<String>> autocompleteUsernames({
+    @Query('term') required String term,
+    @Query('friend') bool friend = false,
+  });
+
+  @override
+  @GET('/user/{username}/rating-history')
+  Future<List<RatingHistory>> getUserRatingHistory({
+    @Path('username') required String username,
+  });
+
+  @override
+  @GET('/users/status')
+  Future<List<RealTimeUserStatus>> getRealTimeStatusOfSeveralUsers({
+    @Query('ids') required List<String> ids,
+    @Query('withGameIds') bool withGameIds = false,
+  });
+
+  @override
+  Future<List<User>> getSeveralUsersById({
+    required List<String> ids,
+  }) async {
+    final formattedIds = ids.join(',');
+    final Response<List<dynamic>> response =
+        await dio.post<List<dynamic>>('/users', data: formattedIds);
+
+    return response.data!
+        .map((e) => User.fromJson(e as Map<String, dynamic>))
+        .toList();
+  }
+
+  @override
+  @GET('/streamer/live')
+  Future<List<User>> getLiveStreamers();
 
   @override
   Future<void> close({bool force = false}) async => dio.close(force: force);
