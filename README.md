@@ -81,7 +81,7 @@ Dart SDK version: 2.19.2 (stable) (Tue Feb 7 18:37:17 2023 +0000) on "windows_x6
 ### Getting started
 
 > **Warning** 
-> Before starting, remember to put your personal token in a file called `.env` in the project root; use `.env.example` as template, you may already know, but never let this token leak, and if it does, [revoke it immediatelly](https://lichess.org/account/oauth/token).
+> Before starting, remember to put your personal token in a file called `.env` in the project root; use `.env.example` as template, you may already know, but never let this token leak, and if it does, [revoke it immediately](https://lichess.org/account/oauth/token).
 
 ---
 
