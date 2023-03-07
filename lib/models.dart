@@ -77,7 +77,7 @@ class RatingHistory with _$RatingHistory {
       _$RatingHistoryFromJson(json);
 
   /// Alias for [this.parseRawPointsAsRatingHistoryEntries].
-  // List<RatingHistoryEntry>? entries() => parseRawPointsAsRatingHistoryEntries();
+  List<RatingHistoryEntry>? entries() => parseRawPointsAsRatingHistoryEntries();
 
   /// The [RatingHistory] of user consists in a array of [points] that per se is already
   /// a [List] that represents the user rating at a point in the time.
