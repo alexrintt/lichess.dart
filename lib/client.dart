@@ -68,6 +68,9 @@ abstract class ShiroClientImpl implements ShiroClient {
     }
 
     final _ShiroClientImpl shiro = _ShiroClientImpl._(
+      // For some reason the [retrofit] package hide their [dio] instance,
+      // so we need to define one by ourselves, see the [ShiroClientImpl._] constructor.
+      // And by doing that, the [retrofit] generator creates 2 dio args, one for them and one for us.
       dioClient,
       dioClient,
       accessToken != null,
