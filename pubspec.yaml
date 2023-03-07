@@ -1,7 +1,7 @@
-name: shiro
+name: shirou
 description: "Lichess client for Dart."
 version: 0.1.0
-repository: https://github.com/alexrintt/shiro
+repository: https://github.com/alexrintt/shirou
 
 environment:
   sdk: '>=2.19.2 <3.0.0'

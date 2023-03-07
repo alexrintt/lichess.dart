@@ -9,12 +9,12 @@ This package does **not** handle authentication.
 The usage is pretty straightforward:
 
 ```dart
-final shiro = ShiroClient.create();
-final user = await shiro.getUserPublicData(username: 'alexrintt');
+final shirou = ShiroClient.create();
+final user = await shirou.getUserPublicData(username: 'alexrintt');
 
 // If you wanna make authenticated requests:
-final shiro = ShiroClient.create(accessToken: '<your-access-token>');
-final email = await shiro.getMyEmailAddress();
+final shirou = ShiroClient.create(accessToken: '<your-access-token>');
+final email = await shirou.getMyEmailAddress();
 ```
 
 ### Custom Dio instance
@@ -23,7 +23,7 @@ By default, this package uses fresh [Dio](https://pub.dev/packages/dio) instance
 
 ```dart
 final myDioInstance = Dio();
-final shiro = ShiroClient.create(dio: myDioInstance);
+final shirou = ShiroClient.create(dio: myDioInstance);
 ```
 
 ### Custom client
@@ -93,5 +93,5 @@ dart pub run build_runner watch --delete-conflicting-outputs
 Now, when there are no more errors due missing generated code, run the example:
 
 ```bash
-dart bin/shiro.dart
+dart bin/shirou.dart
 ```

@@ -1,16 +1,16 @@
 import 'package:dio/dio.dart';
 import 'package:retrofit/http.dart';
-import 'package:shiro/models.dart';
+import 'package:shirou/shirou.dart';
 
 part 'client.g.dart';
 
-abstract class ShiroClient {
+abstract class ShirouClient {
   /// Interface for this client, if you are looking for a concrete implementation
   /// use [ShiroClient.create] instead.
-  const ShiroClient();
+  const ShirouClient();
 
-  factory ShiroClient.create({String? accessToken, Dio? dio, String? baseUrl}) =
-      ShiroClientImpl;
+  factory ShirouClient.create(
+      {String? accessToken, Dio? dio, String? baseUrl}) = ShirouClientImpl;
 
   /// Whether or not [this] client can perform authenticated requests.
   bool get isLogged;
@@ -120,15 +120,15 @@ abstract class ShiroClient {
 }
 
 @RestApi(baseUrl: 'https://lichess.org/api')
-abstract class ShiroClientImpl implements ShiroClient {
-  factory ShiroClientImpl({String? accessToken, Dio? dio, String? baseUrl}) {
+abstract class ShirouClientImpl implements ShirouClient {
+  factory ShirouClientImpl({String? accessToken, Dio? dio, String? baseUrl}) {
     final Dio dioClient = dio ?? Dio();
 
     if (accessToken != null) {
       dioClient.options.headers['Authorization'] = 'Bearer $accessToken';
     }
 
-    final _ShiroClientImpl shiro = _ShiroClientImpl._(
+    final _ShirouClientImpl shirou = _ShirouClientImpl._(
       // For some reason the [retrofit] package hide their [dio] instance,
       // so we need to define one by ourselves, see the [ShiroClientImpl._] constructor.
       // And by doing that, the [retrofit] generator creates 2 dio args, one for them and one for us.
@@ -138,12 +138,13 @@ abstract class ShiroClientImpl implements ShiroClient {
       baseUrl: baseUrl,
     );
 
-    return shiro
-      ..dio.options =
-          dioClient.options.copyWith(baseUrl: baseUrl ?? shiro.baseUrl!);
+    return shirou
+      ..dio.options = dioClient.options.copyWith(
+        baseUrl: baseUrl ?? shirou.baseUrl!,
+      );
   }
 
-  ShiroClientImpl._({required this.dio, required this.hasAccessToken});
+  ShirouClientImpl._({required this.dio, required this.hasAccessToken});
 
   final Dio dio;
   final bool hasAccessToken;
