@@ -39,7 +39,6 @@ linter:
     - join_return_with_assignment
     - literal_only_boolean_expressions
     - no_adjacent_strings_in_list
-    - omit_local_variable_types
     - one_member_abstracts
     - only_throw_errors
     - package_api_docs

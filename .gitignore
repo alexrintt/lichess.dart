@@ -6,3 +6,5 @@
 pubspec.lock
 *.g.dart
 *.freezed.dart
+*.env
+!.env.example
