@@ -20,9 +20,9 @@ class User with _$User {
     final PlayTime? playTime,
     final Title? title,
     final String? url,
-    @Default(false) final String? playing,
+    @Default(null) final String? playing,
     final Count? count,
-    @Default(false) final bool? streaming,
+    @Default(null) final bool? streaming,
     final bool? followable,
     final bool? following,
     final bool? blocking,
@@ -77,7 +77,7 @@ class RatingHistory with _$RatingHistory {
       _$RatingHistoryFromJson(json);
 
   /// Alias for [this.parseRawPointsAsRatingHistoryEntries].
-  List<RatingHistoryEntry>? entries() => parseRawPointsAsRatingHistoryEntries();
+  // List<RatingHistoryEntry>? entries() => parseRawPointsAsRatingHistoryEntries();
 
   /// The [RatingHistory] of user consists in a array of [points] that per se is already
   /// a [List] that represents the user rating at a point in the time.
@@ -86,19 +86,19 @@ class RatingHistory with _$RatingHistory {
   /// a [DateTime] and a [rating] following the Lichess API reference.
   ///
   /// https://lichess.org/api#tag/Users/operation/apiUserRatingHistory
-  List<RatingHistoryEntry>? parseRawPointsAsRatingHistoryEntries() {
-    return points?.map((List<int> point) {
-      final int year = point[0];
-      final int month = point[1];
-      final int day = point[2];
-      final int rating = point[3];
+  // List<RatingHistoryEntry>? parseRawPointsAsRatingHistoryEntries() {
+  //   return points?.map((List<int> point) {
+  //     final int year = point[0];
+  //     final int month = point[1];
+  //     final int day = point[2];
+  //     final int rating = point[3];
 
-      return RatingHistoryEntry(
-        date: DateTime.utc(year, month + 1, day),
-        rating: rating,
-      );
-    }).toList();
-  }
+  //     return RatingHistoryEntry(
+  //       date: DateTime.utc(year, month + 1, day),
+  //       rating: rating,
+  //     );
+  //   }).toList();
+  // }
 }
 
 @freezed

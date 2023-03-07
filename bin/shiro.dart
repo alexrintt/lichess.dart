@@ -19,6 +19,7 @@ Future<void> main(List<String> arguments) async {
   final UserPreferences prefs = await shiro.getMyPreferences();
   final bool isKidMode = await shiro.getMyKidModeStatus();
   final User publicUser = await shiro.getUserPublicData(username: 'alexrintt');
+  final List<User> value = await shiro.autocompleteUsers(term: 'alexr');
 
   await shiro.close();
 
@@ -27,4 +28,5 @@ Future<void> main(List<String> arguments) async {
   print('prefs: $prefs');
   print('isKidMode: $isKidMode');
   print('publicUser: $publicUser');
+  print('value: $value');
 }

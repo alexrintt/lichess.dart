@@ -71,10 +71,10 @@ abstract class ShiroClient {
   /// returns an array of user usernames `String`.
   ///
   /// https://lichess.org/api#tag/Users/operation/apiPlayerAutocomplete
-  Future<List<String>> autocompleteUsernames({
-    required String term,
-    bool friend = false,
-  });
+  // Future<List<String>> autocompleteUsernames({
+  //   required String term,
+  //   bool friend = false,
+  // });
 
   /// Read rating history of a user, for all perf types.
   ///
@@ -82,7 +82,7 @@ abstract class ShiroClient {
   /// `month` starts at zero (January).
   ///
   /// https://lichess.org/api#tag/Users/operation/apiUserRatingHistory
-  Future<List<RatingHistory>> getUserRatingHistory({required String username});
+  // Future<List<RatingHistory>> getUserRatingHistory({required String username});
 
   /// Read the `online`, `playing` and `streaming` flags of several users.
   ///
@@ -91,10 +91,10 @@ abstract class ShiroClient {
   /// Use it to track players and know when they're connected on lichess and playing games.
   ///
   /// https://lichess.org/api#tag/Users/operation/apiUsersStatus
-  Future<List<RealTimeUserStatus>> getRealTimeStatusOfSeveralUsers({
-    required List<String> ids,
-    bool withGameIds = false,
-  });
+  // Future<List<RealTimeUserStatus>> getRealTimeStatusOfSeveralUsers({
+  //   required List<String> ids,
+  //   bool withGameIds = false,
+  // });
 
   /// Get up to 300 users by their IDs. Users are returned in the same order as the IDs.
   ///
@@ -106,14 +106,14 @@ abstract class ShiroClient {
   /// This endpoint is limited to 8,000 users every 10 minutes, and 120,000 every day.
   ///
   /// https://lichess.org/api#tag/Users/operation/apiUsers
-  Future<List<User>> getSeveralUsersById({required List<String> ids});
+  // Future<List<User>> getSeveralUsersById({required List<String> ids});
 
   /// Get basic info about currently streaming users.
   ///
   /// This API is very fast and cheap on lichess side. So you can call it quite often (like once every 5 seconds).
   ///
   /// https://lichess.org/api#tag/Users/operation/streamerLive
-  Future<List<User>> getLiveStreamers();
+  // Future<List<User>> getLiveStreamers();
 
   /// Release and clear any HTTP resources associated with [this] client.
   Future<void> close({bool force = false});
@@ -193,6 +193,14 @@ abstract class ShiroClientImpl implements ShiroClient {
   Future<User> getUserPublicData({
     @Path() required String username,
     @Query('trophies') bool trophies = false,
+  });
+
+  @override
+  @GET('/player/autocomplete')
+  Future<List<User>> autocompleteUsers({
+    @Query('term') required String term,
+    @Query('friend') bool friend = false,
+    @Query('object') bool object = true,
   });
 
   @override
