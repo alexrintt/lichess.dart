@@ -71,7 +71,7 @@ abstract class ShiroClient {
   /// returns an array of user usernames `String`.
   ///
   /// https://lichess.org/api#tag/Users/operation/apiPlayerAutocomplete
-  Future<List<User>> autocompleteUsernames({
+  Future<List<String>> autocompleteUsernames({
     required String term,
     bool friend = false,
   });
