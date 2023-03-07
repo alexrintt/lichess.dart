@@ -1,18 +1,8 @@
-import 'dart:convert';
-
 import 'package:dio/dio.dart';
 import 'package:retrofit/http.dart';
 import 'package:shiro/models.dart';
 
 part 'client.g.dart';
-
-Map<String, dynamic> parseRawResponseToMap(dynamic raw) {
-  return Map<String, Object>.from(raw as Map<dynamic, dynamic>);
-}
-
-Map<String, dynamic> parseBodyStringToMap(String body) {
-  return parseRawResponseToMap(jsonDecode(body));
-}
 
 abstract class ShiroClient {
   /// Interface for this client, if you are looking for a concrete implementation
@@ -26,18 +16,44 @@ abstract class ShiroClient {
   bool get isLogged;
 
   /// Public information about the logged in user.
+  ///
+  /// https://lichess.org/api#tag/Account/operation/accountMe
   Future<User> getMyProfile();
 
   /// Read the email address of the logged in user.
+  ///
+  /// https://lichess.org/api#tag/Account/operation/accountEmail
   Future<String> getMyEmailAddress();
 
   /// Read the preferences of the logged in user.
   ///
   /// - https://lichess.org/account/preferences/game-display.
   /// - https://github.com/ornicar/lila/blob/master/modules/pref/src/main/Pref.scala.
+  ///
+  /// https://lichess.org/api#tag/Account/operation/account
   Future<UserPreferences> getMyPreferences();
+
+  /// Read the kid mode status of the logged in user.
+  ///
+  /// https://lichess.org/api#tag/Account/operation/accountKid.
   Future<bool> getMyKidModeStatus();
+
+  /// Set the kid mode status of the logged in user.
+  ///
+  /// https://lichess.org/api#tag/Account/operation/accountKidPost
   Future<void> setMyKidModeStatus({required bool enableKidMode});
+
+  /// Read public data of a user.
+  ///
+  /// If the request is [authenticated with OAuth2](https://lichess.org/api#section/Introduction/Authentication), then extra fields might be present in the response: `followable`, `following`, `blocking`, `followsYou`.
+  ///
+  /// https://lichess.org/api#tag/Users/operation/apiUser
+  Future<User> getUserPublicData({
+    required String username,
+    bool trophies = false,
+  });
+
+  /// Release and clear any HTTP resources associated with [this] client.
   Future<void> close({bool force = false});
 }
 
@@ -106,6 +122,13 @@ abstract class ShiroClientImpl implements ShiroClient {
   @override
   @POST('/account/kid')
   Future<void> setMyKidModeStatus({@Query('v') required bool enableKidMode});
+
+  @override
+  @GET('/user/{username}')
+  Future<User> getUserPublicData({
+    @Path() required String username,
+    @Query('trophies') bool trophies = false,
+  });
 
   @override
   Future<void> close({bool force = false}) async => dio.close(force: force);

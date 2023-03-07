@@ -18,6 +18,7 @@ Future<void> main(List<String> arguments) async {
   final String email = await client.getMyEmailAddress();
   final UserPreferences prefs = await client.getMyPreferences();
   final bool isKidMode = await client.getMyKidModeStatus();
+  final User publicUser = await client.getUserPublicData(username: 'alexrintt');
 
   await client.close();
 
@@ -25,4 +26,5 @@ Future<void> main(List<String> arguments) async {
   print('email: $email');
   print('prefs: $prefs');
   print('isKidMode: $isKidMode');
+  print('publicUser: $publicUser');
 }
