@@ -197,7 +197,7 @@ abstract class ShirouClientImpl implements ShirouClient {
   });
 
   /// Workaround to fix the [autocompleteUsers] method because the lichess API
-  /// wrong. read [_customAutocompleteUsers] for more info.
+  /// wrong. Read [_customAutocompleteUsers] for more info.
   @override
   Future<List<User>> autocompleteUsers({
     @Query('term') required String term,
