@@ -86,19 +86,19 @@ class RatingHistory with _$RatingHistory {
   /// a [DateTime] and a [rating] following the Lichess API reference.
   ///
   /// https://lichess.org/api#tag/Users/operation/apiUserRatingHistory
-  // List<RatingHistoryEntry>? parseRawPointsAsRatingHistoryEntries() {
-  //   return points?.map((List<int> point) {
-  //     final int year = point[0];
-  //     final int month = point[1];
-  //     final int day = point[2];
-  //     final int rating = point[3];
+  List<RatingHistoryEntry>? parseRawPointsAsRatingHistoryEntries() {
+    return points?.map((List<int> point) {
+      final int year = point[0];
+      final int month = point[1];
+      final int day = point[2];
+      final int rating = point[3];
 
-  //     return RatingHistoryEntry(
-  //       date: DateTime.utc(year, month + 1, day),
-  //       rating: rating,
-  //     );
-  //   }).toList();
-  // }
+      return RatingHistoryEntry(
+        date: DateTime.utc(year, month + 1, day),
+        rating: rating,
+      );
+    }).toList();
+  }
 }
 
 @freezed
