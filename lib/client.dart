@@ -18,7 +18,6 @@ abstract class ShirouClient {
   /// Whether or not [this] client can perform authenticated requests.
   bool get isLogged;
 
-  //#region Account
   /// Public information about the logged in user.
   ///
   /// https://lichess.org/api#tag/Account/operation/accountMe
@@ -47,9 +46,6 @@ abstract class ShirouClient {
   /// https://lichess.org/api#tag/Account/operation/accountKidPost
   Future<void> setMyKidModeStatus({required bool enableKidMode});
 
-  //#endregion
-
-  //#region Users
   /// Read public data of a user.
   ///
   /// If the request is [authenticated with OAuth2](https://lichess.org/api#section/Introduction/Authentication),
@@ -121,7 +117,6 @@ abstract class ShirouClient {
   ///
   /// https://lichess.org/api#tag/Users/operation/streamerLive
   Future<List<User>> getLiveStreamers();
-  //#endregion
 
   /// Release and clear any HTTP resources associated with [this] client.
   Future<void> close({bool force = false});
@@ -160,7 +155,6 @@ abstract class ShirouClientImpl implements ShirouClient {
   @override
   bool get isLogged => hasAccessToken;
 
-  //#region Account
   @override
   @GET('/account')
   Future<User> getMyProfile();
@@ -197,9 +191,7 @@ abstract class ShirouClientImpl implements ShirouClient {
   @override
   @POST('/account/kid')
   Future<void> setMyKidModeStatus({@Query('v') required bool enableKidMode});
-  //#endregion
 
-  //#region Users
   @override
   @GET('/user/{username}')
   Future<User> getUserPublicData({
@@ -226,7 +218,7 @@ abstract class ShirouClientImpl implements ShirouClient {
         .toList();
   }
 
-  /// Custom implementation of [autocompleteUsers] because lichess API
+  /// Custom implementation of [autocompleteUsers] because Lichess API
   /// is returning a `Map<String, dynamic>` instead of a `List<User>` so
   /// retrofit generator can't generate the object.
   ///
@@ -286,7 +278,6 @@ abstract class ShirouClientImpl implements ShirouClient {
   @override
   @GET('/streamer/live')
   Future<List<User>> getLiveStreamers();
-  //#endregion
 
   @override
   Future<void> close({bool force = false}) async => dio.close(force: force);
