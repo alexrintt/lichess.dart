@@ -73,11 +73,15 @@ class RatingHistory with _$RatingHistory {
     List<List<int>>? points,
   }) = _RatingHistory;
 
+  /// https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models.
+  const RatingHistory._();
+
   factory RatingHistory.fromJson(Map<String, dynamic> json) =>
       _$RatingHistoryFromJson(json);
 
-  /// Alias for [this.parseRawPointsAsRatingHistoryEntries].
-  List<RatingHistoryEntry>? entries() => parseRawPointsAsRatingHistoryEntries();
+  /// Alias for [parseRawPointsAsRatingHistoryEntries].
+  List<RatingHistoryEntry>? get entries =>
+      parseRawPointsAsRatingHistoryEntries();
 
   /// The [RatingHistory] of user consists in a array of [points] that per se is already
   /// a [List] that represents the user rating at a point in the time.
