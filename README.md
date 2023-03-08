@@ -1,10 +1,8 @@
 ## Lichess API Wrapper for Dart
 
-![Pub Version](https://img.shields.io/pub/v/shirou) 
+[![Pub Version](https://img.shields.io/pub/v/shirou)](https://pub.dev/packages/shirou)
 
-Shirou is a Dart wrapper for [Lichess API](https://lichess.org/api).
-This Dart package handles API calls and data classes.
-This package does **not** handle authentication.
+Shirou is a Dart library designed to simplify interaction with the [Lichess API](https://lichess.org/api) for Flutter and Dart. It exposes a collection of models and a extendable client interface and implementation.
 
 ## Installation
 
