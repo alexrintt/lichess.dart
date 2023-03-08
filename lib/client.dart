@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
 import 'package:retrofit/http.dart';
 import 'package:shirou/shirou.dart';
@@ -131,7 +133,7 @@ abstract class ShirouClient {
   /// Get users followed by the logged in user.
   ///
   /// https://lichess.org/api#tag/Relations/operation/apiUserFollowing
-  Future<User> getFollowing({required String username});
+  Future<List<User>> getMyFollows();
 
   /// Release and clear any HTTP resources associated with [this] client.
   Future<void> close({bool force = false});
@@ -293,6 +295,35 @@ abstract class ShirouClientImpl implements ShirouClient {
   @override
   @GET('/streamer/live')
   Future<List<User>> getLiveStreamers();
+
+  @override
+  @POST('/rel/follow/{username}')
+  Future<void> followUser({@Path() required String username});
+
+  @override
+  @POST('/rel/unfollow/{username}')
+  Future<void> unfollowUser({required String username});
+
+  @override
+  Future<List<User>> getMyFollows() async {
+    final Response<String> ndjson = await dio.get<String>('/rel/following');
+
+    final List<String> rawFollows = ndjson.data != null
+        ? const LineSplitter().convert(ndjson.data!)
+        : <String>[];
+
+    bool allKeysAreStrings(dynamic e) =>
+        e is Map && e.keys.every((dynamic key) => key is String);
+
+    final List<User> follows = rawFollows
+        .map(jsonDecode)
+        .where(allKeysAreStrings)
+        .cast<Map<String, dynamic>>()
+        .map(User.fromJson)
+        .toList();
+
+    return follows;
+  }
 
   @override
   Future<void> close({bool force = false}) async => dio.close(force: force);
