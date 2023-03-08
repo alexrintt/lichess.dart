@@ -1,4 +1,4 @@
-include: package:lints/recommended.yaml
+include: package:lint/analysis_options.yaml
 
 analyzer:
   language:
@@ -66,3 +66,7 @@ linter:
     - use_setters_to_change_properties
     - use_string_buffers
     - use_to_and_as_if_applicable
+    - sort_constructors_first
+    - prefer_single_quotes
+    - always_specify_types
+    - unawaited_futures

@@ -9,8 +9,11 @@ abstract class ShirouClient {
   /// use [ShiroClient.create] instead.
   const ShirouClient();
 
-  factory ShirouClient.create(
-      {String? accessToken, Dio? dio, String? baseUrl}) = ShirouClientImpl;
+  factory ShirouClient.create({
+    String? accessToken,
+    Dio? dio,
+    String? baseUrl,
+  }) = ShirouClientImpl;
 
   /// Whether or not [this] client can perform authenticated requests.
   bool get isLogged;
@@ -219,18 +222,18 @@ abstract class ShirouClientImpl implements ShirouClient {
     @Query('friend') bool friend = false,
     @Query('object') bool object = true,
   }) async {
-    final rawData = await _customAutocompleteUsers(
+    final Map<String, dynamic> rawData = await _customAutocompleteUsers(
       term: term,
       friend: friend,
       object: object,
     );
-    final results = rawData['result'] as List;
+    final List<dynamic> results = rawData['result'] as List<dynamic>;
     return results
-        .map((e) => User.fromJson(e as Map<String, dynamic>))
+        .map((dynamic e) => User.fromJson(e as Map<String, dynamic>))
         .toList();
   }
 
-  /// Custom implementation of [autocompleteUsers] because lichess API
+  /// Custom implementation of [autocompleteUsers] because Lichess API
   /// is returning a `Map<String, dynamic>` instead of a `List<User>` so
   /// retrofit generator can't generate the object.
   ///
@@ -278,12 +281,12 @@ abstract class ShirouClientImpl implements ShirouClient {
   Future<List<User>> getSeveralUsersById({
     required List<String> ids,
   }) async {
-    final formattedIds = ids.join(',');
+    final String formattedIds = ids.join(',');
     final Response<List<dynamic>> response =
         await dio.post<List<dynamic>>('/users', data: formattedIds);
 
     return response.data!
-        .map((e) => User.fromJson(e as Map<String, dynamic>))
+        .map((dynamic e) => User.fromJson(e as Map<String, dynamic>))
         .toList();
   }
 
