@@ -115,6 +115,21 @@ abstract class ShirouClient {
   /// https://lichess.org/api#tag/Users/operation/streamerLive
   Future<List<User>> getLiveStreamers();
 
+  /// Follow a player, adding them to your list of Lichess friends.
+  ///
+  /// https://lichess.org/api#tag/Relations/operation/followUser
+  Future<void> followUser({required String username});
+
+  /// Unfollow a player, removing them from your list of Lichess friends.
+  ///
+  /// https://lichess.org/api#tag/Relations/operation/unfollowUser
+  Future<void> unfollowUser({required String username});
+
+  /// Get users followed by the logged in user.
+  ///
+  /// https://lichess.org/api#tag/Relations/operation/apiUserFollowing
+  Future<User> getFollowing({required String username});
+
   /// Release and clear any HTTP resources associated with [this] client.
   Future<void> close({bool force = false});
 }
