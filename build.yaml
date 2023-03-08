@@ -5,4 +5,4 @@ targets:
         options:
           # Options configure how source code is generated for every
           # `@JsonSerializable`-annotated class in the package.
-          field_rename: snake
+          field_rename: none

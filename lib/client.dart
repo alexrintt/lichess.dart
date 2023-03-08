@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
 import 'package:retrofit/http.dart';
 import 'package:shirou/shirou.dart';
@@ -114,6 +116,58 @@ abstract class ShirouClient {
   ///
   /// https://lichess.org/api#tag/Users/operation/streamerLive
   Future<List<User>> getLiveStreamers();
+
+  /// Get the team based on the given [teamId].
+  ///
+  /// This API gives you infos about the team, such as the description, leader, etc.
+  ///
+  /// https://lichess.org/api#tag/Teams/operation/teamShow
+  Future<Team> getTeam({required String teamId});
+
+  /// Paginator of the most popular teams.
+  ///
+  /// This API gives you a page with the given [page] index of the most popular teams.
+  ///
+  /// https://lichess.org/api#tag/Teams/operation/teamAll
+  Future<TeamsPager> getTeamsOnPage({required int page});
+
+  /// Get all teams of a user based on the given [username].
+  ///
+  /// https://lichess.org/api#tag/Teams/operation/teamOfUsername
+  Future<List<Team>> getUserTeams({required String username});
+
+  /// Search for teams based on the given [name].
+  /// an optional [page] index can be provided to get a specific page.
+  /// The default page is 1.
+  ///
+  /// https://lichess.org/api#tag/Teams/operation/teamSearch
+  Future<TeamsPager> searchTeam({required String name, int page = 1});
+
+  /// Get all members of a team based on the given [teamId].
+  ///
+  /// Members are sorted by reverse chronological order of joining
+  /// the team (most recent first). OAuth only required if the list
+  /// of members is private.
+  ///
+  /// https://lichess.org/api#tag/Teams/operation/teamSearch
+  Future<List<TeamMember>> getTeamMembers({required String teamId});
+
+  /// Join a team based on the given [teamId].
+  /// An optional [message] can be provided to send a message if the team requires one
+  /// Another optional [password] can be provided if the team requires one.
+  ///
+  /// If the team requires a password but the password field is incorrect,
+  /// then the call fails. Similarly,
+  /// if the team join policy requires a confirmation
+  /// but the message parameter is not given,
+  /// then the call fails
+  ///
+  /// https://lichess.org/api#tag/Teams/operation/teamIdJoin
+  Future<void> joinTeam({
+    required String teamId,
+    String? message,
+    String? password,
+  });
 
   /// Release and clear any HTTP resources associated with [this] client.
   Future<void> close({bool force = false});
@@ -275,6 +329,67 @@ abstract class ShirouClientImpl implements ShirouClient {
   @override
   @GET('/streamer/live')
   Future<List<User>> getLiveStreamers();
+
+  @override
+  @GET('/team/{teamId}')
+  Future<Team> getTeam({@Path('teamId') required String teamId});
+
+  @override
+  @GET('/team/all')
+  Future<TeamsPager> getTeamsOnPage({@Query('page') required int page});
+
+  @override
+  @GET('/team/of/{username}')
+  Future<List<Team>> getUserTeams({
+    @Path('username') required String username,
+  });
+
+  @override
+  @GET('/team/search')
+  Future<TeamsPager> searchTeam({
+    @Query('text') required String name,
+    @Query('page') int page = 1,
+  });
+
+  /// Custom implementation of [getTeamMembers] because lichess API
+  /// is returning multiple JSON objects in a single line, so retrofit
+  /// generator can't generate the object.
+  ///
+  /// E.g.:
+  /// ```
+  /// {"id":"user1","username":"user1","title":null,"patron":false,"online":false,"playing":false,"language":"en","url":"/@/user1"}
+  /// {"id":"user2","username":"user2","title":null,"patron":false,"online":false,"playing":false,"language":"en","url":"/@/user2"}
+  /// ```
+  ///
+  /// In order to fix this issue, we need to replace the `}\n{` with `},{` and
+  /// wrap the whole string with `[]` to make it a valid JSON array.
+  ///
+  /// https://lichess.org/api#tag/Teams/operation/teamSearch
+  @override
+  Future<List<TeamMember>> getTeamMembers({
+    required String teamId,
+  }) async {
+    final Response<dynamic> response =
+        await dio.get<dynamic>('/team/$teamId/users');
+
+    final data = response.data as String;
+    final formattedData = data.replaceAll('}\n{', '},{');
+
+    final dataList = jsonDecode('[$formattedData]') as List<dynamic>;
+
+    return dataList
+        .map((e) => TeamMember.fromJson(e as Map<String, dynamic>))
+        .toList();
+  }
+
+  @override
+  @FormUrlEncoded()
+  @POST('/team/{teamId}/join')
+  Future<void> joinTeam({
+    @Path('teamId') required String teamId,
+    @Field('message') String? message,
+    @Field('password') String? password,
+  });
 
   @override
   Future<void> close({bool force = false}) async => dio.close(force: force);

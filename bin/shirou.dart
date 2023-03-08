@@ -29,6 +29,15 @@ Future<void> main(List<String> arguments) async {
   final List<User> severalUsers =
       await shirou.getSeveralUsersById(ids: ['alexrintt', 'riccardocescon']);
   final List<User> liveStreamers = await shirou.getLiveStreamers();
+  final Team getTeam = await shirou.getTeam(teamId: 'group-test');
+  final TeamsPager teamsPager = await shirou.getTeamsOnPage(page: 1);
+  final List<Team> userTeams =
+      await shirou.getUserTeams(username: 'riccardocescon');
+  final TeamsPager searchTeams = await shirou.searchTeam(name: 'test', page: 1);
+  final List<TeamMember> teamMembers =
+      await shirou.getTeamMembers(teamId: 'group-test');
+
+  final joinTeam = await shirou.joinTeam(teamId: 'group-test');
 
   await shirou.close();
 
@@ -43,4 +52,10 @@ Future<void> main(List<String> arguments) async {
   print('chessNetwork: $chessNetwork\n\n');
   print('severalUsers: $severalUsers\n\n');
   print('liveStreamers: $liveStreamers\n\n');
+  print('getTeam: $getTeam\n\n');
+  print('teamsPager: $teamsPager\n\n');
+  print('userTeams: $userTeams\n\n');
+  print('searchTeams: $searchTeams\n\n');
+  print('teamMembers: $teamMembers\n\n');
+  // print('joinTeam: $joinTeam\n\n');
 }
