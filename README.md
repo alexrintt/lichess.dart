@@ -1,20 +1,22 @@
-## Lichess API Wrapper for Dart
+# Lichess for Dart
 
-[![Pub Version](https://img.shields.io/pub/v/lichess_client)](https://pub.dev/packages/lichess_client)
+[![Pub Version](https://img.shields.io/pub/v/lichess_client_dio)](https://pub.dev/packages/lichess_client_dio) [![Pub Version](https://img.shields.io/pub/points/lichess_client_dio)](https://pub.dev/packages/lichess_client)
 
-Lichess Client is a Dart library designed to simplify interaction with the [Lichess API](https://lichess.org/api) for Flutter and Dart. It exposes a collection of models and a extendable client interface and implementation.
+This is a library for interacting with [Lichess API](https://lichess.org/api). It works on all platforms and exposes a collection of data classes and a extendable client interface.
+
+Notice: This is not an official Lichess project. It is maintained by volunteers.
 
 ## Installation
 
 ```yaml
 dependencies:
-  lichess_client: ^<latest-version>
+  lichess_client_dio: ^<latest-version>
 ```
 
 Import:
 
 ```dart
-import 'package:lichess_client/lichess_client.dart';
+import 'package:lichess_client_dio/lichess_client_dio.dart';
 ```
 
 ## Usage
@@ -22,11 +24,11 @@ import 'package:lichess_client/lichess_client.dart';
 The usage is pretty straightforward:
 
 ```dart
-final lichess = LichessClient.create();
+final lichess = LichessClientDio.create();
 final user = await lichess.getUserPublicData(username: 'alexrintt');
 
 // If you wanna make authenticated requests:
-final lichess = LichessClient.create(accessToken: '<your-access-token>');
+final lichess = LichessClientDio.create(accessToken: '<your-access-token>');
 final email = await lichess.getMyEmailAddress();
 ```
 
@@ -36,12 +38,12 @@ By default, this package uses fresh [Dio](https://pub.dev/packages/dio) instance
 
 ```dart
 final myDioInstance = Dio();
-final lichess = LichessClient.create(dio: myDioInstance);
+final lichess = LichessClientDio.create(dio: myDioInstance);
 ```
 
 ### Custom client
 
-`LichessClient` is just an abstract class, you can always extend or implement it.
+`LichessClient` is the abstract class that defines all signatures, so you can always extend or implement it.
 
 ```dart
 class MyCustomLichessClient implements LichessClient {
@@ -78,36 +80,6 @@ So it is generally considered best practice to leave authentication up to the us
 
 That said, to get an access token for your platform and for your use-case refer to the [Lichess authentication section](https://lichess.org/api#section/Introduction/Authentication).
 
-
 ## Contributing
 
-These steps are required to setup your local environment for development.
-
-### Base environment
-
-This package is based on Dart:
-
-```
-Dart SDK version: 2.19.2 (stable) (Tue Feb 7 18:37:17 2023 +0000) on "windows_x64"
-```
-
-### Getting started
-
-> **Warning** 
-> Before starting, remember to put your personal token in a file called `.env` in the project root; use `.env.example` as template, you may already know, but never let this token leak, and if it does, [revoke it immediately](https://lichess.org/account/oauth/token).
-
-This package uses code generation from `retrofit` and `freezed` package, so first off run:
-
-```bash
-# Get deps.
-dart pub get
-
-# Start generating code and watch for code changes.
-dart pub run build_runner watch --delete-conflicting-outputs
-```
-
-Now, when there are no more errors due missing generated code, run the example:
-
-```bash
-dart bin/lichess_client.dart
-```
+TODO.
