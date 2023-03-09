@@ -1,21 +1,21 @@
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
+import 'package:lichess_client/lichess_client.dart';
 import 'package:retrofit/http.dart';
-import 'package:shirou/shirou.dart';
 
 part 'client.g.dart';
 
-abstract class ShirouClient {
+abstract class LichessClient {
   /// Interface for this client, if you are looking for a concrete implementation
-  /// use [ShiroClient.create] instead.
-  const ShirouClient();
+  /// use [LichessClient.create] instead.
+  const LichessClient();
 
-  factory ShirouClient.create({
+  factory LichessClient.create({
     String? accessToken,
     Dio? dio,
     String? baseUrl,
-  }) = ShirouClientImpl;
+  }) = LichessClientImpl;
 
   /// Whether or not [this] client can perform authenticated requests.
   bool get isLogged;
@@ -191,18 +191,18 @@ abstract class ShirouClient {
   Future<void> close({bool force = false});
 }
 
-@RestApi(baseUrl: 'https://lichess.org/api')
-abstract class ShirouClientImpl implements ShirouClient {
-  factory ShirouClientImpl({String? accessToken, Dio? dio, String? baseUrl}) {
+@RestApi(baseUrl: 'https://lichess.org')
+abstract class LichessClientImpl implements LichessClient {
+  factory LichessClientImpl({String? accessToken, Dio? dio, String? baseUrl}) {
     final Dio dioClient = dio ?? Dio();
 
     if (accessToken != null) {
       dioClient.options.headers['Authorization'] = 'Bearer $accessToken';
     }
 
-    final _ShirouClientImpl shirou = _ShirouClientImpl._(
+    final _LichessClientImpl lichess = _LichessClientImpl._(
       // For some reason the [retrofit] package hide their [dio] instance,
-      // so we need to define one by ourselves, see the [ShiroClientImpl._] constructor.
+      // so we need to define one by ourselves, see the [LichessClientImpl._] constructor.
       // And by doing that, the [retrofit] generator creates 2 dio args, one for them and one for us.
       dioClient,
       dioClient,
@@ -210,13 +210,13 @@ abstract class ShirouClientImpl implements ShirouClient {
       baseUrl: baseUrl,
     );
 
-    return shirou
+    return lichess
       ..dio.options = dioClient.options.copyWith(
-        baseUrl: baseUrl ?? shirou.baseUrl!,
+        baseUrl: baseUrl ?? lichess.baseUrl!,
       );
   }
 
-  ShirouClientImpl._({required this.dio, required this.hasAccessToken});
+  LichessClientImpl._({required this.dio, required this.hasAccessToken});
 
   final Dio dio;
   final bool hasAccessToken;
@@ -231,7 +231,7 @@ abstract class ShirouClientImpl implements ShirouClient {
   @override
   Future<String> getMyEmailAddress() async {
     final Response<Map<String, dynamic>> response =
-        await dio.get<Map<String, dynamic>>('/account/email');
+        await dio.get<Map<String, dynamic>>('/api/account/email');
 
     return response.data!['email'] as String;
   }
@@ -239,7 +239,7 @@ abstract class ShirouClientImpl implements ShirouClient {
   @override
   Future<UserPreferences> getMyPreferences() async {
     final Response<Map<String, dynamic>> response =
-        await dio.get<Map<String, dynamic>>('/account/preferences');
+        await dio.get<Map<String, dynamic>>('/api/account/preferences');
 
     return UserPreferences.fromJson(
       <String, dynamic>{
@@ -252,17 +252,17 @@ abstract class ShirouClientImpl implements ShirouClient {
   @override
   Future<bool> getMyKidModeStatus() async {
     final Response<Map<String, dynamic>> response =
-        await dio.get<Map<String, dynamic>>('/account/kid');
+        await dio.get<Map<String, dynamic>>('api/account/kid');
 
     return response.data!['kid'] as bool;
   }
 
   @override
-  @POST('/account/kid')
+  @POST('/api/account/kid')
   Future<void> setMyKidModeStatus({@Query('v') required bool enableKidMode});
 
   @override
-  @GET('/user/{username}')
+  @GET('/api/user/{username}')
   Future<User> getUserPublicData({
     @Path() required String username,
     @Query('trophies') bool trophies = false,
@@ -300,7 +300,7 @@ abstract class ShirouClientImpl implements ShirouClient {
   }) async {
     final Response<Map<String, dynamic>> response =
         await dio.get<Map<String, dynamic>>(
-      '/player/autocomplete',
+      '/api/player/autocomplete',
       queryParameters: <String, dynamic>{
         'term': term,
         'friend': friend,
@@ -312,20 +312,20 @@ abstract class ShirouClientImpl implements ShirouClient {
   }
 
   @override
-  @GET('/player/autocomplete')
+  @GET('/api/player/autocomplete')
   Future<List<String>> autocompleteUsernames({
     @Query('term') required String term,
     @Query('friend') bool friend = false,
   });
 
   @override
-  @GET('/user/{username}/rating-history')
+  @GET('/api/user/{username}/rating-history')
   Future<List<RatingHistory>> getUserRatingHistory({
     @Path('username') required String username,
   });
 
   @override
-  @GET('/users/status')
+  @GET('/api/users/status')
   Future<List<RealTimeUserStatus>> getRealTimeStatusOfSeveralUsers({
     @Query('ids') required List<String> ids,
     @Query('withGameIds') bool withGameIds = false,
@@ -337,7 +337,7 @@ abstract class ShirouClientImpl implements ShirouClient {
   }) async {
     final String formattedIds = ids.join(',');
     final Response<List<dynamic>> response =
-        await dio.post<List<dynamic>>('/users', data: formattedIds);
+        await dio.post<List<dynamic>>('/api/users', data: formattedIds);
 
     return response.data!
         .map((dynamic e) => User.fromJson(e as Map<String, dynamic>))
@@ -345,7 +345,7 @@ abstract class ShirouClientImpl implements ShirouClient {
   }
 
   @override
-  @GET('/streamer/live')
+  @GET('/api/streamer/live')
   Future<List<User>> getLiveStreamers();
 
   @override
@@ -390,13 +390,14 @@ abstract class ShirouClientImpl implements ShirouClient {
     final Response<dynamic> response =
         await dio.get<dynamic>('/team/$teamId/users');
 
-    final data = response.data as String;
-    final formattedData = data.replaceAll('}\n{', '},{');
+    final String data = response.data as String;
+    final String formattedData = data.replaceAll('}\n{', '},{');
 
-    final dataList = jsonDecode('[$formattedData]') as List<dynamic>;
+    final List<dynamic> dataList =
+        jsonDecode('[$formattedData]') as List<dynamic>;
 
     return dataList
-        .map((e) => TeamMember.fromJson(e as Map<String, dynamic>))
+        .map((dynamic e) => TeamMember.fromJson(e as Map<String, dynamic>))
         .toList();
   }
 
@@ -414,7 +415,7 @@ abstract class ShirouClientImpl implements ShirouClient {
   Future<void> followUser({@Path() required String username});
 
   @override
-  @POST('/rel/unfollow/{username}')
+  @POST('/api/rel/unfollow/{username}')
   Future<void> unfollowUser({required String username});
 
   @override

@@ -1,20 +1,20 @@
 ## Lichess API Wrapper for Dart
 
-[![Pub Version](https://img.shields.io/pub/v/shirou)](https://pub.dev/packages/shirou)
+[![Pub Version](https://img.shields.io/pub/v/lichess_client)](https://pub.dev/packages/lichess_client)
 
-Shirou is a Dart library designed to simplify interaction with the [Lichess API](https://lichess.org/api) for Flutter and Dart. It exposes a collection of models and a extendable client interface and implementation.
+Lichess Client is a Dart library designed to simplify interaction with the [Lichess API](https://lichess.org/api) for Flutter and Dart. It exposes a collection of models and a extendable client interface and implementation.
 
 ## Installation
 
 ```yaml
 dependencies:
-  shirou: ^<latest-version>
+  lichess_client: ^<latest-version>
 ```
 
 Import:
 
 ```dart
-import 'package:shirou/shirou.dart';
+import 'package:lichess_client/lichess_client.dart';
 ```
 
 ## Usage
@@ -22,12 +22,12 @@ import 'package:shirou/shirou.dart';
 The usage is pretty straightforward:
 
 ```dart
-final shirou = ShirouClient.create();
-final user = await shirou.getUserPublicData(username: 'alexrintt');
+final lichess = LichessClient.create();
+final user = await lichess.getUserPublicData(username: 'alexrintt');
 
 // If you wanna make authenticated requests:
-final shirou = ShirouClient.create(accessToken: '<your-access-token>');
-final email = await shirou.getMyEmailAddress();
+final lichess = LichessClient.create(accessToken: '<your-access-token>');
+final email = await lichess.getMyEmailAddress();
 ```
 
 ### Custom Dio instance
@@ -36,26 +36,26 @@ By default, this package uses fresh [Dio](https://pub.dev/packages/dio) instance
 
 ```dart
 final myDioInstance = Dio();
-final shirou = ShirouClient.create(dio: myDioInstance);
+final lichess = LichessClient.create(dio: myDioInstance);
 ```
 
 ### Custom client
 
-`ShirouClient` is just an abstract class, you can always extend or implement it.
+`LichessClient` is just an abstract class, you can always extend or implement it.
 
 ```dart
-class MyCustomLichessClient implements ShirouClient {
+class MyCustomLichessClient implements LichessClient {
   // TODO: Implement/override methods.
 }
 ```
 
 Now you can do your own implementation and re-use the data models.
 
-This can also be used to mock the `ShirouClient` class.
+This can also be used to mock the `LichessClient` class.
 
 ## Retrieve access token
 
-TL;DR: **Shirou doesn't handle authentication for Lichess**.
+TL;DR: **This package doesn't handle authentication for Lichess**.
 
 <details>
   <summary>Why?</summary>
@@ -109,5 +109,5 @@ dart pub run build_runner watch --delete-conflicting-outputs
 Now, when there are no more errors due missing generated code, run the example:
 
 ```bash
-dart bin/shirou.dart
+dart bin/lichess_client.dart
 ```
