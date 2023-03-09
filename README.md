@@ -2,7 +2,7 @@
 
 [![Pub Version](https://img.shields.io/pub/v/lichess_client)](https://pub.dev/packages/lichess_client)
 
-Shirou is a Dart library designed to simplify interaction with the [Lichess API](https://lichess.org/api) for Flutter and Dart. It exposes a collection of models and a extendable client interface and implementation.
+Lichess Client is a Dart library designed to simplify interaction with the [Lichess API](https://lichess.org/api) for Flutter and Dart. It exposes a collection of models and a extendable client interface and implementation.
 
 ## Installation
 
@@ -36,7 +36,7 @@ By default, this package uses fresh [Dio](https://pub.dev/packages/dio) instance
 
 ```dart
 final myDioInstance = Dio();
-final lichess_client = LichessClient.create(dio: myDioInstance);
+final lichess = LichessClient.create(dio: myDioInstance);
 ```
 
 ### Custom client
