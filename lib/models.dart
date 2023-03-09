@@ -1,5 +1,4 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:shirou/shirou.dart';
 
 part 'models.g.dart';
 part 'models.freezed.dart';
@@ -272,14 +271,14 @@ class Perfs with _$Perfs {
 @freezed
 class Team with _$Team {
   const factory Team({
-    final String? id,
-    final String? name,
-    final String? description,
-    final bool? open,
-    final User? leader,
-    final List<User>? leaders,
-    final int? nbMembers,
-    final String? location,
+    String? id,
+    String? name,
+    String? description,
+    bool? open,
+    User? leader,
+    List<User>? leaders,
+    int? nbMembers,
+    String? location,
   }) = _Team;
 
   factory Team.fromJson(Map<String, dynamic> json) => _$TeamFromJson(json);
@@ -288,13 +287,13 @@ class Team with _$Team {
 @freezed
 class TeamsPager with _$TeamsPager {
   const factory TeamsPager({
-    final int? currentPage,
-    final int? maxPerPage,
-    final List<Team>? currentPageResults,
-    final int? nbResults,
-    final int? previousPage,
-    final int? nextPage,
-    final int? nbPages,
+    int? currentPage,
+    int? maxPerPage,
+    List<Team>? currentPageResults,
+    int? nbResults,
+    int? previousPage,
+    int? nextPage,
+    int? nbPages,
   }) = _TeamsPager;
 
   factory TeamsPager.fromJson(Map<String, dynamic> json) =>
@@ -304,30 +303,44 @@ class TeamsPager with _$TeamsPager {
 @freezed
 class TeamMember with _$TeamMember {
   const factory TeamMember({
-    final String? id,
-    final String? username,
-    final Perfs? perfs,
-    final int? createdAt,
-    final bool? disabled,
-    final bool? tosViolation,
-    final Profile? profile,
-    final int? seenAt,
-    final bool? patron,
-    final bool? verified,
-    final PlayTime? playTime,
-    final Title? title,
-    final String? url,
-    final String? playing,
-    final Count? count,
-    final bool? streaming,
-    final bool? followable,
-    final bool? following,
-    final bool? blocking,
-    final bool? followsYou,
+    String? id,
+    String? username,
+    Perfs? perfs,
+    int? createdAt,
+    bool? disabled,
+    bool? tosViolation,
+    Profile? profile,
+    int? seenAt,
+    bool? patron,
+    bool? verified,
+    PlayTime? playTime,
+    Title? title,
+    String? url,
+    String? playing,
+    Count? count,
+    bool? streaming,
+    bool? followable,
+    bool? following,
+    bool? blocking,
+    bool? followsYou,
   }) = _TeamMember;
 
   factory TeamMember.fromJson(Map<String, dynamic> json) =>
       _$TeamMemberFromJson(json);
+}
+
+@freezed
+class JoinRequest with _$JoinRequest {
+  const factory JoinRequest({
+    String? teamId,
+    String? userId,
+    User? user,
+    int? date,
+    String? message,
+  }) = _JoinRequest;
+
+  factory JoinRequest.fromJson(Map<String, dynamic> json) =>
+      _$JoinRequestFromJson(json);
 }
 
 @JsonEnum(valueField: 'raw')

@@ -172,6 +172,49 @@ abstract class LichessClient {
     String? password,
   });
 
+  /// Leave a team based on the given [teamId].
+  ///
+  /// https://lichess.org/api#tag/Teams/operation/teamIdQuit
+  Future<void> leaveTeam({required String teamId});
+
+  /// Get pending join requests for a team based on the given [teamId].
+  ///
+  /// https://lichess.org/api#tag/Teams/operation/teamRequests
+  Future<List<JoinRequest>> getJoinRequests({required String teamId});
+
+  /// Accept a join request for a team based on the given [teamId] and [userId].
+  ///
+  /// https://lichess.org/api#tag/Teams/operation/teamRequestAccept
+  Future<void> acceptJoinRequest({
+    required String teamId,
+    required String userId,
+  });
+
+  /// Decline a join request for a team based on the given [teamId] and [userId].
+  ///
+  /// https://lichess.org/api#tag/Teams/operation/teamRequestDecline
+  Future<void> declineJoinRequest({
+    required String teamId,
+    required String userId,
+  });
+
+  /// Kick a user from a team based on the given [teamId] and [userId].
+  ///
+  /// https://lichess.org/api#tag/Teams/operation/teamIdKickUserId
+  Future<void> kickUserFromTeam({
+    required String teamId,
+    required String userId,
+  });
+
+  /// Send a privatte message to all members of a team
+  /// NOTICE: You must own the team
+  ///
+  /// https://lichess.org/api#tag/Teams/operation/teamIdPmAll
+  Future<void> messageAllMembers({
+    required String teamId,
+    required String message,
+  });
+
   /// Follow a player, adding them to your list of Lichess friends.
   ///
   /// https://lichess.org/api#tag/Relations/operation/followUser
@@ -225,7 +268,7 @@ abstract class LichessClientImpl implements LichessClient {
   bool get isLogged => hasAccessToken;
 
   @override
-  @GET('/account')
+  @GET('/api/account')
   Future<User> getMyProfile();
 
   @override
@@ -252,7 +295,7 @@ abstract class LichessClientImpl implements LichessClient {
   @override
   Future<bool> getMyKidModeStatus() async {
     final Response<Map<String, dynamic>> response =
-        await dio.get<Map<String, dynamic>>('api/account/kid');
+        await dio.get<Map<String, dynamic>>('/api/account/kid');
 
     return response.data!['kid'] as bool;
   }
@@ -349,21 +392,21 @@ abstract class LichessClientImpl implements LichessClient {
   Future<List<User>> getLiveStreamers();
 
   @override
-  @GET('/team/{teamId}')
+  @GET('/api/team/{teamId}')
   Future<Team> getTeam({@Path('teamId') required String teamId});
 
   @override
-  @GET('/team/all')
+  @GET('/api/team/all')
   Future<TeamsPager> getTeamsOnPage({@Query('page') required int page});
 
   @override
-  @GET('/team/of/{username}')
+  @GET('/api/team/of/{username}')
   Future<List<Team>> getUserTeams({
     @Path('username') required String username,
   });
 
   @override
-  @GET('/team/search')
+  @GET('/api/team/search')
   Future<TeamsPager> searchTeam({
     @Query('text') required String name,
     @Query('page') int page = 1,
@@ -388,7 +431,13 @@ abstract class LichessClientImpl implements LichessClient {
     required String teamId,
   }) async {
     final Response<dynamic> response =
-        await dio.get<dynamic>('/team/$teamId/users');
+        await dio.get<dynamic>('/api/team/$teamId/users');
+
+    // Api returns data as null if there are no members
+    // in the team instead of an empty list.
+    if (response.data == null) {
+      return <TeamMember>[];
+    }
 
     final String data = response.data as String;
     final String formattedData = data.replaceAll('}\n{', '},{');
@@ -408,6 +457,64 @@ abstract class LichessClientImpl implements LichessClient {
     @Path('teamId') required String teamId,
     @Field('message') String? message,
     @Field('password') String? password,
+  });
+
+  @override
+  @POST('/team/{teamId}/quit')
+  Future<void> leaveTeam({@Path('teamId') required String teamId});
+
+  @override
+  Future<List<JoinRequest>> getJoinRequests({required String teamId}) async {
+    final Response<List<dynamic>> response =
+        await dio.get<List<dynamic>>('/api/team/$teamId/requests');
+
+    if (response.data == null) {
+      return <JoinRequest>[];
+    }
+
+    final List<Map<String, dynamic>> requests =
+        response.data!.map((dynamic e) => e as Map<String, dynamic>).toList();
+    return requests
+        .map(
+          (Map<String, dynamic> e) => JoinRequest(
+            userId: (e['request'] as Map<String, dynamic>)['userId'] as String,
+            date: (e['request'] as Map<String, dynamic>)['date'] as int,
+            message:
+                (e['request'] as Map<String, dynamic>)['message'] as String?,
+            teamId: (e['request'] as Map<String, dynamic>)['teamId'] as String,
+            user: User.fromJson(e['user'] as Map<String, dynamic>),
+          ),
+        )
+        .toList();
+  }
+
+  @override
+  @POST('/api/team/{teamId}/request/{userId}/accept')
+  Future<void> acceptJoinRequest({
+    @Path('teamId') required String teamId,
+    @Path('userId') required String userId,
+  });
+
+  @override
+  @POST('/api/team/{teamId}/request/{userId}/decline')
+  Future<void> declineJoinRequest({
+    @Path('teamId') required String teamId,
+    @Path('userId') required String userId,
+  });
+
+  @override
+  @POST('/team/{teamId}/kick/{userId}')
+  Future<void> kickUserFromTeam({
+    @Path('teamId') required String teamId,
+    @Path('userId') required String userId,
+  });
+
+  @override
+  @FormUrlEncoded()
+  @POST('/team/{teamId}/pm-all')
+  Future<void> messageAllMembers({
+    @Path('teamId') required String teamId,
+    @Field('message') required String message,
   });
 
   @override

@@ -40,8 +40,28 @@ Future<void> main(List<String> arguments) async {
       await lichess.searchTeam(name: 'test', page: 1);
   final List<TeamMember> teamMembers =
       await lichess.getTeamMembers(teamId: 'group-test');
+  final void joinTeam = await lichess.joinTeam(teamId: 'group-test');
+  final void leaveTeam = await lichess.leaveTeam(teamId: 'group-test');
+  final List<JoinRequest> joinRequests =
+      await lichess.getJoinRequests(teamId: 'simple-app-test');
 
-  final void _ = await lichess.joinTeam(teamId: 'group-test');
+  // Commented because there are requests
+  // final void acceptJoinRequest = await lichess.acceptJoinRequest(
+  //   teamId: 'simple-app-test',
+  //   userId: 'alexrintt',
+  // );
+  // final void declineJoinRequest = await lichess.declineJoinRequest(
+  //   teamId: 'simple-app-test',
+  //   userId: 'alexrintt',
+  // );
+  final void kickUser = await lichess.kickUserFromTeam(
+    teamId: 'simple-app-test',
+    userId: 'alexrintt',
+  );
+  final void messageToAllMembers = await lichess.messageAllMembers(
+    teamId: 'simple-app-test',
+    message: 'Hello world!',
+  );
 
   await lichess.close();
 
@@ -61,5 +81,5 @@ Future<void> main(List<String> arguments) async {
   log('userTeams: $userTeams\n\n');
   log('searchTeams: $searchTeams\n\n');
   log('teamMembers: $teamMembers\n\n');
-  // log('joinTeam: $joinTeam\n\n');
+  log('joinRequests: $joinRequests\n\n');
 }
