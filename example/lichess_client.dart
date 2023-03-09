@@ -1,7 +1,7 @@
 import 'dart:developer';
 
 import 'package:dotenv/dotenv.dart';
-import 'package:shirou/shirou.dart';
+import 'package:lichess_client/lichess_client.dart';
 
 Future<void> main(List<String> arguments) async {
   final DotEnv env = DotEnv()..load();
@@ -13,26 +13,27 @@ Future<void> main(List<String> arguments) async {
     'You need to define your personal token inside the file .env, use .env.example as template.',
   );
 
-  final ShirouClient shirou = ShirouClient.create(accessToken: token);
+  final LichessClient lichess = LichessClient.create(accessToken: token);
 
-  final User user = await shirou.getMyProfile();
-  final String email = await shirou.getMyEmailAddress();
-  final UserPreferences prefs = await shirou.getMyPreferences();
-  final bool isKidMode = await shirou.getMyKidModeStatus();
-  final User publicUser = await shirou.getUserPublicData(username: 'alexrintt');
+  final User user = await lichess.getMyProfile();
+  final String email = await lichess.getMyEmailAddress();
+  final UserPreferences prefs = await lichess.getMyPreferences();
+  final bool isKidMode = await lichess.getMyKidModeStatus();
+  final User publicUser =
+      await lichess.getUserPublicData(username: 'alexrintt');
   final List<User> autoCompleteUsers =
-      await shirou.autocompleteUsers(term: 'alexr');
+      await lichess.autocompleteUsers(term: 'alexr');
   final List<String> autoCompleteUsernames =
-      await shirou.autocompleteUsernames(term: 'alexr');
+      await lichess.autocompleteUsernames(term: 'alexr');
   final List<RatingHistory> ratingHistory =
-      await shirou.getUserRatingHistory(username: 'riccardocescon');
-  final List<RealTimeUserStatus> chessNetwork = await shirou
+      await lichess.getUserRatingHistory(username: 'riccardocescon');
+  final List<RealTimeUserStatus> chessNetwork = await lichess
       .getRealTimeStatusOfSeveralUsers(ids: <String>['chess-network']);
-  final List<User> severalUsers = await shirou
+  final List<User> severalUsers = await lichess
       .getSeveralUsersById(ids: <String>['alexrintt', 'riccardocescon']);
-  final List<User> liveStreamers = await shirou.getLiveStreamers();
+  final List<User> liveStreamers = await lichess.getLiveStreamers();
 
-  await shirou.close();
+  await lichess.close();
 
   log('user: $user\n\n');
   log('email: $email\n\n');
