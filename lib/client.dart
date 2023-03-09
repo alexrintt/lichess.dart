@@ -179,7 +179,7 @@ abstract class ShirouClientImpl implements ShirouClient {
   @override
   Future<String> getMyEmailAddress() async {
     final Response<Map<String, dynamic>> response =
-        await dio.get<Map<String, dynamic>>('/account/email');
+        await dio.get<Map<String, dynamic>>('/api/account/email');
 
     return response.data!['email'] as String;
   }
@@ -187,7 +187,7 @@ abstract class ShirouClientImpl implements ShirouClient {
   @override
   Future<UserPreferences> getMyPreferences() async {
     final Response<Map<String, dynamic>> response =
-        await dio.get<Map<String, dynamic>>('/account/preferences');
+        await dio.get<Map<String, dynamic>>('/api/account/preferences');
 
     return UserPreferences.fromJson(
       <String, dynamic>{
@@ -200,7 +200,7 @@ abstract class ShirouClientImpl implements ShirouClient {
   @override
   Future<bool> getMyKidModeStatus() async {
     final Response<Map<String, dynamic>> response =
-        await dio.get<Map<String, dynamic>>('/account/kid');
+        await dio.get<Map<String, dynamic>>('api/account/kid');
 
     return response.data!['kid'] as bool;
   }
