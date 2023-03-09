@@ -7,29 +7,29 @@ part 'models.freezed.dart';
 @freezed
 class User with _$User {
   const factory User({
-    final String? id,
-    final String? name,
-    final String? username,
-    final Perfs? perfs,
-    final int? createdAt,
-    final bool? disabled,
-    final bool? tosViolation,
-    final Profile? profile,
-    final int? seenAt,
-    final bool? patron,
-    final bool? verified,
-    final PlayTime? playTime,
-    final Title? title,
-    final String? url,
-    final String? playing,
-    final Count? count,
-    final bool? streaming,
-    final bool? followable,
-    final bool? following,
-    final bool? blocking,
-    final bool? followsYou,
-    final LiveStream? stream,
-    final LiveStreamer? streamer,
+    String? id,
+    String? name,
+    String? username,
+    Perfs? perfs,
+    int? createdAt,
+    bool? disabled,
+    bool? tosViolation,
+    Profile? profile,
+    int? seenAt,
+    bool? patron,
+    bool? verified,
+    PlayTime? playTime,
+    Title? title,
+    String? url,
+    String? playing,
+    Count? count,
+    bool? streaming,
+    bool? followable,
+    bool? following,
+    bool? blocking,
+    bool? followsYou,
+    LiveStream? stream,
+    LiveStreamer? streamer,
   }) = _User;
 
   factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);
@@ -38,19 +38,19 @@ class User with _$User {
 @freezed
 class Count with _$Count {
   const factory Count({
-    final int? all,
-    final int? rated,
-    final int? ai,
-    final int? draw,
-    final int? drawH,
-    final int? loss,
-    final int? lossH,
-    final int? win,
-    final int? winH,
-    final int? bookmark,
-    final int? playing,
-    final int? import,
-    final int? me,
+    int? all,
+    int? rated,
+    int? ai,
+    int? draw,
+    int? drawH,
+    int? loss,
+    int? lossH,
+    int? win,
+    int? winH,
+    int? bookmark,
+    int? playing,
+    int? import,
+    int? me,
   }) = _Count;
 
   factory Count.fromJson(Map<String, dynamic> json) => _$CountFromJson(json);
@@ -59,8 +59,8 @@ class Count with _$Count {
 @freezed
 class PlayTime with _$PlayTime {
   const factory PlayTime({
-    final int? total,
-    final int? tv,
+    int? total,
+    int? tv,
   }) = _PlayTime;
 
   factory PlayTime.fromJson(Map<String, dynamic> json) =>
@@ -70,15 +70,19 @@ class PlayTime with _$PlayTime {
 @freezed
 class RatingHistory with _$RatingHistory {
   const factory RatingHistory({
-    final String? name,
-    final List<List<int>>? points,
+    String? name,
+    List<List<int>>? points,
   }) = _RatingHistory;
+
+  /// https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models.
+  const RatingHistory._();
 
   factory RatingHistory.fromJson(Map<String, dynamic> json) =>
       _$RatingHistoryFromJson(json);
 
-  /// Alias for [this.parseRawPointsAsRatingHistoryEntries].
-  List<RatingHistoryEntry>? entries() => parseRawPointsAsRatingHistoryEntries();
+  /// Alias for [parseRawPointsAsRatingHistoryEntries].
+  List<RatingHistoryEntry>? get entries =>
+      parseRawPointsAsRatingHistoryEntries();
 
   /// The [RatingHistory] of user consists in a array of [points] that per se is already
   /// a [List] that represents the user rating at a point in the time.
@@ -105,8 +109,8 @@ class RatingHistory with _$RatingHistory {
 @freezed
 class RatingHistoryEntry with _$RatingHistoryEntry {
   const factory RatingHistoryEntry({
-    final DateTime? date,
-    final int? rating,
+    DateTime? date,
+    int? rating,
   }) = _RatingHistoryEntry;
 
   factory RatingHistoryEntry.fromJson(Map<String, dynamic> json) =>
@@ -116,9 +120,9 @@ class RatingHistoryEntry with _$RatingHistoryEntry {
 @freezed
 class LiveStream with _$LiveStream {
   const factory LiveStream({
-    final String? service,
-    final String? status,
-    final String? lang,
+    String? service,
+    String? status,
+    String? lang,
   }) = _LiveStream;
 
   factory LiveStream.fromJson(Map<String, dynamic> json) =>
@@ -128,12 +132,12 @@ class LiveStream with _$LiveStream {
 @freezed
 class LiveStreamer with _$LiveStreamer {
   const factory LiveStreamer({
-    final String? name,
-    final String? headline,
-    final String? description,
-    final String? twitch,
-    final String? youTube,
-    final String? image,
+    String? name,
+    String? headline,
+    String? description,
+    String? twitch,
+    String? youTube,
+    String? image,
   }) = _LiveStreamer;
 
   factory LiveStreamer.fromJson(Map<String, dynamic> json) =>
@@ -143,14 +147,14 @@ class LiveStreamer with _$LiveStreamer {
 @freezed
 class RealTimeUserStatus with _$RealTimeUserStatus {
   const factory RealTimeUserStatus({
-    final String? id,
-    final String? name,
-    final String? title,
-    final bool? online,
-    final bool? playing,
-    final bool? streaming,
-    final bool? patron,
-    final String? playingId,
+    String? id,
+    String? name,
+    String? title,
+    bool? online,
+    bool? playing,
+    bool? streaming,
+    bool? patron,
+    String? playingId,
   }) = _RealTimeUserStatus;
 
   factory RealTimeUserStatus.fromJson(Map<String, dynamic> json) =>
@@ -178,42 +182,42 @@ class Profile with _$Profile {
 @freezed
 class UserPreferences with _$UserPreferences {
   const factory UserPreferences({
-    final bool? dark,
-    final bool? transp,
-    final String? bgImg,
-    final bool? is3d,
-    final Theme? theme,
-    final PieceSet? pieceSet,
-    final Theme3d? theme3d,
-    final PieceSet3d? pieceSet3d,
-    final SoundSet? soundSet,
-    final int? blindfold,
-    final int? autoQueen,
-    final int? autoThreefold,
-    final int? takeback,
-    final int? moretime,
-    final int? clockTenths,
-    final bool? clockBar,
-    final bool? clockSound,
-    final bool? premove,
-    final int? animation,
-    final bool? captured,
-    final bool? follow,
-    final bool? highlight,
-    final bool? destination,
-    final int? coords,
-    final int? replay,
-    final int? challenge,
-    final int? message,
-    final int? coordColor,
-    final int? submitMove,
-    final int? confirmResign,
-    final int? insightShare,
-    final int? keyboardMove,
-    final int? zen,
-    final int? moveEvent,
-    final int? rookCastle,
-    final String? language,
+    bool? dark,
+    bool? transp,
+    String? bgImg,
+    bool? is3d,
+    Theme? theme,
+    PieceSet? pieceSet,
+    Theme3d? theme3d,
+    PieceSet3d? pieceSet3d,
+    SoundSet? soundSet,
+    int? blindfold,
+    int? autoQueen,
+    int? autoThreefold,
+    int? takeback,
+    int? moretime,
+    int? clockTenths,
+    bool? clockBar,
+    bool? clockSound,
+    bool? premove,
+    int? animation,
+    bool? captured,
+    bool? follow,
+    bool? highlight,
+    bool? destination,
+    int? coords,
+    int? replay,
+    int? challenge,
+    int? message,
+    int? coordColor,
+    int? submitMove,
+    int? confirmResign,
+    int? insightShare,
+    int? keyboardMove,
+    int? zen,
+    int? moveEvent,
+    int? rookCastle,
+    String? language,
   }) = _UserPreferences;
 
   factory UserPreferences.fromJson(Map<String, dynamic> json) =>
@@ -223,11 +227,11 @@ class UserPreferences with _$UserPreferences {
 @freezed
 class Perf with _$Perf {
   const factory Perf({
-    final int? games,
-    final int? rating,
-    final int? rd,
-    final int? prog,
-    final bool? prov,
+    int? games,
+    int? rating,
+    int? rd,
+    int? prog,
+    bool? prov,
   }) = _Perf;
 
   factory Perf.fromJson(Map<String, dynamic> json) => _$PerfFromJson(json);
@@ -236,8 +240,8 @@ class Perf with _$Perf {
 @freezed
 class StormPerf with _$StormPerf {
   const factory StormPerf({
-    final int? runs,
-    final int? score,
+    int? runs,
+    int? score,
   }) = _StormPerf;
 
   factory StormPerf.fromJson(Map<String, dynamic> json) =>
@@ -247,19 +251,19 @@ class StormPerf with _$StormPerf {
 @freezed
 class Perfs with _$Perfs {
   const factory Perfs({
-    final Perf? chess960,
-    final Perf? atomic,
-    final Perf? racingKings,
-    final Perf? ultraBullet,
-    final Perf? blitz,
-    final Perf? kingOfTheHill,
-    final Perf? bullet,
-    final Perf? correspondence,
-    final Perf? horde,
-    final Perf? puzzle,
-    final Perf? classical,
-    final Perf? rapid,
-    final StormPerf? storm,
+    Perf? chess960,
+    Perf? atomic,
+    Perf? racingKings,
+    Perf? ultraBullet,
+    Perf? blitz,
+    Perf? kingOfTheHill,
+    Perf? bullet,
+    Perf? correspondence,
+    Perf? horde,
+    Perf? puzzle,
+    Perf? classical,
+    Perf? rapid,
+    StormPerf? storm,
   }) = _Perfs;
 
   factory Perfs.fromJson(Map<String, dynamic> json) => _$PerfsFromJson(json);

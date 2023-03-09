@@ -11,8 +11,11 @@ abstract class ShirouClient {
   /// use [ShiroClient.create] instead.
   const ShirouClient();
 
-  factory ShirouClient.create(
-      {String? accessToken, Dio? dio, String? baseUrl}) = ShirouClientImpl;
+  factory ShirouClient.create({
+    String? accessToken,
+    Dio? dio,
+    String? baseUrl,
+  }) = ShirouClientImpl;
 
   /// Whether or not [this] client can perform authenticated requests.
   bool get isLogged;
@@ -169,6 +172,21 @@ abstract class ShirouClient {
     String? password,
   });
 
+  /// Follow a player, adding them to your list of Lichess friends.
+  ///
+  /// https://lichess.org/api#tag/Relations/operation/followUser
+  Future<void> followUser({required String username});
+
+  /// Unfollow a player, removing them from your list of Lichess friends.
+  ///
+  /// https://lichess.org/api#tag/Relations/operation/unfollowUser
+  Future<void> unfollowUser({required String username});
+
+  /// Get users followed by the logged in user.
+  ///
+  /// https://lichess.org/api#tag/Relations/operation/apiUserFollowing
+  Future<List<User>> getMyFollows();
+
   /// Release and clear any HTTP resources associated with [this] client.
   Future<void> close({bool force = false});
 }
@@ -258,18 +276,18 @@ abstract class ShirouClientImpl implements ShirouClient {
     @Query('friend') bool friend = false,
     @Query('object') bool object = true,
   }) async {
-    final rawData = await _customAutocompleteUsers(
+    final Map<String, dynamic> rawData = await _customAutocompleteUsers(
       term: term,
       friend: friend,
       object: object,
     );
-    final results = rawData['result'] as List;
+    final List<dynamic> results = rawData['result'] as List<dynamic>;
     return results
-        .map((e) => User.fromJson(e as Map<String, dynamic>))
+        .map((dynamic e) => User.fromJson(e as Map<String, dynamic>))
         .toList();
   }
 
-  /// Custom implementation of [autocompleteUsers] because lichess API
+  /// Custom implementation of [autocompleteUsers] because Lichess API
   /// is returning a `Map<String, dynamic>` instead of a `List<User>` so
   /// retrofit generator can't generate the object.
   ///
@@ -317,12 +335,12 @@ abstract class ShirouClientImpl implements ShirouClient {
   Future<List<User>> getSeveralUsersById({
     required List<String> ids,
   }) async {
-    final formattedIds = ids.join(',');
+    final String formattedIds = ids.join(',');
     final Response<List<dynamic>> response =
         await dio.post<List<dynamic>>('/users', data: formattedIds);
 
     return response.data!
-        .map((e) => User.fromJson(e as Map<String, dynamic>))
+        .map((dynamic e) => User.fromJson(e as Map<String, dynamic>))
         .toList();
   }
 
@@ -390,6 +408,35 @@ abstract class ShirouClientImpl implements ShirouClient {
     @Field('message') String? message,
     @Field('password') String? password,
   });
+
+  @override
+  @POST('/rel/follow/{username}')
+  Future<void> followUser({@Path() required String username});
+
+  @override
+  @POST('/rel/unfollow/{username}')
+  Future<void> unfollowUser({required String username});
+
+  @override
+  Future<List<User>> getMyFollows() async {
+    final Response<String> ndjson = await dio.get<String>('/rel/following');
+
+    final List<String> rawFollows = ndjson.data != null
+        ? const LineSplitter().convert(ndjson.data!)
+        : <String>[];
+
+    bool allKeysAreStrings(dynamic e) =>
+        e is Map && e.keys.every((dynamic key) => key is String);
+
+    final List<User> follows = rawFollows
+        .map(jsonDecode)
+        .where(allKeysAreStrings)
+        .cast<Map<String, dynamic>>()
+        .map(User.fromJson)
+        .toList();
+
+    return follows;
+  }
 
   @override
   Future<void> close({bool force = false}) async => dio.close(force: force);

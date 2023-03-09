@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:dotenv/dotenv.dart';
 import 'package:shirou/shirou.dart';
 
@@ -24,10 +26,10 @@ Future<void> main(List<String> arguments) async {
       await shirou.autocompleteUsernames(term: 'alexr');
   final List<RatingHistory> ratingHistory =
       await shirou.getUserRatingHistory(username: 'riccardocescon');
-  final List<RealTimeUserStatus> chessNetwork =
-      await shirou.getRealTimeStatusOfSeveralUsers(ids: ['chess-network']);
-  final List<User> severalUsers =
-      await shirou.getSeveralUsersById(ids: ['alexrintt', 'riccardocescon']);
+  final List<RealTimeUserStatus> chessNetwork = await shirou
+      .getRealTimeStatusOfSeveralUsers(ids: <String>['chess-network']);
+  final List<User> severalUsers = await shirou
+      .getSeveralUsersById(ids: <String>['alexrintt', 'riccardocescon']);
   final List<User> liveStreamers = await shirou.getLiveStreamers();
   final Team getTeam = await shirou.getTeam(teamId: 'group-test');
   final TeamsPager teamsPager = await shirou.getTeamsOnPage(page: 1);
@@ -41,21 +43,21 @@ Future<void> main(List<String> arguments) async {
 
   await shirou.close();
 
-  print('user: $user\n\n');
-  print('email: $email\n\n');
-  print('prefs: $prefs\n\n');
-  print('isKidMode: $isKidMode\n\n');
-  print('publicUser: $publicUser\n\n');
-  print('autoCompleteUsers: $autoCompleteUsers\n\n');
-  print('autoCompleteUsernames: $autoCompleteUsernames\n\n');
-  print('ratingHistory: $ratingHistory\n\n');
-  print('chessNetwork: $chessNetwork\n\n');
-  print('severalUsers: $severalUsers\n\n');
-  print('liveStreamers: $liveStreamers\n\n');
-  print('getTeam: $getTeam\n\n');
-  print('teamsPager: $teamsPager\n\n');
-  print('userTeams: $userTeams\n\n');
-  print('searchTeams: $searchTeams\n\n');
-  print('teamMembers: $teamMembers\n\n');
-  // print('joinTeam: $joinTeam\n\n');
+  log('user: $user\n\n');
+  log('email: $email\n\n');
+  log('prefs: $prefs\n\n');
+  log('isKidMode: $isKidMode\n\n');
+  log('publicUser: $publicUser\n\n');
+  log('autoCompleteUsers: $autoCompleteUsers\n\n');
+  log('autoCompleteUsernames: $autoCompleteUsernames\n\n');
+  log('ratingHistory: $ratingHistory\n\n');
+  log('chessNetwork: $chessNetwork\n\n');
+  log('severalUsers: $severalUsers\n\n');
+  log('liveStreamers: $liveStreamers\n\n');
+  log('getTeam: $getTeam\n\n');
+  log('teamsPager: $teamsPager\n\n');
+  log('userTeams: $userTeams\n\n');
+  log('searchTeams: $searchTeams\n\n');
+  log('teamMembers: $teamMembers\n\n');
+  // log('joinTeam: $joinTeam\n\n');
 }
