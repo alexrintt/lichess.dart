@@ -1,3 +1,5 @@
+library lichess_client_dio;
+
 export 'package:lichess_client/lichess_client.dart';
 
 export './src/lichess_client_dio.dart';
