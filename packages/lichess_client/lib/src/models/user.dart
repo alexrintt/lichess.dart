@@ -165,6 +165,55 @@ enum PerfType {
   final String raw;
 }
 
+@freezed
+class Team with _$Team {
+  const factory Team({
+    String? id,
+    String? name,
+    String? description,
+    bool? open,
+    User? leader,
+    List<User>? leaders,
+    int? nbMembers,
+    String? location,
+  }) = _Team;
+
+  factory Team.fromJson(Map<String, dynamic> json) => _$TeamFromJson(json);
+}
+
+@Freezed(genericArgumentFactories: true)
+class PageOf<T> with _$PageOf<T> {
+  const factory PageOf({
+    int? currentPage,
+    int? maxPerPage,
+    List<T>? currentPageResults,
+    int? nbResults,
+    int? previousPage,
+    int? nextPage,
+    int? nbPages,
+  }) = _PageOf<T>;
+
+  factory PageOf.fromJson(
+    Map<String, dynamic> json,
+    T Function(Object?) fromJsonT,
+  ) =>
+      _$PageOfFromJson<T>(json, fromJsonT);
+}
+
+@freezed
+class JoinRequest with _$JoinRequest {
+  const factory JoinRequest({
+    String? teamId,
+    String? userId,
+    User? user,
+    int? date,
+    String? message,
+  }) = _JoinRequest;
+
+  factory JoinRequest.fromJson(Map<String, dynamic> json) =>
+      _$JoinRequestFromJson(json);
+}
+
 @JsonEnum(valueField: 'raw')
 enum Title {
   gm('GM'),

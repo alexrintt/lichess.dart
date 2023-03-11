@@ -18,6 +18,7 @@ class LichessClientDio extends LichessClient {
   AccountService? _account;
   RelationsService? _relations;
   UsersService? _users;
+  TeamsService? _teamsService;
 
   @override
   AccountService get account => _account ??= AccountServiceDio(dio);
@@ -27,6 +28,9 @@ class LichessClientDio extends LichessClient {
 
   @override
   UsersService get users => _users ?? UsersServiceDio(dio);
+
+  @override
+  TeamsService get teams => _teamsService ??= TeamsServiceDio(dio);
 
   /// Call [close] on the [dio] instance associated with this client.
   @override

@@ -23,6 +23,13 @@ class MyCustomUsersService implements UsersService {
   void noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }
 
+class MyCustomTeamsService implements TeamsService {
+  /// A cool custom service implementation...
+
+  @override
+  void noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
+}
+
 class MyCustomLichessClient extends LichessClient {
   @override
   AccountService get account => MyCustomAccountService();
@@ -37,6 +44,9 @@ class MyCustomLichessClient extends LichessClient {
 
   @override
   UsersService get users => MyCustomUsersService();
+
+  @override
+  TeamsService get teams => MyCustomTeamsService();
 }
 
 void main() => _tryRunAndThrowGhostImplementation();

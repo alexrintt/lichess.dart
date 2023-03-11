@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:dotenv/dotenv.dart';
 import 'package:lichess_client_dio/lichess_client_dio.dart';
 
-/// Run this in debug mode.
 Future<void> main(List<String> arguments) async {
   final DotEnv env = DotEnv()..load();
 
@@ -29,18 +28,120 @@ Future<void> main(List<String> arguments) async {
   await _displayAutocompleteUserResultsFor('alexr', lichess);
   await _displayRatingHistoryOf('riccardocescon', lichess);
   await _displayUserPublicData('riccardocescon', lichess);
+  await _displayTeamInfo('group-test', lichess);
+  await _displayMostPopularTeams(lichess);
+  await _displayUserTeams('riccardocescon', lichess);
+  await _displayTeamSearchResultsFor('test', lichess);
+
+  // TODO: The currently implementation is pretty heavy, needs pagination before releasing:
+  // await _displayTeamMembers('federation-francaise-des-echecs', lichess);
+
+  // TODO: lichess.teams.join
+  // TODO: lichess.teams.leave
+  // TODO: lichess.teams.getJoinRequests
+  // TODO: lichess.teams.kickMember
 
   await lichess.close();
+}
+
+Future<void> _displayTeamMembers(
+  String teamId,
+  LichessClient lichess,
+) async {
+  _header('lichess.teams.getMembers');
+
+  final List<User> members = await lichess.teams.getMembers(teamId: teamId);
+
+  _print('Members: ${members.map((User member) => member.id).join(', ')}');
+
+  _footer('lichess.teams.getMembers');
+}
+
+Future<void> _displayTeamSearchResultsFor(
+  String text,
+  LichessClient lichess,
+) async {
+  _header('lichess.teams.getByUser');
+  final PageOf<Team> query = await lichess.teams.search(text: text);
+
+  _footer('Search results for $text:');
+
+  _footer('Query info');
+
+  _print('query.currentPage: ${query.currentPage}');
+  _print('query.maxPerPage: ${query.maxPerPage}');
+  _print('query.nbPages: ${query.nbPages}');
+  _print('query.nbResults: ${query.nbResults}');
+  _print('query.nextPage: ${query.nextPage}');
+  _print('query.previousPage: ${query.previousPage}');
+
+  _footer('End query info');
+
+  for (final Team team in query.currentPageResults ?? <Team>[]) {
+    _footer('Start team entry');
+    _printTeamInfo(team);
+    _footer('End of entry');
+  }
+
+  _footer('lichess.teams.getByUser');
+}
+
+Future<void> _displayUserTeams(String username, LichessClient lichess) async {
+  _header('lichess.teams.getByUser');
+  final List<Team> userTeams =
+      await lichess.teams.getByUser(username: username);
+
+  _footer('Teams that $username is member of:');
+
+  for (final Team team in userTeams) {
+    _printTeamInfo(team);
+    _footer('End of entry');
+  }
+
+  _footer('lichess.teams.getByUser');
+}
+
+void _printTeamInfo(Team team) {
+  _print('Team id: ${team.id}');
+  _print('Team name: ${team.name}');
+  _print('Team description: ${team.description}');
+  _print('Team leader: ${team.leader?.id}');
+  _print('Number of members: ${team.nbMembers}');
+  _print('Location: ${team.location}');
+  _print('Is team open? ${team.open}');
+}
+
+Future<void> _displayTeamInfo(String teamId, LichessClient lichess) async {
+  _header('lichess.teams.getById');
+  final Team team = await lichess.teams.getById(teamId);
+
+  _printTeamInfo(team);
+
+  _footer('lichess.teams.getById');
+}
+
+Future<void> _displayMostPopularTeams(LichessClient lichess) async {
+  _header('lichess.teams.getPopular');
+
+  // you can also do pagination by providing [page] param.
+  final PageOf<Team> mostPopularTeams = await lichess.teams.getPopular();
+
+  for (final Team team in mostPopularTeams.currentPageResults ?? <Team>[]) {
+    _printTeamInfo(team);
+    _footer('End of entry');
+  }
+
+  _footer('lichess.teams.getPopular');
 }
 
 Future<void> _displayUserPublicData(
   String username,
   LichessClient lichess,
 ) async {
-  _footer('lichess.users.getPublicData');
+  _header('lichess.users.getPublicData');
   final User user = await lichess.users.getPublicData(username: username);
   _print('Public data of $username: $user');
-  _header('lichess.users.getPublicData');
+  _footer('lichess.users.getPublicData');
 }
 
 Future<void> _displayRatingHistoryOf(

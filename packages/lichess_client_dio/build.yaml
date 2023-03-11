@@ -1,6 +1,9 @@
 targets:
   $default:
     builders:
+      freezed:
+        options:
+          generic_argument_factories: true
       json_serializable:
         options:
           field_rename: none
