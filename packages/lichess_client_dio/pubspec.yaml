@@ -4,7 +4,7 @@ version: 0.0.0
 repository: https://github.com/alexrintt/lichess.dart
 
 environment:
-  sdk: '>=2.19.2 <3.0.0'
+  sdk: ">=2.19.2 <3.0.0"
 
 dependencies:
   dio: ^5.0.1
@@ -14,7 +14,10 @@ dependencies:
     # Production:
     # ^0.1.0
     # Development:
-    path: ../lichess_client
+    git:
+      url: https://github.com/alexrintt/lichess.dart
+      path: packages/lichess_client
+    # path: ../lichess_client
   retrofit: ^4.0.1
 
 dev_dependencies:
