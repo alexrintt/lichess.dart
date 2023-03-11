@@ -1,0 +1,71 @@
+include: package:lint/analysis_options.yaml
+
+analyzer:
+  language:
+    strict-casts: true
+    strict-inference: true
+    strict-raw-types: true
+  exclude:
+    # - "**/*.g.dart"
+    # - "**/*.freezed.dart"
+  errors:
+    invalid_annotation_target: ignore
+
+linter:
+  rules:
+    always_use_package_imports: false
+    always_put_control_body_on_new_line: true
+    always_put_required_named_parameters_first: true
+    avoid_catching_errors: true
+    avoid_classes_with_only_static_members: true
+    avoid_double_and_int_checks: true
+    avoid_field_initializers_in_const_classes: true
+    avoid_implementing_value_types: true
+    avoid_js_rounded_ints: true
+    avoid_private_typedef_functions: true
+    avoid_returning_null: true
+    avoid_returning_null_for_future: true
+    avoid_returning_this: true
+    avoid_setters_without_getters: true
+    avoid_slow_async_io: true
+    avoid_unused_constructor_parameters: true
+    avoid_void_async: true
+    cancel_subscriptions: true
+    close_sinks: true
+    diagnostic_describe_all_properties: true
+    directives_ordering: true
+    join_return_with_assignment: true
+    literal_only_boolean_expressions: true
+    no_adjacent_strings_in_list: true
+    one_member_abstracts: true
+    only_throw_errors: true
+    package_api_docs: true
+    prefer_asserts_in_initializer_lists: true
+    prefer_const_constructors: true
+    prefer_const_constructors_in_immutables: true
+    prefer_const_declarations: true
+    prefer_const_literals_to_create_immutables: true
+    prefer_constructors_over_static_methods: true
+    prefer_final_in_for_each: true
+    prefer_if_elements_to_conditional_expressions: true
+    prefer_int_literals: true
+    prefer_mixin: true
+    prefer_relative_imports: true
+    sort_child_properties_last: true
+    sort_pub_dependencies: true
+    sort_unnamed_constructors_first: true
+    test_types_in_equals: true
+    throw_in_finally: true
+    type_annotate_public_apis: true
+    unnecessary_await_in_return: true
+    unnecessary_lambdas: true
+    unnecessary_parenthesis: true
+    unnecessary_statements: true
+    use_full_hex_values_for_flutter_colors: true
+    use_setters_to_change_properties: true
+    use_string_buffers: true
+    use_to_and_as_if_applicable: true
+    sort_constructors_first: true
+    prefer_single_quotes: true
+    always_specify_types: true
+    unawaited_futures: true

@@ -1,7 +1,8 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+import '../models/models.dart';
 
-part 'models.g.dart';
-part 'models.freezed.dart';
+part 'user.g.dart';
+part 'user.freezed.dart';
 
 @freezed
 class User with _$User {
@@ -32,88 +33,6 @@ class User with _$User {
   }) = _User;
 
   factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);
-}
-
-@freezed
-class Count with _$Count {
-  const factory Count({
-    int? all,
-    int? rated,
-    int? ai,
-    int? draw,
-    int? drawH,
-    int? loss,
-    int? lossH,
-    int? win,
-    int? winH,
-    int? bookmark,
-    int? playing,
-    int? import,
-    int? me,
-  }) = _Count;
-
-  factory Count.fromJson(Map<String, dynamic> json) => _$CountFromJson(json);
-}
-
-@freezed
-class PlayTime with _$PlayTime {
-  const factory PlayTime({
-    int? total,
-    int? tv,
-  }) = _PlayTime;
-
-  factory PlayTime.fromJson(Map<String, dynamic> json) =>
-      _$PlayTimeFromJson(json);
-}
-
-@freezed
-class RatingHistory with _$RatingHistory {
-  const factory RatingHistory({
-    String? name,
-    List<List<int>>? points,
-  }) = _RatingHistory;
-
-  /// https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models.
-  const RatingHistory._();
-
-  factory RatingHistory.fromJson(Map<String, dynamic> json) =>
-      _$RatingHistoryFromJson(json);
-
-  /// Alias for [parseRawPointsAsRatingHistoryEntries].
-  List<RatingHistoryEntry>? get entries =>
-      parseRawPointsAsRatingHistoryEntries();
-
-  /// The [RatingHistory] of user consists in a array of [points] that per se is already
-  /// a [List] that represents the user rating at a point in the time.
-  ///
-  /// This function parses the each point `List<int>` to a data class that holds
-  /// a [DateTime] and a [rating] following the Lichess API reference.
-  ///
-  /// https://lichess.org/api#tag/Users/operation/apiUserRatingHistory
-  List<RatingHistoryEntry>? parseRawPointsAsRatingHistoryEntries() {
-    return points?.map((List<int> point) {
-      final int year = point[0];
-      final int month = point[1];
-      final int day = point[2];
-      final int rating = point[3];
-
-      return RatingHistoryEntry(
-        date: DateTime.utc(year, month + 1, day),
-        rating: rating,
-      );
-    }).toList();
-  }
-}
-
-@freezed
-class RatingHistoryEntry with _$RatingHistoryEntry {
-  const factory RatingHistoryEntry({
-    DateTime? date,
-    int? rating,
-  }) = _RatingHistoryEntry;
-
-  factory RatingHistoryEntry.fromJson(Map<String, dynamic> json) =>
-      _$RatingHistoryEntryFromJson(json);
 }
 
 @freezed
@@ -149,9 +68,11 @@ class RealTimeUserStatus with _$RealTimeUserStatus {
     String? id,
     String? name,
     String? title,
-    bool? online,
-    bool? playing,
-    bool? streaming,
+    // The Lichess API does not return false for these fields when they are not on.
+    // They are just omitted from the server response. So the default value is [false] instead of [null].
+    @Default(false) bool online,
+    @Default(false) bool playing,
+    @Default(false) bool streaming,
     bool? patron,
     String? playingId,
   }) = _RealTimeUserStatus;
@@ -189,7 +110,7 @@ class UserPreferences with _$UserPreferences {
     PieceSet? pieceSet,
     Theme3d? theme3d,
     PieceSet3d? pieceSet3d,
-    SoundSet? soundSet,
+    String? soundSet,
     int? blindfold,
     int? autoQueen,
     int? autoThreefold,
@@ -223,49 +144,74 @@ class UserPreferences with _$UserPreferences {
       _$UserPreferencesFromJson(json);
 }
 
-@freezed
-class Perf with _$Perf {
-  const factory Perf({
-    int? games,
-    int? rating,
-    int? rd,
-    int? prog,
-    bool? prov,
-  }) = _Perf;
+@JsonEnum(valueField: 'raw')
+enum PerfType {
+  ultraBullet('ultraBullet'),
+  bullet('bullet'),
+  blitz('blitz'),
+  rapid('rapid'),
+  classical('classical'),
+  chess960('chess960'),
+  crazyhouse('crazyhouse'),
+  antichess('antichess'),
+  atomic('atomic'),
+  horde('horde'),
+  kingOfTheHill('kingOfTheHill'),
+  racingKings('racingKings'),
+  threeCheck('threeCheck');
 
-  factory Perf.fromJson(Map<String, dynamic> json) => _$PerfFromJson(json);
+  const PerfType(this.raw);
+
+  final String raw;
 }
 
 @freezed
-class StormPerf with _$StormPerf {
-  const factory StormPerf({
-    int? runs,
-    int? score,
-  }) = _StormPerf;
+class Team with _$Team {
+  const factory Team({
+    String? id,
+    String? name,
+    String? description,
+    bool? open,
+    User? leader,
+    List<User>? leaders,
+    int? nbMembers,
+    String? location,
+  }) = _Team;
 
-  factory StormPerf.fromJson(Map<String, dynamic> json) =>
-      _$StormPerfFromJson(json);
+  factory Team.fromJson(Map<String, dynamic> json) => _$TeamFromJson(json);
+}
+
+@Freezed(genericArgumentFactories: true)
+class PageOf<T> with _$PageOf<T> {
+  const factory PageOf({
+    int? currentPage,
+    int? maxPerPage,
+    List<T>? currentPageResults,
+    int? nbResults,
+    int? previousPage,
+    int? nextPage,
+    int? nbPages,
+  }) = _PageOf<T>;
+
+  factory PageOf.fromJson(
+    Map<String, dynamic> json,
+    T Function(Object?) fromJsonT,
+  ) =>
+      _$PageOfFromJson<T>(json, fromJsonT);
 }
 
 @freezed
-class Perfs with _$Perfs {
-  const factory Perfs({
-    Perf? chess960,
-    Perf? atomic,
-    Perf? racingKings,
-    Perf? ultraBullet,
-    Perf? blitz,
-    Perf? kingOfTheHill,
-    Perf? bullet,
-    Perf? correspondence,
-    Perf? horde,
-    Perf? puzzle,
-    Perf? classical,
-    Perf? rapid,
-    StormPerf? storm,
-  }) = _Perfs;
+class JoinRequest with _$JoinRequest {
+  const factory JoinRequest({
+    String? teamId,
+    String? userId,
+    User? user,
+    int? date,
+    String? message,
+  }) = _JoinRequest;
 
-  factory Perfs.fromJson(Map<String, dynamic> json) => _$PerfsFromJson(json);
+  factory JoinRequest.fromJson(Map<String, dynamic> json) =>
+      _$JoinRequestFromJson(json);
 }
 
 @JsonEnum(valueField: 'raw')
@@ -288,6 +234,14 @@ enum Title {
   final String raw;
 }
 
+/// The library exposes this enum but we do not use it.
+///
+/// The reason is this issue: https://github.com/lichess-org/api/issues/233.
+///
+/// For now we can not use since it will imply that the API call deserialization
+/// will fail until the user sets the [SoundSet] pref manually.
+///
+/// So, let package user handle it himself, although we expose a helper method [tryParseIgnoringCase].
 @JsonEnum(valueField: 'raw')
 enum SoundSet {
   silent('silent'),
@@ -303,6 +257,21 @@ enum SoundSet {
   const SoundSet(this.raw);
 
   final String raw;
+
+  /// Try parse the [soundSet] Lichess preference string ignoring the case.
+  ///
+  /// See this issue for details: https://github.com/lichess-org/api/issues/233.
+  static SoundSet? tryParseIgnoringCase(String raw) {
+    final int index = SoundSet.values.indexWhere(
+      (SoundSet e) => e.raw.toLowerCase() == raw.toLowerCase(),
+    );
+
+    if (index == -1) {
+      return null;
+    }
+
+    return SoundSet.values[index];
+  }
 }
 
 @JsonEnum(valueField: 'raw')
