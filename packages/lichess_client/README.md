@@ -2,7 +2,7 @@
 
 ---
 
-# Lichess Interface for Dart
+# Lichess API interface for Dart
 
 [![Pub Version](https://img.shields.io/pub/v/lichess_client)](https://pub.dev/packages/lichess_client)
 

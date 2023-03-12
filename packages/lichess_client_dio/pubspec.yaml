@@ -1,7 +1,13 @@
 name: lichess_client_dio
-description: "Lichess client for Dart based on Dio HTTP client."
+description: "Lichess Dio-based HTTP client. Works on all platforms."
 version: 0.0.0
 repository: https://github.com/alexrintt/lichess.dart
+homepage: https://github.com/alexrintt/lichess.dart/tree/master/packages/lichess_client_dio
+documentation: https://github.com/alexrintt/lichess.dart/tree/master/packages/lichess_client_dio
+issue_tracker: https://github.com/alexrintt/lichess.dart/issues
+funding:
+  - https://donate.alexrintt.io
+  - https://github.com/sponsors/alexrintt
 
 environment:
   sdk: ">=2.19.2 <3.0.0"

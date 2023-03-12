@@ -1,0 +1,30 @@
+name: Publish lichess_client_dio to pub.dev
+run-name: >-
+  [lichess_client_dio] package publish (${{  github.ref_name }}) triggered by @${{ github.actor }}
+
+on:
+  push:
+    tags:
+      - "lichess_client_dio-v[0-9]+.[0-9]+.[0-9]+"
+
+# Publish using custom workflow
+jobs:
+  publish:
+    permissions:
+      id-token: write # This is required for authentication using OIDC
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./packages/lichess_client_dio
+    steps:
+      - uses: actions/checkout@v3
+      - uses: dart-lang/setup-dart@v1
+
+      - name: Install dependencies
+        run: dart pub get
+
+      - name: Generate code
+        run: dart run build_runner build --delete-conflicting-outputs
+
+      - name: Publish
+        run: dart pub publish --force
