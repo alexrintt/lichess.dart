@@ -32,9 +32,7 @@ Future<void> main(List<String> arguments) async {
   await _displayMostPopularTeams(lichess);
   await _displayUserTeams('riccardocescon', lichess);
   await _displayTeamSearchResultsFor('test', lichess);
-
-  // TODO: The currently implementation is pretty heavy, needs pagination before releasing:
-  // await _displayTeamMembers('federation-francaise-des-echecs', lichess);
+  await _displayTeamMembers('lichess-swiss', lichess);
 
   // TODO: lichess.teams.join
   // TODO: lichess.teams.leave
@@ -50,8 +48,18 @@ Future<void> _displayTeamMembers(
 ) async {
   _header('lichess.teams.getMembers');
 
+  // Even some teams having more than 300k users, the Lichess API does not support pagination for this endpoint (!)
+  // https://github.com/lichess-org/lila/issues/12502
+  //
+  // We do not recommend setting the limit >= 60 because the Lichess currently has a rate-limit of 20 members per second.
+  // So setting a limit >= 60 means you request will be at minimum 3 seconds longer (taking off delay or slow connections).
+  //
+  // https://github.com/lichess-org/lila/blob/14980251a2c39339ac4c0df2bf53c2f2e0047e10/app/controllers/Team.scala#L126.
   final List<User> members = await lichess.teams.getMembers(teamId: teamId);
 
+  _footer('First ${members.length} members of $teamId');
+
+  _print('Response members count: ${members.length}');
   _print('Members: ${members.map((User member) => member.id).join(', ')}');
 
   _footer('lichess.teams.getMembers');

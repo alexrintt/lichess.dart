@@ -1,4 +1,6 @@
+import 'dart:async';
 import 'dart:convert';
+import 'dart:typed_data';
 
 import 'package:dio/dio.dart';
 import 'package:retrofit/http.dart';
@@ -44,39 +46,42 @@ abstract class TeamsServiceDio implements TeamsService {
     @Query('page') int page = 1,
   });
 
-  /// Custom implementation of [getTeamMembers] because lichess API
-  /// is returning multiple JSON objects in a single line, so retrofit
-  /// generator can't generate the object.
+  /// Members are sorted by reverse chronological order of joining the team (most recent first). OAuth only required if the list of members is private.
   ///
-  /// E.g.:
-  /// ```
-  /// {"id":"user1","username":"user1","title":null,"patron":false,"online":false,"playing":false,"language":"en","url":"/@/user1"}
-  /// {"id":"user2","username":"user2","title":null,"patron":false,"online":false,"playing":false,"language":"en","url":"/@/user2"}
-  /// ```
+  /// Members are streamed as ndjson.
   ///
-  /// In order to fix this issue, we need to replace the `}\n{` with `},{` and
-  /// wrap the whole string with `[]` to make it a valid JSON array.
-  ///
-  /// https://lichess.org/api#tag/Teams/operation/teamSearch
+  /// https://lichess.org/api#tag/Teams/operation/teamIdUsers
   @override
-  Future<List<User>> getMembers({required String teamId}) async {
-    final Response<dynamic> response =
-        await dio.get<dynamic>('/api/team/$teamId/users');
+  Future<List<User>> getMembers({
+    required String teamId,
+    int limit = 20,
+  }) async {
+    final Response<ResponseBody> response = await dio.get<ResponseBody>(
+      '/api/team/$teamId/users',
+      options: Options(responseType: ResponseType.stream),
+    );
 
-    // Api returns data as null if there are no members
-    // in the team instead of an empty list.
-    if (response.data == null) {
-      return <User>[];
+    final StringBuffer buffer = StringBuffer();
+    List<String> objs = <String>[];
+
+    await for (final Uint8List chunk
+        in response.data?.stream ?? const Stream<Uint8List>.empty()) {
+      buffer.write(utf8.decode(chunk));
+
+      objs = const LineSplitter().convert(buffer.toString());
+
+      if (objs.length >= limit) {
+        break;
+      }
     }
 
-    final String data = response.data as String;
-    final String formattedData = data.replaceAll('}\n{', '},{');
-
-    final List<dynamic> dataList =
-        jsonDecode('[$formattedData]') as List<dynamic>;
-
-    return dataList
-        .map((dynamic e) => User.fromJson(e as Map<String, dynamic>))
+    return objs
+        .take(limit)
+        .map(jsonDecode)
+        .cast<Map<dynamic, dynamic>>()
+        .map(Map<String, dynamic>.from)
+        .map(User.fromJson)
+        .cast<User>()
         .toList();
   }
 

@@ -33,8 +33,10 @@ abstract class TeamsService with CloseableMixin {
   /// the team (most recent first). OAuth only required if the list
   /// of members is private.
   ///
+  /// TODO: Remove [limit] and add [page] param when this issue is solved: https://github.com/lichess-org/lila/issues/12502.
+  ///
   /// https://lichess.org/api#tag/Teams/operation/teamSearch
-  Future<List<User>> getMembers({required String teamId});
+  Future<List<User>> getMembers({required String teamId, int limit = 20});
 
   /// Join a team based on the given [teamId].
   /// An optional [message] can be provided to send a message if the team requires one.
