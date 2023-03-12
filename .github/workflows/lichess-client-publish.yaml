@@ -26,5 +26,8 @@ jobs:
       - name: Generate code
         run: dart run build_runner build --delete-conflicting-outputs
 
+      - name: Run Dart analyzer
+        run: dart analyze --fatal-infos
+
       - name: Publish
         run: dart pub publish --force
