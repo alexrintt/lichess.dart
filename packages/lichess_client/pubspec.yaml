@@ -1,7 +1,15 @@
 name: lichess_client
-description: "Lichess client for Dart."
-version: 0.0.1
+description: >-
+  Lichess API typed interface signatures and class/data models.
+  Written in pure Dart with no dependencies.
+version: 0.0.2
 repository: https://github.com/alexrintt/lichess.dart
+homepage: https://github.com/alexrintt/lichess.dart/tree/master/packages/lichess_client
+documentation: https://github.com/alexrintt/lichess.dart/tree/master/packages/lichess_client
+issue_tracker: https://github.com/alexrintt/lichess.dart/issues
+funding:
+  - https://donate.alexrintt.io
+  - https://github.com/sponsors/alexrintt
 
 environment:
   sdk: ">=2.19.2 <3.0.0"
