@@ -27,7 +27,6 @@ import 'package:lichess_client/lichess_client.dart';
 
 ## Custom client
 
-
 ```dart
 class MyCustomLichessClient implements LichessClient {
   // TODO: Implement/override methods.
