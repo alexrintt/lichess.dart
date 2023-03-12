@@ -1,6 +1,6 @@
 name: Publish lichess_client to pub.dev
 run-name: >-
-  [lichess_client] Deploy to ${{ inputs.deploy_target }} by @${{ github.actor }}
+  [lichess_client] package publish (${{  github.ref_name }}) triggered by @${{ github.actor }}
 
 on:
   push:
@@ -27,4 +27,4 @@ jobs:
         run: dart run build_runner build --delete-conflicting-outputs
 
       - name: Publish
-        run: dart pub publish --dry-run
+        run: dart pub publish --force
