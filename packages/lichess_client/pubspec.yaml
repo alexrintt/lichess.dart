@@ -10,6 +10,7 @@ issue_tracker: https://github.com/alexrintt/lichess.dart/issues
 funding:
   - https://donate.alexrintt.io
   - https://github.com/sponsors/alexrintt
+  - https://www.patreon.com/RiccardoCescon
 
 environment:
   sdk: ">=2.19.2 <3.0.0"
