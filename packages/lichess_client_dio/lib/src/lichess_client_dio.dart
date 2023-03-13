@@ -15,22 +15,22 @@ class LichessClientDio extends LichessClient {
 
   final Dio dio;
 
-  AccountService? _account;
-  RelationsService? _relations;
-  UsersService? _users;
-  TeamsService? _teamsService;
+  AccountServiceDio? _account;
+  RelationsServiceDio? _relations;
+  UsersServiceDio? _users;
+  TeamsServiceDio? _teamsService;
 
   @override
-  AccountService get account => _account ??= AccountServiceDio(dio);
+  AccountServiceDio get account => _account ??= AccountServiceDio(dio);
 
   @override
-  RelationsService get relations => _relations ??= RelationsServiceDio(dio);
+  RelationsServiceDio get relations => _relations ??= RelationsServiceDio(dio);
 
   @override
-  UsersService get users => _users ?? UsersServiceDio(dio);
+  UsersServiceDio get users => _users ?? UsersServiceDio(dio);
 
   @override
-  TeamsService get teams => _teamsService ??= TeamsServiceDio(dio);
+  TeamsServiceDio get teams => _teamsService ??= TeamsServiceDio(dio);
 
   /// Call [close] on the [dio] instance associated with this client.
   @override
