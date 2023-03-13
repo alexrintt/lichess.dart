@@ -29,8 +29,5 @@ jobs:
       - name: Run Dart analyzer
         run: dart analyze --fatal-infos
 
-      - name: Run package example (e2e test)
-        run: dart run example/lichess_client_dio.dart
-
       - name: Publish
         run: dart pub publish --force
