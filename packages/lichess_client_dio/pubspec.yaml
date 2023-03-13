@@ -16,14 +16,7 @@ dependencies:
   dio: ^5.0.1
   freezed_annotation: ^2.2.0
   json_annotation: ^4.8.0
-  lichess_client:
-    # Production:
-    # ^0.1.0
-    # Development:
-    git:
-      url: https://github.com/alexrintt/lichess.dart
-      path: packages/lichess_client
-      ref: master
+  lichess_client: ^0.0.10
   retrofit: ^4.0.1
 
 dev_dependencies:

@@ -67,14 +67,16 @@ abstract class TeamsServiceDio implements TeamsService {
 
       late int i;
 
-      final String buffer = buffered.toString();
-
-      while ((i = buffer.indexOf('\n')) != -1) {
-        final String obj = buffer.substring(0, i);
-        final String rest = buffer.substring(i);
+      while ((i = buffered.toString().indexOf('\n')) != -1) {
+        final String obj = buffered.toString().substring(0, i);
+        final String rest = buffered.toString().substring(i + 1);
 
         buffered.clear();
         buffered.write(rest);
+
+        if (obj.isEmpty) {
+          continue;
+        }
 
         final dynamic raw = jsonDecode(obj);
 
