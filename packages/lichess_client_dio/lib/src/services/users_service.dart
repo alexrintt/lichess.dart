@@ -146,7 +146,7 @@ abstract class UsersServiceDio extends UsersService {
   ///
   /// https://lichess.org/api#tag/Users/operation/apiPlayerAutocomplete
   @override
-  Future<List<User>> autocomplete({
+  Future<List<User>> searchByTerm({
     required String term,
     bool friend = false,
     bool object = true,
@@ -178,7 +178,7 @@ abstract class UsersServiceDio extends UsersService {
   /// https://lichess.org/api#tag/Users/operation/apiPlayerAutocomplete
   @override
   @GET('/api/player/autocomplete')
-  Future<List<String>> autocompleteUsernames({
+  Future<List<String>> searchNamesByTerm({
     @Query('term') required String term,
     @Query('friend') bool friend = false,
   });

@@ -103,7 +103,7 @@ abstract class UsersService with CloseableMixin {
   /// returns an array of user objects `{id,name,title,patron,online}`.
   ///
   /// https://lichess.org/api#tag/Users/operation/apiPlayerAutocomplete
-  Future<List<User>> autocomplete({
+  Future<List<User>> searchByTerm({
     required String term,
     bool friend = false,
   });
@@ -114,7 +114,7 @@ abstract class UsersService with CloseableMixin {
   /// returns an array of user usernames `String`.
   ///
   /// https://lichess.org/api#tag/Users/operation/apiPlayerAutocomplete
-  Future<List<String>> autocompleteUsernames({
+  Future<List<String>> searchNamesByTerm({
     required String term,
     bool friend = false,
   });

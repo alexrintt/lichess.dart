@@ -258,7 +258,7 @@ Future<void> _displayAutocompleteUsernameResultsFor(
   LichessClient lichess,
 ) async {
   final List<String> results =
-      await lichess.users.autocompleteUsernames(term: 'alexr');
+      await lichess.users.searchNamesByTerm(term: 'alexr');
 
   _header('lichess.users.autocompleteUsernames');
   _print(
@@ -271,7 +271,7 @@ Future<void> _displayAutocompleteUserResultsFor(
   String username,
   LichessClient lichess,
 ) async {
-  final List<User> results = await lichess.users.autocomplete(term: 'alexr');
+  final List<User> results = await lichess.users.searchByTerm(term: 'alexr');
 
   _header('lichess.users.autocomplete');
   _print(
