@@ -1,6 +1,11 @@
 import '../../lichess_client.dart';
 
+/// Access and manage Lichess teams and their members.
+///
+/// https://lichess.org/api#tag/Teams
 abstract class TeamsService with CloseableMixin {
+  const TeamsService();
+
   /// Get the team based on the given [teamId].
   ///
   /// This API gives you infos about the team, such as the description, leader, etc.
