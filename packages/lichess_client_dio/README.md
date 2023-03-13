@@ -32,7 +32,7 @@ final lichess = LichessClientDio.create(accessToken: '<your-access-token>');
 final email = await lichess.account.getEmailAddress();
 ```
 
-Currently, 5 services are available:
+Services that are currently implemented/available:
 
 - Account service.
 - Users service.
