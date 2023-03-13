@@ -7,6 +7,3 @@ pubspec.lock
 *.env
 !.env.example
 .vscode
-*.g.dart
-*.freezed.dart
-*.freezed.g.dart

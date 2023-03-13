@@ -3,6 +3,29 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 part 'common.g.dart';
 part 'common.freezed.dart';
 
+/// A generic class that provides pagination fields plus a result list of type [T].
+///
+/// Useful to be used in paginated endpoints.
+@Freezed(genericArgumentFactories: true)
+class PageOf<T> with _$PageOf<T> {
+  const factory PageOf({
+    int? currentPage,
+    int? maxPerPage,
+    List<T>? currentPageResults,
+    int? nbResults,
+    int? previousPage,
+    int? nextPage,
+    int? nbPages,
+  }) = _PageOf<T>;
+
+  factory PageOf.fromJson(
+    Map<String, dynamic> json,
+    T Function(Object?) fromJsonT,
+  ) =>
+      _$PageOfFromJson<T>(json, fromJsonT);
+}
+
+/// https://lichess.org/api#tag/Account/operation/accountMe
 @freezed
 class Count with _$Count {
   const factory Count({
@@ -24,6 +47,7 @@ class Count with _$Count {
   factory Count.fromJson(Map<String, dynamic> json) => _$CountFromJson(json);
 }
 
+/// https://lichess.org/api#tag/Account/operation/accountMe
 @freezed
 class PlayTime with _$PlayTime {
   const factory PlayTime({
@@ -35,6 +59,7 @@ class PlayTime with _$PlayTime {
       _$PlayTimeFromJson(json);
 }
 
+/// https://lichess.org/api#tag/Account/operation/accountMe
 @freezed
 class Perf with _$Perf {
   const factory Perf({
@@ -48,6 +73,7 @@ class Perf with _$Perf {
   factory Perf.fromJson(Map<String, dynamic> json) => _$PerfFromJson(json);
 }
 
+/// https://lichess.org/api#tag/Account/operation/accountMe
 @freezed
 class StormPerf with _$StormPerf {
   const factory StormPerf({
@@ -59,6 +85,7 @@ class StormPerf with _$StormPerf {
       _$StormPerfFromJson(json);
 }
 
+/// https://lichess.org/api#tag/Account/operation/accountMe
 @freezed
 class Perfs with _$Perfs {
   const factory Perfs({

@@ -4,6 +4,7 @@ import '../models/models.dart';
 part 'user.g.dart';
 part 'user.freezed.dart';
 
+/// https://lichess.org/api#tag/Account/operation/accountMe
 @freezed
 class User with _$User {
   const factory User({
@@ -35,6 +36,7 @@ class User with _$User {
   factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);
 }
 
+/// https://lichess.org/api#tag/Users/operation/streamerLive
 @freezed
 class LiveStream with _$LiveStream {
   const factory LiveStream({
@@ -62,6 +64,7 @@ class LiveStreamer with _$LiveStreamer {
       _$LiveStreamerFromJson(json);
 }
 
+/// https://lichess.org/api#tag/Users/operation/streamerLive
 @freezed
 class RealTimeUserStatus with _$RealTimeUserStatus {
   const factory RealTimeUserStatus({
@@ -81,6 +84,7 @@ class RealTimeUserStatus with _$RealTimeUserStatus {
       _$RealTimeUserStatusFromJson(json);
 }
 
+/// https://lichess.org/api#tag/Account/operation/accountMe
 @freezed
 class Profile with _$Profile {
   const factory Profile({
@@ -99,6 +103,7 @@ class Profile with _$Profile {
       _$ProfileFromJson(json);
 }
 
+/// https://lichess.org/api#tag/Account/operation/accountMe
 @freezed
 class UserPreferences with _$UserPreferences {
   const factory UserPreferences({
@@ -144,6 +149,7 @@ class UserPreferences with _$UserPreferences {
       _$UserPreferencesFromJson(json);
 }
 
+/// https://lichess.org/api#tag/Account/operation/accountMe
 @JsonEnum(valueField: 'raw')
 enum PerfType {
   ultraBullet('ultraBullet'),
@@ -165,55 +171,9 @@ enum PerfType {
   final String raw;
 }
 
-@freezed
-class Team with _$Team {
-  const factory Team({
-    String? id,
-    String? name,
-    String? description,
-    bool? open,
-    User? leader,
-    List<User>? leaders,
-    int? nbMembers,
-    String? location,
-  }) = _Team;
-
-  factory Team.fromJson(Map<String, dynamic> json) => _$TeamFromJson(json);
-}
-
-@Freezed(genericArgumentFactories: true)
-class PageOf<T> with _$PageOf<T> {
-  const factory PageOf({
-    int? currentPage,
-    int? maxPerPage,
-    List<T>? currentPageResults,
-    int? nbResults,
-    int? previousPage,
-    int? nextPage,
-    int? nbPages,
-  }) = _PageOf<T>;
-
-  factory PageOf.fromJson(
-    Map<String, dynamic> json,
-    T Function(Object?) fromJsonT,
-  ) =>
-      _$PageOfFromJson<T>(json, fromJsonT);
-}
-
-@freezed
-class JoinRequest with _$JoinRequest {
-  const factory JoinRequest({
-    String? teamId,
-    String? userId,
-    User? user,
-    int? date,
-    String? message,
-  }) = _JoinRequest;
-
-  factory JoinRequest.fromJson(Map<String, dynamic> json) =>
-      _$JoinRequestFromJson(json);
-}
-
+/// A chess player title enum.
+///
+/// https://lichess.org/api#tag/Account/operation/accountMe
 @JsonEnum(valueField: 'raw')
 enum Title {
   gm('GM'),
@@ -274,6 +234,9 @@ enum SoundSet {
   }
 }
 
+/// Lichess piece set preferences enum.
+///
+/// https://lichess.org/api#tag/Account/operation/accountMe
 @JsonEnum(valueField: 'raw')
 enum PieceSet3d {
   basic('Basic'),
@@ -293,6 +256,9 @@ enum PieceSet3d {
   final String raw;
 }
 
+/// Lichess theme 3D preferences enum.
+///
+/// https://lichess.org/api#tag/Account/operation/accountMe
 @JsonEnum(valueField: 'raw')
 enum Theme3d {
   blackWhiteAluminium('Black-White-Aluminium'),
@@ -316,6 +282,9 @@ enum Theme3d {
   final String raw;
 }
 
+/// Lichess piece set preferences enum.
+///
+/// https://lichess.org/api#tag/Account/operation/accountMe
 @JsonEnum(valueField: 'raw')
 enum PieceSet {
   cburnett('cburnett'),
@@ -350,6 +319,9 @@ enum PieceSet {
   final String raw;
 }
 
+/// Lichess theme preferences enum.
+///
+/// https://lichess.org/api#tag/Account/operation/accountMe
 @JsonEnum(valueField: 'raw')
 enum Theme {
   blue('blue'),

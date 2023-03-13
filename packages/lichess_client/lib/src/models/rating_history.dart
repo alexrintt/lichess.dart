@@ -5,11 +5,22 @@ part 'rating_history.freezed.dart';
 
 typedef _SortingFunction<T> = int Function(T a, T z);
 
+/// This class generate useful info from the raw rating [points] provided by the Lichess API.
+///
+/// Since this is not something that is not something that differs
+/// from implementations, it is included in this core library.
 class RatingHistoryInfo {
   const RatingHistoryInfo(this.points);
 
   final List<List<int>> points;
 
+  /// Whether or not the [points] are following the pattern defined by the Lichess API.
+  ///
+  /// The pattern is a list of length 4: `[int, int, int, int]`.
+  ///
+  /// This though does not validates if the provided date or rating.
+  ///
+  /// https://lichess.org/api#tag/Users/operation/apiUserRatingHistory
   bool get isValid => points.every((List<int> point) => point.length == 4);
 
   bool get isEmpty => points.isEmpty;
@@ -208,6 +219,7 @@ class RatingHistoryInfo {
   }
 }
 
+/// https://lichess.org/api#tag/Users/operation/apiUserRatingHistory
 @freezed
 class RatingHistory with _$RatingHistory {
   const factory RatingHistory({
@@ -225,16 +237,24 @@ class RatingHistory with _$RatingHistory {
       points != null ? RatingHistoryInfo(points!) : null;
 }
 
+/// Built-in fields supported by [RatingHistoryInfo].
 enum RatingHistorySortField {
   date,
   rating,
 }
 
+/// A general sorting direction enum class.
 enum SortDirection {
+  /// For dates means the most recent to older.
   descending,
+
+  /// For dates means the order to most recent.
   ascending,
 }
 
+/// A typed entry that represents a point provided by the Lichess API user rating history.
+///
+/// https://lichess.org/api#tag/Users/operation/apiUserRatingHistory
 @freezed
 class RatingHistoryEntry with _$RatingHistoryEntry {
   const factory RatingHistoryEntry({
