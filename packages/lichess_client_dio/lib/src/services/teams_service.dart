@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'dart:convert';
 import 'dart:typed_data';
 
@@ -52,37 +51,38 @@ abstract class TeamsServiceDio implements TeamsService {
   ///
   /// https://lichess.org/api#tag/Teams/operation/teamIdUsers
   @override
-  Future<List<User>> getMembers({
-    required String teamId,
-    int limit = 20,
-  }) async {
+  Stream<User> getMembers({required String teamId}) async* {
     final Response<ResponseBody> response = await dio.get<ResponseBody>(
       '/api/team/$teamId/users',
       options: Options(responseType: ResponseType.stream),
     );
 
-    final StringBuffer buffer = StringBuffer();
-    List<String> objs = <String>[];
+    final StringBuffer buffered = StringBuffer();
 
-    await for (final Uint8List chunk
+    await for (final Uint8List part
         in response.data?.stream ?? const Stream<Uint8List>.empty()) {
-      buffer.write(utf8.decode(chunk));
+      final String chunk = utf8.decode(part);
 
-      objs = const LineSplitter().convert(buffer.toString());
+      buffered.write(chunk);
 
-      if (objs.length >= limit) {
-        break;
+      late int i;
+
+      final String buffer = buffered.toString();
+
+      while ((i = buffer.indexOf('\n')) != -1) {
+        final String obj = buffer.substring(0, i);
+        final String rest = buffer.substring(i);
+
+        buffered.clear();
+        buffered.write(rest);
+
+        final dynamic raw = jsonDecode(obj);
+
+        if (raw is Map<dynamic, dynamic>) {
+          yield User.fromJson(Map<String, dynamic>.from(raw));
+        }
       }
     }
-
-    return objs
-        .take(limit)
-        .map(jsonDecode)
-        .cast<Map<dynamic, dynamic>>()
-        .map(Map<String, dynamic>.from)
-        .map(User.fromJson)
-        .cast<User>()
-        .toList();
   }
 
   @override

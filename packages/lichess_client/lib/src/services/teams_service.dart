@@ -33,10 +33,23 @@ abstract class TeamsService with CloseableMixin {
   /// the team (most recent first). OAuth only required if the list
   /// of members is private.
   ///
-  /// TODO: Remove [limit] and add [page] param when this issue is solved: https://github.com/lichess-org/lila/issues/12502.
+  /// Since the API returns a stremed ndjson, this method also returns a [Stream].
+  ///
+  /// Use [stream.listen] to start fetching items.
+  ///
+  /// Use [listener.pause] and [listener.resume] to implement a backpressure, that is,
+  /// call [listener.pause] to pause the members stream (e.g the user stopped scrolling down)
+  /// and call [stream.resume] and the user request more items (e.g the user scrolled down and the list needs to show more items).
+  ///
+  /// Don't forget to call [listener.cancel] to close the HTTP request.
+  ///
+  /// Remember to implement [listener.onDone] and [listener.onError] when calling [stream.listen]
+  /// to handle when there are no more items to be fetched and when a error occurs.
+  ///
+  /// Ref: https://github.com/lichess-org/lila/issues/12502.
   ///
   /// https://lichess.org/api#tag/Teams/operation/teamSearch
-  Future<List<User>> getMembers({required String teamId, int limit = 20});
+  Stream<User> getMembers({required String teamId});
 
   /// Join a team based on the given [teamId].
   /// An optional [message] can be provided to send a message if the team requires one.
