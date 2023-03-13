@@ -20,15 +20,19 @@ class LichessClientDio extends LichessClient {
   UsersServiceDio? _users;
   TeamsServiceDio? _teamsService;
 
+  /// {@macro account}
   @override
   AccountServiceDio get account => _account ??= AccountServiceDio(dio);
 
+  /// {@macro relations}
   @override
   RelationsServiceDio get relations => _relations ??= RelationsServiceDio(dio);
 
+  /// {@macro users}
   @override
   UsersServiceDio get users => _users ?? UsersServiceDio(dio);
 
+  /// {@macro teams}
   @override
   TeamsServiceDio get teams => _teamsService ??= TeamsServiceDio(dio);
 

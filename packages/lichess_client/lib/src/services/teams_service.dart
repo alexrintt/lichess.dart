@@ -1,8 +1,10 @@
 import '../../lichess_client.dart';
 
+/// {@template teams}
 /// Access and manage Lichess teams and their members.
 ///
 /// https://lichess.org/api#tag/Teams
+/// {@endtemplate}
 abstract class TeamsService with CloseableMixin {
   const TeamsService();
 

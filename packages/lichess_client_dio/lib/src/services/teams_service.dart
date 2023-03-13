@@ -8,6 +8,11 @@ import '../../lichess_client_dio.dart';
 
 part 'teams_service.g.dart';
 
+/// {@template teams}
+/// Access and manage Lichess teams and their members.
+///
+/// https://lichess.org/api#tag/Teams
+/// {@endtemplate}
 @RestApi()
 abstract class TeamsServiceDio implements TeamsService {
   factory TeamsServiceDio(Dio dio) => _TeamsServiceDio._(dio, dio);
@@ -22,22 +27,41 @@ abstract class TeamsServiceDio implements TeamsService {
 
   const TeamsServiceDio._(this.dio);
 
+  /// Dio client linked with this service instance.
   final Dio dio;
 
+  /// Get the team based on the given [teamId].
+  ///
+  /// This API gives you infos about the team, such as the description, leader, etc.
+  ///
+  /// https://lichess.org/api#tag/Teams/operation/teamShow
   @override
   @GET('/api/team/{teamId}')
   Future<Team> getById(@Path('teamId') String teamId);
 
+  /// Paginator of the most popular teams.
+  ///
+  /// This API gives you a page with the given [page] index of the most popular teams.
+  ///
+  /// https://lichess.org/api#tag/Teams/operation/teamAll
   @override
   @GET('/api/team/all')
   Future<PageOf<Team>> getPopular({@Query('page') int page = 1});
 
+  /// Get all teams of a user based on the given [username].
+  ///
+  /// https://lichess.org/api#tag/Teams/operation/teamOfUsername
   @override
   @GET('/api/team/of/{username}')
   Future<List<Team>> getByUser({
     @Path('username') required String username,
   });
 
+  /// Search for teams based on the given [name]. An optional [page] index  can be provided to get a specific page.
+  ///
+  /// The default page is 1.
+  ///
+  /// https://lichess.org/api#tag/Teams/operation/teamSearch
   @override
   @GET('/api/team/search')
   Future<PageOf<Team>> search({
@@ -45,11 +69,28 @@ abstract class TeamsServiceDio implements TeamsService {
     @Query('page') int page = 1,
   });
 
-  /// Members are sorted by reverse chronological order of joining the team (most recent first). OAuth only required if the list of members is private.
+  /// Get all members of a team based on the given [teamId].
   ///
-  /// Members are streamed as ndjson.
+  /// Members are sorted by reverse chronological order of joining
+  /// the team (most recent first). OAuth only required if the list
+  /// of members is private.
   ///
-  /// https://lichess.org/api#tag/Teams/operation/teamIdUsers
+  /// Since the API returns a stremed ndjson, this method also returns a [Stream].
+  ///
+  /// Use [stream.listen] to start fetching items.
+  ///
+  /// Use [listener.pause] and [listener.resume] to implement a backpressure, that is,
+  /// call [listener.pause] to pause the members stream (e.g the user stopped scrolling down)
+  /// and call [stream.resume] and the user request more items (e.g the user scrolled down and the list needs to show more items).
+  ///
+  /// Don't forget to call [listener.cancel] to close the HTTP request.
+  ///
+  /// Remember to implement [listener.onDone] and [listener.onError] when calling [stream.listen]
+  /// to handle when there are no more items to be fetched and when a error occurs.
+  ///
+  /// Ref: https://github.com/lichess-org/lila/issues/12502.
+  ///
+  /// https://lichess.org/api#tag/Teams/operation/teamSearch
   @override
   Stream<User> getMembers({required String teamId}) async* {
     final Response<ResponseBody> response = await dio.get<ResponseBody>(
@@ -87,6 +128,16 @@ abstract class TeamsServiceDio implements TeamsService {
     }
   }
 
+  /// Join a team based on the given [teamId].
+  /// An optional [message] can be provided to send a message if the team requires one.
+  ///
+  /// Another optional [password] can be provided if the team requires one.
+  ///
+  /// If the team requires a password but the password field is incorrect,
+  /// then the call fails. Similarly, if the team join policy requires a confirmation
+  /// but the message parameter is not given, the call fails.
+  ///
+  /// https://lichess.org/api#tag/Teams/operation/teamIdJoin
   @override
   @FormUrlEncoded()
   @POST('/team/{teamId}/join')
@@ -96,10 +147,16 @@ abstract class TeamsServiceDio implements TeamsService {
     @Field('password') String? password,
   });
 
+  /// Leave a team based on the given [teamId].
+  ///
+  /// https://lichess.org/api#tag/Teams/operation/teamIdQuit
   @override
   @POST('/team/{teamId}/quit')
   Future<void> leave({@Path('teamId') required String teamId});
 
+  /// Get pending join requests for a team based on the given [teamId].
+  ///
+  /// https://lichess.org/api#tag/Teams/operation/teamRequests
   @override
   Future<List<JoinRequest>> getJoinRequests({required String teamId}) async {
     final Response<List<dynamic>> response =
@@ -125,6 +182,9 @@ abstract class TeamsServiceDio implements TeamsService {
         .toList();
   }
 
+  /// Accept a join request for a team based on the given [teamId] and [userId].
+  ///
+  /// https://lichess.org/api#tag/Teams/operation/teamRequestAccept
   @override
   @POST('/api/team/{teamId}/request/{userId}/accept')
   Future<void> acceptJoinRequest({
@@ -132,6 +192,9 @@ abstract class TeamsServiceDio implements TeamsService {
     @Path('userId') required String userId,
   });
 
+  /// Decline a join request for a team based on the given [teamId] and [userId].
+  ///
+  /// https://lichess.org/api#tag/Teams/operation/teamRequestDecline
   @override
   @POST('/api/team/{teamId}/request/{userId}/decline')
   Future<void> declineJoinRequest({
@@ -139,6 +202,9 @@ abstract class TeamsServiceDio implements TeamsService {
     @Path('userId') required String userId,
   });
 
+  /// Kick a user from a team based on the given [teamId] and [userId].
+  ///
+  /// https://lichess.org/api#tag/Teams/operation/teamIdKickUserId
   @override
   @POST('/team/{teamId}/kick/{userId}')
   Future<void> kickMember({
@@ -146,6 +212,11 @@ abstract class TeamsServiceDio implements TeamsService {
     @Path('userId') required String userId,
   });
 
+  /// Send a privatte message to all members of a team.
+  ///
+  /// NOTICE: You must own the team.
+  ///
+  /// https://lichess.org/api#tag/Teams/operation/teamIdPmAll
   @override
   @FormUrlEncoded()
   @POST('/team/{teamId}/pm-all')
@@ -154,6 +225,9 @@ abstract class TeamsServiceDio implements TeamsService {
     @Field('message') required String message,
   });
 
+  /// Close the [dio] instance associated with this service instance.
+  ///
+  /// Note that you will not be able to use other service that uses this same [dio] instance.
   @override
   Future<void> close({bool force = false}) async => dio.close(force: force);
 }
