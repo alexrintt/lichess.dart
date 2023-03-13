@@ -1,9 +1,23 @@
 targets:
   $default:
     builders:
-      freezed:
+      source_gen|combining_builder:
         options:
-          generic_argument_factories: true
+          ignore_for_file:
+            - implicit_dynamic_parameter
+            - unused_element
+            - deprecated_member_use
+            - deprecated_member_use_from_same_package
+            - use_function_type_syntax_for_parameters
+            - unnecessary_const
+            - avoid_init_to_null
+            - invalid_override_different_default_values_named
+            - prefer_expression_function_bodies
+            - annotate_overrides
+            - invalid_annotation_target
+            - unnecessary_question_mark
+            - constant_identifier_names
+            - non_constant_identifier_names
       json_serializable:
         options:
           field_rename: none

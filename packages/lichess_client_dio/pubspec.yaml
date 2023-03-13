@@ -23,7 +23,7 @@ dependencies:
     git:
       url: https://github.com/alexrintt/lichess.dart
       path: packages/lichess_client
-    # path: ../lichess_client
+      ref: master
   retrofit: ^4.0.1
 
 dev_dependencies:
