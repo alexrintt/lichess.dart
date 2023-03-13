@@ -1,3 +1,7 @@
+## 0.0.4
+
+- Pre-release.
+
 ## 0.0.3
 
 - Pre-release.
