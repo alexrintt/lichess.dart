@@ -65,9 +65,27 @@ abstract class UsersServiceDio extends UsersService {
   Future<List<User>> getPerfTypeLeaderboard({
     required PerfType perfType,
     int nb = 100,
-  }) {
-    // TODO: implement getPerfTypeLeaderboard
-    throw UnimplementedError();
+  }) async {
+    final Response<Map<String, dynamic>> raw = await dio
+        .get<Map<String, dynamic>>('/api/player/top/$nb/${perfType.raw}');
+
+    final List<Map<dynamic, dynamic>>? rawUsers =
+        (raw.data?['users'] as List<dynamic>?)?.cast<Map<dynamic, dynamic>>();
+
+    if (rawUsers == null) {
+      return <User>[];
+    }
+
+    bool allKeysAreStrings(dynamic e) =>
+        e is Map && e.keys.every((dynamic key) => key is String);
+
+    final List<User> users = rawUsers
+        .where(allKeysAreStrings)
+        .cast<Map<String, dynamic>>()
+        .map(User.fromJson)
+        .toList();
+
+    return users;
   }
 
   /// Method with semantic names for [getPerfTypeLeaderboard].
@@ -77,10 +95,8 @@ abstract class UsersServiceDio extends UsersService {
   Future<List<User>> getChessVariantLeaderboard({
     required PerfType variant,
     int limit = 100,
-  }) {
-    // TODO: implement getChessVariantLeaderboard
-    throw UnimplementedError();
-  }
+  }) =>
+      getPerfTypeLeaderboard(perfType: variant, nb: limit);
 
   /// Read public data of a user.
   ///

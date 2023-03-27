@@ -37,6 +37,15 @@ Future<void> main(List<String> arguments) async {
   await _displayTeamMembersUsingBackpressure('lichess-swiss', lichess);
   await _displayCurrentTvGames(lichess);
   await _startStreamingTheCurrentTvGameForTheNextFewMoves(lichess);
+  await _getGameModeLeaderboard(
+    <PerfType>[
+      PerfType.rapid,
+      PerfType.atomic,
+      PerfType.blitz,
+      PerfType.bullet,
+    ],
+    lichess,
+  );
 
   // TODO: lichess.teams.join
   // TODO: lichess.teams.leave
@@ -254,6 +263,28 @@ Future<void> _displayUserPublicData(
   final User user = await lichess.users.getPublicData(username: username);
   _print('Public data of $username: $user');
   _footer('lichess.users.getPublicData');
+}
+
+Future<void> _getGameModeLeaderboard(
+  List<PerfType> perfTypes,
+  LichessClient lichess,
+) async {
+  _header('lichess.users.getPerfTypeLeaderboard');
+
+  for (final PerfType perfType in perfTypes) {
+    _footer('$perfType');
+
+    final List<User> users =
+        await lichess.users.getPerfTypeLeaderboard(perfType: perfType);
+
+    int i = 0;
+
+    for (final User user in users) {
+      _print('${++i}th: ${user.id}');
+    }
+  }
+
+  _footer('lichess.users.getPerfTypeLeaderboard');
 }
 
 Future<void> _displayRatingHistoryOf(
