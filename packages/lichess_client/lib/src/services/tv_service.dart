@@ -1,5 +1,4 @@
 import '../../lichess_client.dart';
-import '../models/tv.dart';
 
 /// {@template tv}
 /// Access Lichess TV channels and games. https://lichess.org/tv & https://lichess.org/games.
