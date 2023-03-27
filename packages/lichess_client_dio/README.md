@@ -1,6 +1,6 @@
 # Lichess for Dart
 
-[![Pub Version](https://img.shields.io/pub/v/lichess_client_dio)](https://pub.dev/packages/lichess_client_dio) [![Pub Version](https://img.shields.io/pub/points/lichess_client_dio)](https://pub.dev/packages/lichess_client)
+[![Pub Version](https://img.shields.io/pub/v/lichess_client_dio)](https://pub.dev/packages/lichess_client_dio) [![Pub Version](https://img.shields.io/pub/points/lichess_client_dio)](https://pub.dev/packages/lichess_client_dio)
 
 This is a library for interacting with [Lichess API](https://lichess.org/api). It works on all platforms and exposes a collection of data classes and a extendable client interface.
 
