@@ -90,7 +90,7 @@ abstract class GamesService with CloseableMixin {
   /// - [literate] Insert textual annotations in the PGN about the opening, analysis variations, mistakes, and game termination. Example: `5... g4? { (-0.98 → 0.60) Mistake. Best move was h6. } (5... h6 6. d4 Ne7 7. g3 d5 8. exd5 fxg3 9. hxg3 c6 10. dxc6)`. Default to (false).
   /// - [players] URL of a text file containing real names and ratings, to replace Lichess usernames and ratings in the PGN. Example: https://gist.githubusercontent.com/ornicar/6bfa91eb61a2dcae7bcd14cce1b2a4eb/raw/768b9f6cc8a8471d2555e47ba40fb0095e5fba37/gistfile1.txt.
   /// - [sort] Sort order of the games. Default to [LichessGameSort.dateDesc].
-  Stream<LichessGame> exportGame({
+  Future<LichessGame> exportGame({
     required String gameId,
     bool moves = true,
     bool pgnInJson = false,

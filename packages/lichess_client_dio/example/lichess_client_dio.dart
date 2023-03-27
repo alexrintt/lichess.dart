@@ -47,6 +47,7 @@ Future<void> main(List<String> arguments) async {
     lichess,
   );
   await _displayUserRecentGames('riccardocescon', lichess);
+  await _displayInfoFromArbitraryGame('E1sx21nN', lichess);
 
   // TODO: lichess.teams.join
   // TODO: lichess.teams.leave
@@ -83,6 +84,30 @@ Future<void> _startStreamingTheCurrentTvGameForTheNextFewMoves(
   }
 
   _footer('lichess.tv.streamCurrentTvGame');
+}
+
+Future<void> _displayInfoFromArbitraryGame(
+  String gameId,
+  LichessClient lichess,
+) async {
+  _header('lichess.games.exportGame');
+
+  final LichessGame game = await lichess.games.exportGame(gameId: gameId);
+
+  _footer(
+    '${game.players.black?.user?.id} (Black) vs ${game.players.white?.user?.id} (White)',
+  );
+  _print('Speed: ${game.speed}');
+  _print('Perf type: ${game.perf}');
+  _print('Initial fen: ${game.initialFen}');
+  _print('Moves: ${game.moves}');
+  _print('Winner: ${game.winner?.raw}');
+  _print('Rated: ${game.rated}');
+  _print('Status: ${game.status}');
+  _print('Game Id: ${game.id}');
+  _print('Clock: ${game.clock}');
+
+  _footer('lichess.games.exportGame');
 }
 
 Future<void> _displayUserRecentGames(

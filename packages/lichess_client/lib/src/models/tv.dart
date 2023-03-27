@@ -4,6 +4,10 @@ import '../models/models.dart';
 part 'tv.g.dart';
 part 'tv.freezed.dart';
 
+/// Helper when the initial fen is not provided by the API.
+const String kStandardChessInitialFen =
+    'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
+
 /// https://lichess.org/api#tag/TV/operation/tvChannels
 @freezed
 class LichessTvGameBasicInfo with _$LichessTvGameBasicInfo {
@@ -79,6 +83,7 @@ class LichessGame with _$LichessGame {
     required int lastMoveAt,
     required LichessGameStatus status,
     required LichessGamePlayers players,
+    List<int>? clocks,
     String? initialFen,
     ChessColor? winner,
     LichessGameOpening? opening,

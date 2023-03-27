@@ -1,17 +1,21 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
-import 'package:dio/dio.dart';
+import 'package:dio/dio.dart' hide Headers;
+import 'package:retrofit/http.dart';
 
 import '../../lichess_client_dio.dart';
+
+part 'games_service.g.dart';
 
 /// {@template games}
 /// Access games played on Lichess. https://lichess.org/games.
 ///
 /// https://lichess.org/api#tag/Games
 /// {@endtemplate}
-class GamesServiceDio implements GamesService {
-  const GamesServiceDio(this.dio);
+@RestApi()
+abstract class GamesServiceDio implements GamesService {
+  factory GamesServiceDio(Dio dio) => _GamesServiceDio._(dio, dio);
 
   factory GamesServiceDio.create({
     String? accessToken,
@@ -20,6 +24,8 @@ class GamesServiceDio implements GamesService {
       GamesServiceDio(
         createLichessDioClientWith(accessToken: accessToken, baseUrl: baseUrl),
       );
+
+  const GamesServiceDio._(this.dio);
 
   /// Export games of a user.
   ///
@@ -156,75 +162,23 @@ class GamesServiceDio implements GamesService {
   }
 
   @override
-  Stream<LichessGame> exportGame({
-    required String gameId,
-    bool moves = true,
-    bool pgnInJson = false,
-    bool tags = true,
-    bool clocks = false,
-    bool evals = true,
-    bool accuracy = false,
-    bool opening = false,
-    bool literate = false,
-    String? players,
-  }) async* {
-    final Uri requestUri = Uri.parse(dio.options.baseUrl).replace(
-      pathSegments: <String>['game', 'export', gameId],
-      queryParameters: <String, dynamic>{
-        'moves': moves.toString(),
-        'pgnInJson': pgnInJson.toString(),
-        'tags': tags.toString(),
-        'clocks': clocks.toString(),
-        'evals': evals.toString(),
-        'accuracy': accuracy.toString(),
-        'opening': opening.toString(),
-        'literate': literate.toString(),
-        'players': players,
-      }..removeWhere((String key, dynamic value) => value == null),
-    );
-
-    final Response<ResponseBody> response = await dio.getUri<ResponseBody>(
-      requestUri,
-      options: Options(
-        headers: <String, String>{
-          // If it is omitted, the response will be a pgn.
-          'Accept': 'application/json',
-        },
-        responseType: ResponseType.stream,
-        // This does not changes anything but better let it here in case of any changes from API side.
-        contentType: 'application/json',
-      ),
-    );
-
-    final StringBuffer buffered = StringBuffer();
-
-    await for (final Uint8List part
-        in response.data?.stream ?? const Stream<Uint8List>.empty()) {
-      final String chunk = utf8.decode(part);
-
-      buffered.write(chunk);
-
-      late int i;
-
-      while ((i = buffered.toString().indexOf('\n')) != -1) {
-        final String obj = buffered.toString().substring(0, i);
-        final String rest = buffered.toString().substring(i + 1);
-
-        buffered.clear();
-        buffered.write(rest);
-
-        if (obj.isEmpty) {
-          continue;
-        }
-
-        final dynamic raw = jsonDecode(obj);
-
-        if (raw is Map<dynamic, dynamic>) {
-          yield LichessGame.fromJson(Map<String, dynamic>.from(raw));
-        }
-      }
-    }
-  }
+  @GET('/game/export/{gameId}')
+  @Headers(<String, String>{
+    'Accept': 'application/json',
+    'Content-Type': 'application/json'
+  })
+  Future<LichessGame> exportGame({
+    @Path() required String gameId,
+    @Query('moves') bool moves = true,
+    @Query('pgnInJson') bool pgnInJson = false,
+    @Query('tags') bool tags = true,
+    @Query('clocks') bool clocks = false,
+    @Query('evals') bool evals = true,
+    @Query('accuracy') bool accuracy = false,
+    @Query('opening') bool opening = false,
+    @Query('literate') bool literate = false,
+    @Query('players') String? players,
+  });
 
   /// Dio client linked with this service instance.
   final Dio dio;
