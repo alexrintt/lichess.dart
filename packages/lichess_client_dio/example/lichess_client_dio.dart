@@ -35,6 +35,8 @@ Future<void> main(List<String> arguments) async {
   await _displayTeamSearchResultsFor('test', lichess);
   await _displayTeamMembers('lichess-swiss', lichess);
   await _displayTeamMembersUsingBackpressure('lichess-swiss', lichess);
+  await _displayCurrentTvGames(lichess);
+  await _startStreamingTheCurrentTvGameForTheNextFewMoves(lichess);
 
   // TODO: lichess.teams.join
   // TODO: lichess.teams.leave
@@ -48,13 +50,56 @@ Future<void> _delay(int seconds) async {
   return Future<void>.delayed(Duration(seconds: seconds));
 }
 
-late final StreamSubscription<User> subscription;
-late final Stream<User> teamMembersStream;
+Future<void> _startStreamingTheCurrentTvGameForTheNextFewMoves(
+  LichessClient lichess, {
+  int movesCount = 10,
+}) async {
+  _header('lichess.tv.streamCurrentTvGame');
+
+  final Stream<TvGameSummary> currentTvGameStream =
+      lichess.tv.streamCurrentTvGame().take(movesCount);
+
+  bool first = true;
+
+  await for (final TvGameSummary tvGameSnapshot in currentTvGameStream) {
+    if (first) {
+      first = false;
+      _print('Black: ${tvGameSnapshot.data?.blackPlayer?.user?.id}');
+      _print('White: ${tvGameSnapshot.data?.whitePlayer?.user?.id}');
+    }
+
+    _print('Current game FEN: ${tvGameSnapshot.data?.fen}');
+    _print('Orientation: ${tvGameSnapshot.data?.orientation}');
+  }
+
+  _footer('lichess.tv.streamCurrentTvGame');
+}
+
+Future<void> _displayCurrentTvGames(LichessClient lichess) async {
+  _header('lichess.tv.getCurrentTvGames');
+
+  final List<TvGameBasicInfo> tvGames = await lichess.tv.getCurrentTvGames();
+
+  for (final TvGameBasicInfo tvGameBasicInfo in tvGames) {
+    _footer('Channel: ${tvGameBasicInfo.channel}');
+    _print('user.name: ${tvGameBasicInfo.user?.name}');
+    _print('user.id: ${tvGameBasicInfo.user?.id}');
+    _print('user.patron: ${tvGameBasicInfo.user?.patron}');
+    _print('user.title: ${tvGameBasicInfo.user?.title}');
+    _print('game rating: ${tvGameBasicInfo.rating}');
+    _print('game id: ${tvGameBasicInfo.gameId}');
+  }
+
+  _footer('lichess.tv.getCurrentTvGames');
+}
 
 Future<void> _displayTeamMembersUsingBackpressure(
   String teamId,
   LichessClient lichess,
 ) async {
+  late final StreamSubscription<User> subscription;
+  late final Stream<User> teamMembersStream;
+
   _header('lichess.teams.getMembers');
 
   teamMembersStream = lichess.teams.getMembers(teamId: teamId);
@@ -78,7 +123,7 @@ Future<void> _displayTeamMembersUsingBackpressure(
       _print('${user.id} (name: ${user.name})');
 
       if (users.length % 20 == 0) {
-        if (users.length >= 20 * 20) {
+        if (users.length >= 30) {
           _print('Got 60th user loaded, stopping...');
           // When we reach the 60th user loaded, stop.
           await cancel();
@@ -115,7 +160,7 @@ Future<void> _displayTeamMembers(
   final Stream<User> teamMembersStream =
       lichess.teams.getMembers(teamId: teamId);
 
-  final List<User> members = await teamMembersStream.take(400).toList();
+  final List<User> members = await teamMembersStream.take(30).toList();
 
   _footer('First ${members.length} members of $teamId');
 

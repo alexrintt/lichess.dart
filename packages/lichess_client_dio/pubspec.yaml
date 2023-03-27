@@ -19,7 +19,7 @@ dependencies:
   dio: ^5.0.1
   freezed_annotation: ^2.2.0
   json_annotation: ^4.8.0
-  lichess_client: ^0.0.11
+  lichess_client: ^0.0.12
   retrofit: ^4.0.1
 
 dev_dependencies:
