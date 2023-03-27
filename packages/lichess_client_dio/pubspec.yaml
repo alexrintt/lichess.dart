@@ -19,7 +19,7 @@ dependencies:
   dio: ^5.0.1
   freezed_annotation: ^2.2.0
   json_annotation: ^4.8.0
-  lichess_client: ^0.0.13
+  lichess_client: ^0.0.12
   retrofit: ^4.0.1
 
 dev_dependencies:
@@ -29,7 +29,7 @@ dev_dependencies:
   dotenv: ^4.1.0
   freezed: ^2.3.2
   json_serializable: ^6.6.1
-  lint: ^2.0.1
+  lints: ^2.0.1
   mockito: ^5.0.0
   nock: ^1.0.0
   retrofit_generator: ^5.0.0
