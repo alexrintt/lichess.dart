@@ -6,6 +6,7 @@ import '../../lichess_client.dart';
 /// https://lichess.org/api#tag/TV
 /// {@endtemplate}
 abstract class TvService with CloseableMixin {
+  /// Interface for this client.
   const TvService();
 
   /// Get current TV games.
@@ -15,7 +16,7 @@ abstract class TvService with CloseableMixin {
   /// See lichess.org/tv.
   ///
   /// https://lichess.org/api#tag/TV/operation/tvChannels
-  Future<List<TvGameBasicInfo>> getCurrentTvGames();
+  Future<List<LichessTvGameBasicInfo>> getCurrentTvGames();
 
   /// Stream current TV game.
   ///
@@ -26,7 +27,7 @@ abstract class TvService with CloseableMixin {
   /// See lichess.org/tv.
   ///
   /// https://lichess.org/api#tag/TV/operation/tvFeed
-  Stream<TvGameSummary> streamCurrentTvGame();
+  Stream<LichessTvGameSummary> streamCurrentTvGame();
 
   /// Get best ongoing games of a TV channel.
   ///
@@ -42,7 +43,7 @@ abstract class TvService with CloseableMixin {
   /// - [opening], Whether or not include the opening name, default false.
   ///
   /// https://lichess.org/api#tag/TV/operation/tvChannelGames
-  Stream<TvGameSummary> getBestOngoingGamesOfTvChannel({
+  Stream<LichessTvGameSummary> getBestOngoingGamesOfTvChannel({
     required TvChannel channel,
     int nb = 10,
     bool moves = true,

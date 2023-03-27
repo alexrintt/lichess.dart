@@ -6,8 +6,7 @@ import '../../lichess_client.dart';
 /// https://lichess.org/api#tag/Account
 /// {@endtemplate}
 abstract class AccountService with CloseableMixin {
-  /// Interface for this client, if you are looking for a concrete implementation
-  /// use [ShiroClient.create] instead.
+  /// Interface for this client.
   const AccountService();
 
   /// Public information about the logged in user.

@@ -6,125 +6,126 @@ part 'tv.freezed.dart';
 
 /// https://lichess.org/api#tag/TV/operation/tvChannels
 @freezed
-class TvGameBasicInfo with _$TvGameBasicInfo {
-  const factory TvGameBasicInfo({
+class LichessTvGameBasicInfo with _$LichessTvGameBasicInfo {
+  const factory LichessTvGameBasicInfo({
     TvChannel? channel,
     int? rating,
     String? gameId,
     User? user,
-  }) = _TvGameBasicInfo;
+  }) = _LichessTvGameBasicInfo;
 
-  factory TvGameBasicInfo.fromJson(Map<String, dynamic> json) =>
-      _$TvGameBasicInfoFromJson(json);
+  factory LichessTvGameBasicInfo.fromJson(Map<String, dynamic> json) =>
+      _$LichessTvGameBasicInfoFromJson(json);
 }
 
-/// https://lichess.org/api#tag/TV/operation/tvFeed
+/// https://lichess.org/api#tag/Games/operation/apiGamesUser
 @freezed
-class TvGameSummary with _$TvGameSummary {
-  const factory TvGameSummary({
+class LichessTvGameSummary with _$LichessTvGameSummary {
+  const factory LichessTvGameSummary({
     @JsonKey(name: 't') String? type,
-    @JsonKey(name: 'd') TvGameSummaryData? data,
-  }) = _TvGameSummary;
+    @JsonKey(name: 'd') LichessTvGameSummaryData? data,
+  }) = _LichessTvGameSummary;
 
-  factory TvGameSummary.fromJson(Map<String, dynamic> json) =>
-      _$TvGameSummaryFromJson(json);
+  factory LichessTvGameSummary.fromJson(Map<String, dynamic> json) =>
+      _$LichessTvGameSummaryFromJson(json);
 }
 
-/// https://lichess.org/api#tag/TV/operation/tvFeed
+/// https://lichess.org/api#tag/TV/operation/tvChannels
 @freezed
-class TvGameSummaryData with _$TvGameSummaryData {
-  const factory TvGameSummaryData({
+class LichessTvGameSummaryData with _$LichessTvGameSummaryData {
+  const factory LichessTvGameSummaryData({
     String? id,
     ChessColor? orientation,
-    List<TvGamePlayer>? players,
+    List<LichessGamePlayer>? players,
     String? fen,
-  }) = _TvGameSummaryData;
+  }) = _LichessTvGameSummaryData;
 
-  const TvGameSummaryData._();
+  const LichessTvGameSummaryData._();
 
-  factory TvGameSummaryData.fromJson(Map<String, dynamic> json) =>
-      _$TvGameSummaryDataFromJson(json);
+  factory LichessTvGameSummaryData.fromJson(Map<String, dynamic> json) =>
+      _$LichessTvGameSummaryDataFromJson(json);
 
-  TvGamePlayer? get whitePlayer =>
-      players?.firstWhere((TvGamePlayer e) => e.color?.isWhite ?? false);
+  LichessGamePlayer? get whitePlayer =>
+      players?.firstWhere((LichessGamePlayer e) => e.color?.isWhite ?? false);
 
-  TvGamePlayer? get blackPlayer =>
-      players?.firstWhere((TvGamePlayer e) => e.color?.isBlack ?? false);
+  LichessGamePlayer? get blackPlayer =>
+      players?.firstWhere((LichessGamePlayer e) => e.color?.isBlack ?? false);
 }
 
 /// https://lichess.org/api#tag/TV/operation/tvFeed
 @freezed
-class TvGamePlayer with _$TvGamePlayer {
-  const factory TvGamePlayer({
+class LichessGamePlayer with _$LichessGamePlayer {
+  const factory LichessGamePlayer({
     ChessColor? color,
     User? user,
     int? rating,
     int? ratingDiff,
-  }) = _TvGamePlayer;
+  }) = _LichessGamePlayer;
 
-  factory TvGamePlayer.fromJson(Map<String, dynamic> json) =>
-      _$TvGamePlayerFromJson(json);
+  factory LichessGamePlayer.fromJson(Map<String, dynamic> json) =>
+      _$LichessGamePlayerFromJson(json);
 }
 
-/// https://lichess.org/api#tag/TV/operation/tvFeed
+/// https://lichess.org/api#tag/Games/operation/apiGamesUser
 @freezed
-class TvGame with _$TvGame {
-  const factory TvGame({
+class LichessGame with _$LichessGame {
+  const factory LichessGame({
     required String id,
     required bool rated,
     required LichessVariant variant,
     required ChessSpeed speed,
-    required String perf,
+    required PerfType perf,
     required int createdAt,
     required int lastMoveAt,
     required LichessGameStatus status,
-    required TvGamePlayers players,
+    required LichessGamePlayers players,
     String? initialFen,
     ChessColor? winner,
-    TvGameOpening? opening,
+    LichessGameOpening? opening,
     String? moves,
-    TvGameClock? clock,
-  }) = _TvGame;
+    LichessGameClock? clock,
+  }) = _LichessGame;
 
-  factory TvGame.fromJson(Map<String, dynamic> json) => _$TvGameFromJson(json);
+  factory LichessGame.fromJson(Map<String, dynamic> json) =>
+      _$LichessGameFromJson(json);
 }
 
 /// https://lichess.org/api#tag/TV/operation/tvFeed
 @freezed
-class TvGamePlayers with _$TvGamePlayers {
-  const factory TvGamePlayers({
-    TvGamePlayer? white,
-    TvGamePlayer? black,
-  }) = _TvGamePlayers;
+class LichessGamePlayers with _$LichessGamePlayers {
+  const factory LichessGamePlayers({
+    LichessGamePlayer? white,
+    LichessGamePlayer? black,
+  }) = _LichessGamePlayers;
 
-  factory TvGamePlayers.fromJson(Map<String, dynamic> json) =>
-      _$TvGamePlayersFromJson(json);
+  factory LichessGamePlayers.fromJson(Map<String, dynamic> json) =>
+      _$LichessGamePlayersFromJson(json);
 }
 
 /// https://lichess.org/api#tag/TV/operation/tvFeed
 @freezed
-class TvGameClock with _$TvGameClock {
-  const factory TvGameClock({
+class LichessGameClock with _$LichessGameClock {
+  const factory LichessGameClock({
     int? initial,
     int? increment,
     int? totalTime,
-  }) = _TvGameClock;
+  }) = _LichessGameClock;
 
-  factory TvGameClock.fromJson(Map<String, dynamic> json) =>
-      _$TvGameClockFromJson(json);
+  factory LichessGameClock.fromJson(Map<String, dynamic> json) =>
+      _$LichessGameClockFromJson(json);
 }
 
 /// https://lichess.org/api#tag/TV/operation/tvFeed
 @freezed
-class TvGameOpening with _$TvGameOpening {
-  const factory TvGameOpening({
+class LichessGameOpening with _$LichessGameOpening {
+  const factory LichessGameOpening({
     String? eco,
     String? name,
     int? ply,
-  }) = _TvGameOpening;
+  }) = _LichessGameOpening;
 
-  factory TvGameOpening.fromJson(Map<String, dynamic> json) =>
-      _$TvGameOpeningFromJson(json);
+  factory LichessGameOpening.fromJson(Map<String, dynamic> json) =>
+      _$LichessGameOpeningFromJson(json);
 }
 
 /// https://lichess.org/api#tag/TV/operation/tvFeed
@@ -137,6 +138,17 @@ enum ChessColor {
 
   bool get isWhite => this == ChessColor.white;
   bool get isBlack => this == ChessColor.black;
+
+  final String raw;
+}
+
+/// https://lichess.org/api#tag/Games/operation/apiGamesUser
+@JsonEnum(valueField: 'raw')
+enum LichessGameSort {
+  dateDesc('dateDesc'),
+  dateAsc('dateAsc');
+
+  const LichessGameSort(this.raw);
 
   final String raw;
 }

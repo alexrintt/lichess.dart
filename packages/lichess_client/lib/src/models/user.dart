@@ -157,6 +157,7 @@ enum PerfType {
   blitz('blitz'),
   rapid('rapid'),
   classical('classical'),
+  correspondence('correspondence'),
   chess960('chess960'),
   crazyhouse('crazyhouse'),
   antichess('antichess'),

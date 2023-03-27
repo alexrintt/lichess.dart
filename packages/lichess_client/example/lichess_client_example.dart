@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:lichess_client/lichess_client.dart';
+import 'package:lichess_client/src/services/games_service.dart';
 
 class MyCustomAccountService implements AccountService {
   /// A cool custom service implementation...
@@ -37,6 +38,13 @@ class MyCustomTvService implements TvService {
   void noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }
 
+class MyCustomGamesService implements GamesService {
+  /// A cool custom service implementation...
+
+  @override
+  void noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
+}
+
 class MyCustomLichessClient extends LichessClient {
   @override
   AccountService get account => MyCustomAccountService();
@@ -57,6 +65,9 @@ class MyCustomLichessClient extends LichessClient {
 
   @override
   TvService get tv => MyCustomTvService();
+
+  @override
+  GamesService get games => MyCustomGamesService();
 }
 
 void main() => _tryRunAndThrowGhostImplementation();

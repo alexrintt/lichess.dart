@@ -6,6 +6,7 @@ import '../../lichess_client.dart';
 /// https://lichess.org/api#tag/Teams
 /// {@endtemplate}
 abstract class TeamsService with CloseableMixin {
+  /// Interface for this client.
   const TeamsService();
 
   /// Get the team based on the given [teamId].

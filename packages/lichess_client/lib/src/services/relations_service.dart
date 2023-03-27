@@ -6,8 +6,7 @@ import '../../lichess_client.dart';
 /// https://lichess.org/api#tag/Relations
 /// {@endtemplate}
 abstract class RelationsService with CloseableMixin {
-  /// Interface for this client, if you are looking for a concrete implementation
-  /// use [RelationsService.create] instead.
+  /// Interface for this client.
   const RelationsService();
 
   /// Get users followed by the logged in user.

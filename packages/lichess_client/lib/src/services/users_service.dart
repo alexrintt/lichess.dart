@@ -10,6 +10,7 @@ import '../../lichess_client.dart';
 /// https://lichess.org/api#tag/Users
 /// {@endtemplate}
 abstract class UsersService with CloseableMixin {
+  /// Interface for this client.
   const UsersService();
 
   /// Read the `online`, `playing` and `streaming` flags of several users.
