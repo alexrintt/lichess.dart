@@ -1,4 +1,4 @@
-### If you are looking for a complete Lichess client, refer to [lichess_client_dio](https://pub.dev/lichess_client_dio) instead.
+### If you are looking for a complete Lichess client, refer to [lichess_client_dio](https://pub.dev/packages/lichess_client_dio) instead.
 
 ---
 
