@@ -39,6 +39,7 @@ Services that are currently implemented/available:
 - Relations service.
 - Teams service.
 - TV service.
+- Games service.
 
 All services are accessible by `lichess.<service-name>.<endpoint-name>(...)`.
 
