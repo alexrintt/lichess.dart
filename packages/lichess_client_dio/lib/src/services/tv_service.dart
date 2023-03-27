@@ -21,8 +21,6 @@ class TvServiceDio implements TvService {
         createLichessDioClientWith(accessToken: accessToken, baseUrl: baseUrl),
       );
 
-  const TvServiceDio._(this.dio);
-
   /// Get current TV games.
   ///
   /// Get basic info about the best games being played for each speed and variant, but also computer games and bot games.
