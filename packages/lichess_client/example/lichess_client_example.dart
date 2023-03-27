@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:lichess_client/lichess_client.dart';
-import 'package:lichess_client/src/services/games_service.dart';
 
 class MyCustomAccountService implements AccountService {
   /// A cool custom service implementation...

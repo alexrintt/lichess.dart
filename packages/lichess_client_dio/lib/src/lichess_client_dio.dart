@@ -20,6 +20,7 @@ class LichessClientDio extends LichessClient {
   UsersServiceDio? _users;
   TeamsServiceDio? _teamsService;
   TvServiceDio? _tvService;
+  GamesServiceDio? _gamesService;
 
   /// {@macro account}
   @override
@@ -38,7 +39,10 @@ class LichessClientDio extends LichessClient {
   TeamsServiceDio get teams => _teamsService ??= TeamsServiceDio(dio);
 
   @override
-  TvService get tv => _tvService ??= TvServiceDio(dio);
+  TvServiceDio get tv => _tvService ??= TvServiceDio(dio);
+
+  @override
+  GamesServiceDio get games => _gamesService ??= GamesServiceDio(dio);
 
   /// Call [close] on the [dio] instance associated with this client.
   @override

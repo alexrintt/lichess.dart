@@ -29,12 +29,12 @@ class TvServiceDio implements TvService {
   ///
   /// https://lichess.org/api#tag/TV/operation/tvChannels
   @override
-  Future<List<TvGameBasicInfo>> getCurrentTvGames() async {
+  Future<List<LichessTvGameBasicInfo>> getCurrentTvGames() async {
     final Response<Map<String, dynamic>> response =
         await dio.get<Map<String, dynamic>>('/api/tv/channels');
 
     if (response.data == null) {
-      return <TvGameBasicInfo>[];
+      return <LichessTvGameBasicInfo>[];
     }
 
     final Map<String, dynamic> raw = response.data!;
@@ -47,7 +47,7 @@ class TvServiceDio implements TvService {
         },
     ];
 
-    return rawAsList.map(TvGameBasicInfo.fromJson).toList();
+    return rawAsList.map(LichessTvGameBasicInfo.fromJson).toList();
   }
 
   /// Stream current TV game.
@@ -60,7 +60,7 @@ class TvServiceDio implements TvService {
   ///
   /// https://lichess.org/api#tag/TV/operation/tvFeed
   @override
-  Stream<TvGameSummary> streamCurrentTvGame() async* {
+  Stream<LichessTvGameSummary> streamCurrentTvGame() async* {
     final Response<ResponseBody> response = await dio.get<ResponseBody>(
       '/api/tv/feed',
       options: Options(responseType: ResponseType.stream),
@@ -90,7 +90,7 @@ class TvServiceDio implements TvService {
         final dynamic raw = jsonDecode(obj);
 
         if (raw is Map<dynamic, dynamic>) {
-          yield TvGameSummary.fromJson(Map<String, dynamic>.from(raw));
+          yield LichessTvGameSummary.fromJson(Map<String, dynamic>.from(raw));
         }
       }
     }
@@ -111,7 +111,7 @@ class TvServiceDio implements TvService {
   ///
   /// https://lichess.org/api#tag/TV/operation/tvChannelGames
   @override
-  Stream<TvGameSummary> getBestOngoingGamesOfTvChannel({
+  Stream<LichessTvGameSummary> getBestOngoingGamesOfTvChannel({
     required TvChannel channel,
     int nb = 10,
     bool moves = true,

@@ -1,5 +1,4 @@
 import '../lichess_client.dart';
-import 'services/games_service.dart';
 
 /// Interface for this client, if you are looking for a concrete implementation
 /// use [LichessClientDio.create] from [lichess_client_dio] package instead.

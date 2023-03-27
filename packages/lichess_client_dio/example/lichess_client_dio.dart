@@ -46,6 +46,7 @@ Future<void> main(List<String> arguments) async {
     ],
     lichess,
   );
+  await _displayUserRecentGames('riccardocescon', lichess);
 
   // TODO: lichess.teams.join
   // TODO: lichess.teams.leave
@@ -65,12 +66,12 @@ Future<void> _startStreamingTheCurrentTvGameForTheNextFewMoves(
 }) async {
   _header('lichess.tv.streamCurrentTvGame');
 
-  final Stream<TvGameSummary> currentTvGameStream =
+  final Stream<LichessTvGameSummary> currentTvGameStream =
       lichess.tv.streamCurrentTvGame().take(movesCount);
 
   bool first = true;
 
-  await for (final TvGameSummary tvGameSnapshot in currentTvGameStream) {
+  await for (final LichessTvGameSummary tvGameSnapshot in currentTvGameStream) {
     if (first) {
       first = false;
       _print('Black: ${tvGameSnapshot.data?.blackPlayer?.user?.id}');
@@ -84,12 +85,40 @@ Future<void> _startStreamingTheCurrentTvGameForTheNextFewMoves(
   _footer('lichess.tv.streamCurrentTvGame');
 }
 
+Future<void> _displayUserRecentGames(
+  String username,
+  LichessClient lichess,
+) async {
+  _header('lichess.games.exportGamesOfUser');
+
+  final Stream<LichessGame> userGames =
+      lichess.games.exportGamesOfUser(username: username, max: 10);
+
+  await for (final LichessGame game in userGames) {
+    _footer(
+      '${game.players.black?.user?.id} (Black) vs ${game.players.white?.user?.id} (White)',
+    );
+    _print('Speed: ${game.speed}');
+    _print('Perf type: ${game.perf}');
+    _print('Initial fen: ${game.initialFen}');
+    _print('Moves: ${game.moves}');
+    _print('Winner: ${game.winner?.raw}');
+    _print('Rated: ${game.rated}');
+    _print('Status: ${game.status}');
+    _print('Game Id: ${game.id}');
+    _print('Clock: ${game.clock}');
+  }
+
+  _footer('lichess.games.exportGamesOfUser');
+}
+
 Future<void> _displayCurrentTvGames(LichessClient lichess) async {
   _header('lichess.tv.getCurrentTvGames');
 
-  final List<TvGameBasicInfo> tvGames = await lichess.tv.getCurrentTvGames();
+  final List<LichessTvGameBasicInfo> tvGames =
+      await lichess.tv.getCurrentTvGames();
 
-  for (final TvGameBasicInfo tvGameBasicInfo in tvGames) {
+  for (final LichessTvGameBasicInfo tvGameBasicInfo in tvGames) {
     _footer('Channel: ${tvGameBasicInfo.channel}');
     _print('user.name: ${tvGameBasicInfo.user?.name}');
     _print('user.id: ${tvGameBasicInfo.user?.id}');
