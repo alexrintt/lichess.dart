@@ -17,6 +17,9 @@ abstract class LichessClient with CloseableMixin {
   /// {@macro teams}
   TeamsService get teams;
 
+  /// {@macro tv}
+  TvService get tv;
+
   /// Alternative name to [relations].
   RelationsService get social => relations;
 }
