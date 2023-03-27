@@ -155,6 +155,77 @@ class GamesServiceDio implements GamesService {
     }
   }
 
+  @override
+  Stream<LichessGame> exportGame({
+    required String gameId,
+    bool moves = true,
+    bool pgnInJson = false,
+    bool tags = true,
+    bool clocks = false,
+    bool evals = true,
+    bool accuracy = false,
+    bool opening = false,
+    bool literate = false,
+    String? players,
+  }) async* {
+    final Uri requestUri = Uri.parse(dio.options.baseUrl).replace(
+      pathSegments: <String>['game', 'export', gameId],
+      queryParameters: <String, dynamic>{
+        'moves': moves.toString(),
+        'pgnInJson': pgnInJson.toString(),
+        'tags': tags.toString(),
+        'clocks': clocks.toString(),
+        'evals': evals.toString(),
+        'accuracy': accuracy.toString(),
+        'opening': opening.toString(),
+        'literate': literate.toString(),
+        'players': players,
+      }..removeWhere((String key, dynamic value) => value == null),
+    );
+
+    final Response<ResponseBody> response = await dio.getUri<ResponseBody>(
+      requestUri,
+      options: Options(
+        headers: <String, String>{
+          // If it is omitted, the response will be a pgn.
+          'Accept': 'application/json',
+        },
+        responseType: ResponseType.stream,
+        // This does not changes anything but better let it here in case of any changes from API side.
+        contentType: 'application/json',
+      ),
+    );
+
+    final StringBuffer buffered = StringBuffer();
+
+    await for (final Uint8List part
+        in response.data?.stream ?? const Stream<Uint8List>.empty()) {
+      final String chunk = utf8.decode(part);
+
+      buffered.write(chunk);
+
+      late int i;
+
+      while ((i = buffered.toString().indexOf('\n')) != -1) {
+        final String obj = buffered.toString().substring(0, i);
+        final String rest = buffered.toString().substring(i + 1);
+
+        buffered.clear();
+        buffered.write(rest);
+
+        if (obj.isEmpty) {
+          continue;
+        }
+
+        final dynamic raw = jsonDecode(obj);
+
+        if (raw is Map<dynamic, dynamic>) {
+          yield LichessGame.fromJson(Map<String, dynamic>.from(raw));
+        }
+      }
+    }
+  }
+
   /// Dio client linked with this service instance.
   final Dio dio;
 

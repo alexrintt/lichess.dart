@@ -72,4 +72,34 @@ abstract class GamesService with CloseableMixin {
     String? players,
     LichessGameSort? sort,
   });
+
+  /// Download one game in either PGN or JSON format.
+  ///
+  /// Ongoing games have their last 3 moves omitted, after move 5.
+  ///
+  /// Params:
+  ///
+  /// - [gameId] The game ID (8 characters).
+  /// - [moves] Include the PGN moves, default to (true).
+  /// - [pgnInJson] Include the full PGN within the JSON response, in a `pgn` field. The response type must be set to `application/x-ndjson` by the request `Accept` header. Default to (false).
+  /// - [tags] Include the PGN tags, default to (true).
+  /// - [clocks] Include clock status when available, default to (false). Either as PGN comments: `2. exd5 { [%clk 1:01:27] } e5 { [%clk 1:01:28] }`. Or in a `clocks` JSON field, as centisecond integers, depending on the response type.
+  /// - [evals] Include analysis evaluations and comments, when available. Either as PGN comments: `12. Bxf6 { [%eval 0.23] } a3 { [%eval -1.09] }`. Or in an `analysis` JSON field, depending on the response type.
+  /// - [accuracy] Include accuracy percent of each player, when available, default to (false).
+  /// - [opening] Include the opening name. Example: `[Opening "King's Gambit Accepted, King's Knight Gambit"]`. Default to (false).
+  /// - [literate] Insert textual annotations in the PGN about the opening, analysis variations, mistakes, and game termination. Example: `5... g4? { (-0.98 → 0.60) Mistake. Best move was h6. } (5... h6 6. d4 Ne7 7. g3 d5 8. exd5 fxg3 9. hxg3 c6 10. dxc6)`. Default to (false).
+  /// - [players] URL of a text file containing real names and ratings, to replace Lichess usernames and ratings in the PGN. Example: https://gist.githubusercontent.com/ornicar/6bfa91eb61a2dcae7bcd14cce1b2a4eb/raw/768b9f6cc8a8471d2555e47ba40fb0095e5fba37/gistfile1.txt.
+  /// - [sort] Sort order of the games. Default to [LichessGameSort.dateDesc].
+  Stream<LichessGame> exportGame({
+    required String gameId,
+    bool moves = true,
+    bool pgnInJson = false,
+    bool tags = true,
+    bool clocks = false,
+    bool evals = true,
+    bool accuracy = false,
+    bool opening = false,
+    bool literate = false,
+    String? players,
+  });
 }
