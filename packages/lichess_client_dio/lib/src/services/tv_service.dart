@@ -2,20 +2,16 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:dio/dio.dart';
-import 'package:retrofit/http.dart';
 
 import '../../lichess_client_dio.dart';
-
-part 'tv_service.g.dart';
 
 /// {@template teams}
 /// Access and manage Lichess teams and their members.
 ///
 /// https://lichess.org/api#tag/Teams
 /// {@endtemplate}
-@RestApi()
-abstract class TvServiceDio implements TvService {
-  factory TvServiceDio(Dio dio) => _TvServiceDio._(dio, dio);
+class TvServiceDio implements TvService {
+  const TvServiceDio(this.dio);
 
   factory TvServiceDio.create({
     String? accessToken,
