@@ -3,6 +3,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import '../../lichess_client.dart';
 
 part 'puzzle.freezed.dart';
+part 'puzzle.g.dart';
 
 @freezed
 class PuzzleGame with _$PuzzleGame {
