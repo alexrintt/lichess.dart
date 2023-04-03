@@ -6,18 +6,45 @@ part 'puzzle.freezed.dart';
 part 'puzzle.g.dart';
 
 @freezed
+class LichessPuzzlePlayer with _$LichessPuzzlePlayer {
+  const factory LichessPuzzlePlayer({
+    String? color,
+    String? name,
+    String? userId,
+  }) = _LichessPuzzlePlayer;
+
+  factory LichessPuzzlePlayer.fromJson(Map<String, dynamic> json) =>
+      _$LichessPuzzlePlayerFromJson(json);
+}
+
+@freezed
 class PuzzleGame with _$PuzzleGame {
   const factory PuzzleGame({
     String? id,
     String? clock,
     Perf? perf,
     String? pgn,
-    LichessGamePlayers? players,
+    @JsonKey(name: 'players') List<LichessPuzzlePlayer>? playersAsList,
     bool? rated,
   }) = _PuzzleGame;
-
   factory PuzzleGame.fromJson(Map<String, dynamic> json) =>
       _$PuzzleGameFromJson(json);
+
+  const PuzzleGame._();
+
+  LichessPuzzlePlayer? get white => playersAsList?.any(
+              (LichessPuzzlePlayer element) => element.color == 'white') ??
+          false
+      ? playersAsList?.firstWhere(
+          (LichessPuzzlePlayer element) => element.color == 'white')
+      : null;
+
+  LichessPuzzlePlayer? get black => playersAsList?.any(
+              (LichessPuzzlePlayer element) => element.color == 'black') ??
+          false
+      ? playersAsList?.firstWhere(
+          (LichessPuzzlePlayer element) => element.color == 'black')
+      : null;
 }
 
 @freezed
