@@ -5,7 +5,7 @@ abstract class PuzzleService {
   Future<Puzzle> getDailyPuzzle();
 
   /// Get a puzzle by its ID.
-  Future<Puzzle> getPuzzleById({required int id});
+  Future<Puzzle> getPuzzleById({required String id});
 
   /// Download you puzzle activity
   /// Puzzle activity is sorted by reverse chronological order (most recent first)
