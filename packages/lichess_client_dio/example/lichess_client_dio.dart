@@ -54,6 +54,11 @@ Future<void> main(List<String> arguments) async {
   // TODO: lichess.teams.getJoinRequests
   // TODO: lichess.teams.kickMember
 
+  await _displayDailyPuzzle(lichess);
+  await _displayPuzzleById('K69di', lichess);
+  await _displayMyPuzzleActivity(lichess, max: 10);
+  await _displayMyPuzzleDashboard(lichess);
+
   await lichess.close();
 }
 
@@ -498,6 +503,36 @@ Future<void> _displayLoggedUserFollows(LichessClient lichess) async {
     'Logged user follows: ${follows.map((User e) => e.id).join(', ')}',
   );
   _footer('lichess.relations.getFollowing');
+}
+
+Future<void> _displayDailyPuzzle(LichessClient lichess) async {
+  _header('lichess.puzzle.getDailyPuzzle');
+  final Puzzle puzzle = await lichess.puzzles.getDailyPuzzle();
+  _print('Puzzle ID: ${puzzle.info?.id} with Pgn: ${puzzle.game?.pgn}');
+  _footer('lichess.puzzle.getDailyPuzzle');
+}
+
+Future<void> _displayPuzzleById(String id, LichessClient lichess) async {
+  _header('lichess.puzzle.getPuzzleById');
+  final Puzzle puzzle = await lichess.puzzles.getPuzzleById(id: id);
+  _print('Puzzle ID: ${puzzle.info?.id} with Pgn: ${puzzle.game?.pgn}');
+  _footer('lichess.puzzle.getPuzzleById');
+}
+
+Future<void> _displayMyPuzzleActivity(LichessClient lichess, {int? max}) async {
+  _header('lichess.puzzle.getMyPuzzleActivity');
+  await for (final PuzzleActivity data
+      in lichess.puzzles.getPuzzleActivity(max: max)) {
+    _print('Puzzle activity: ${data.id} : ${data.puzzleRating}');
+  }
+  _footer('lichess.puzzle.getMyPuzzleActivity');
+}
+
+Future<void> _displayMyPuzzleDashboard(LichessClient lichess) async {
+  _header('lichess.puzzle.getMyPuzzleDashboard');
+  final PuzzleDashboard dashboard = await lichess.puzzles.getPuzzleDashboard();
+  _print('Puzzle dashboard: ${dashboard.toJson()}');
+  _footer('lichess.puzzle.getMyPuzzleDashboard');
 }
 
 bool _first = true;
