@@ -15,5 +15,8 @@ abstract class PuzzleService {
   Stream<PuzzleActivity> getPuzzleActivity({int? max});
 
   /// Get your puzzle dashboard
-  Future<PuzzleDashboard> getPuzzleDashboard();
+  ///
+  /// [days] is the number of days to look back for the puzzle dashboard.
+  /// If not specified, the puzzle dashboard will be returned for the last 30 days.
+  Future<PuzzleDashboard> getPuzzleDashboard({int days = 30});
 }
