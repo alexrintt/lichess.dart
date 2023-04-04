@@ -113,7 +113,7 @@ class PuzzleTheme with _$PuzzleTheme {
 @freezed
 class PuzzleDashboard with _$PuzzleDashboard {
   const factory PuzzleDashboard({
-    List<Map<String, PuzzleTheme>>? themes,
+    Map<String, PuzzleTheme>? themes,
   }) = _PuzzleDashboard;
 
   factory PuzzleDashboard.fromJson(Map<String, dynamic> json) =>
