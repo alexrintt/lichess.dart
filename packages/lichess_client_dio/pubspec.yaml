@@ -2,7 +2,7 @@ name: lichess_client_dio
 description: >-
   Lichess HTTP client based on Dio.
   Cross-platform API wrapper written in pure Dart.
-version: 0.0.5
+version: 0.0.6
 repository: https://github.com/alexrintt/lichess.dart
 homepage: https://github.com/alexrintt/lichess.dart/tree/master/packages/lichess_client_dio
 documentation: https://github.com/alexrintt/lichess.dart/tree/master/packages/lichess_client_dio
@@ -19,7 +19,7 @@ dependencies:
   dio: ^5.0.1
   freezed_annotation: ^2.2.0
   json_annotation: ^4.8.0
-  lichess_client: ^0.0.14
+  lichess_client: ^0.0.21
   retrofit: ^4.0.1
 
 dev_dependencies:
