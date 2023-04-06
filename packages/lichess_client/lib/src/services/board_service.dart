@@ -33,7 +33,7 @@ abstract class BoardService with CloseableMixin {
   /// When the stream opens, all current challenges and games are sent.
   ///
   /// https://lichess.org/api#tag/Board/operation/apiStreamEvent
-  Future<LichessBoardIncomingEvent> streamIncomingEvents();
+  Future<LichessBoardGameIncomingEvent> streamIncomingEvents();
 
   /// Stream the state of a game being played with the Board API, as [ndjson](https://lichess.org/api#section/Introduction/Streaming-with-ND-JSON).
   ///
@@ -48,5 +48,7 @@ abstract class BoardService with CloseableMixin {
   /// - The first line is always of type `gameFull`.
   ///
   /// The server closes the stream when the game ends, or if the game has already ended.
+  ///
+  /// https://lichess.org/api#tag/Board/operation/boardGameStream
   Stream<LichessBoardGameEvent> streamBoardGameState({required String gameId});
 }
