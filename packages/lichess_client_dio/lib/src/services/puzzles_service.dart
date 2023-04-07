@@ -7,26 +7,26 @@ import 'package:retrofit/http.dart';
 
 import '../utils/create_dio_client_with.dart';
 
-part 'puzzle_service.g.dart';
+part 'puzzles_service.g.dart';
 
-/// {@template account}
+/// {@template puzzles}
 /// Read information about puzzles.
 ///
 /// https://lichess.org/api#tag/Puzzles
 /// {@endtemplate}
 @RestApi()
-abstract class PuzzleServiceDio implements PuzzleService {
-  factory PuzzleServiceDio(Dio dio) => _PuzzleServiceDio._(dio, dio);
+abstract class PuzzlesServiceDio implements PuzzlesService {
+  factory PuzzlesServiceDio(Dio dio) => _PuzzlesServiceDio._(dio, dio);
 
-  factory PuzzleServiceDio.create({
+  factory PuzzlesServiceDio.create({
     String? accessToken,
     String baseUrl = 'https://lichess.org',
   }) =>
-      PuzzleServiceDio(
+      PuzzlesServiceDio(
         createLichessDioClientWith(accessToken: accessToken, baseUrl: baseUrl),
       );
 
-  const PuzzleServiceDio._({required this.dio});
+  const PuzzlesServiceDio._({required this.dio});
 
   /// Dio client linked with this service instance.
   final Dio dio;
@@ -48,6 +48,7 @@ abstract class PuzzleServiceDio implements PuzzleService {
   });
 
   /// Download your puzzle activity.
+  ///
   /// Puzzle activity is sorted by reverse chronological order (most recent first).
   /// [max] is the maximum number of puzzle activities to return.
   /// If not specified, all puzzle activities will be returned.

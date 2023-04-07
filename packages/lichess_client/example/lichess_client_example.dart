@@ -37,7 +37,7 @@ class MyCustomTvService implements TvService {
   void noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }
 
-class MyCustomPuzzleService implements PuzzleService {
+class MyCustomPuzzlesService implements PuzzlesService {
   /// A cool custom service implementation...
 
   @override
@@ -73,7 +73,7 @@ class MyCustomLichessClient extends LichessClient {
   TvService get tv => MyCustomTvService();
 
   @override
-  PuzzleService get puzzles => MyCustomPuzzleService();
+  PuzzlesService get puzzles => MyCustomPuzzlesService();
 
   @override
   GamesService get games => MyCustomGamesService();

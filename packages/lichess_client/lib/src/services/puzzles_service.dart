@@ -1,10 +1,22 @@
 import '../models/puzzle.dart';
 
-abstract class PuzzleService {
+/// {@template puzzles}
+/// Read information about puzzles.
+///
+/// https://lichess.org/api#tag/Puzzles
+/// {@endtemplate}
+abstract class PuzzlesService {
+  /// Interface for this client.
+  const PuzzlesService();
+
   /// Get the Daily puzzle.
+  ///
+  /// https://lichess.org/api#tag/Puzzles/operation/apiPuzzleDaily
   Future<Puzzle> getDailyPuzzle();
 
   /// Get a puzzle by its ID.
+  ///
+  /// https://lichess.org/api#tag/Puzzles/operation/apiPuzzleId
   Future<Puzzle> getPuzzleById({required String id});
 
   /// Download you puzzle activity
@@ -12,11 +24,15 @@ abstract class PuzzleService {
   ///
   /// [max] is the maximum number of puzzle activities to return.
   /// If not specified, all puzzle activities will be returned.
+  ///
+  /// https://lichess.org/api#tag/Puzzles/operation/apiPuzzleActivity
   Stream<PuzzleActivity> getPuzzleActivity({int? max});
 
   /// Get your puzzle dashboard
   ///
   /// [days] is the number of days to look back for the puzzle dashboard.
   /// If not specified, the puzzle dashboard will be returned for the last 30 days.
+  ///
+  /// https://lichess.org/api#tag/Puzzles/operation/apiPuzzleDashboard
   Future<PuzzleDashboard> getPuzzleDashboard({int days = 30});
 }

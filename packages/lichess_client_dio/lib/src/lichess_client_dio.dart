@@ -1,7 +1,6 @@
 import 'package:dio/dio.dart';
 
 import '../lichess_client_dio.dart';
-import 'services/puzzle_service.dart';
 
 class LichessClientDio extends LichessClient {
   LichessClientDio(this.dio);
@@ -21,7 +20,7 @@ class LichessClientDio extends LichessClient {
   UsersServiceDio? _users;
   TeamsServiceDio? _teamsService;
   TvServiceDio? _tvService;
-  PuzzleServiceDio? _puzzleService;
+  PuzzlesServiceDio? _puzzleService;
   GamesServiceDio? _gamesService;
 
   /// {@macro account}
@@ -40,12 +39,15 @@ class LichessClientDio extends LichessClient {
   @override
   TeamsServiceDio get teams => _teamsService ??= TeamsServiceDio(dio);
 
+  /// {@macro tv}
   @override
   TvServiceDio get tv => _tvService ??= TvServiceDio(dio);
 
+  /// {@macro puzzles}
   @override
-  PuzzleServiceDio get puzzles => _puzzleService ??= PuzzleServiceDio(dio);
+  PuzzlesServiceDio get puzzles => _puzzleService ??= PuzzlesServiceDio(dio);
 
+  /// {@macro games}
   @override
   GamesServiceDio get games => _gamesService ??= GamesServiceDio(dio);
 

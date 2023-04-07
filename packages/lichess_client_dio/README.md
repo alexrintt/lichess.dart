@@ -32,14 +32,30 @@ final lichess = LichessClientDio.create(accessToken: '<your-access-token>');
 final email = await lichess.account.getEmailAddress();
 ```
 
-Services that are currently implemented/available:
+Services that are currently available (complete or partially complete):
 
-- Account service.
-- Users service.
-- Relations service.
-- Teams service.
-- TV service.
-- Games service.
+- [x] Account.
+- [x] Users.
+- [x] Relations.
+- [x] Games.
+- [x] TV.
+- [x] Puzzles.
+- [x] Teams.
+- [x] Board.
+- [ ] Bot.
+- [ ] Challenges.
+- [ ] Bulk pairings.
+- [ ] Arena tournaments.
+- [ ] Swiss tournaments.
+- [ ] Simuls.
+- [ ] Studies.
+- [ ] Messaging.
+- [ ] Broadcasts.
+- [ ] Analysis.
+- [ ] External engine.
+- [ ] Opening Explorer.
+- [ ] Tablebase.
+- [ ] OAuth.
 
 All services are accessible by `lichess.<service-name>.<endpoint-name>(...)`.
 
