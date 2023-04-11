@@ -26,6 +26,9 @@ abstract class LichessClient with CloseableMixin {
   /// {@macro puzzles}
   PuzzlesService get puzzles;
 
+  /// {@macro board}
+  BoardService get board;
+
   /// Alternative name to [relations].
   RelationsService get social => relations;
 }

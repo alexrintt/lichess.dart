@@ -258,11 +258,11 @@ class LichessOpponentGoneEvent
 @freezed
 class LichessGameEventPlayer with _$LichessGameEventPlayer {
   const factory LichessGameEventPlayer({
-    required int aiLevel,
     required String id,
     required String name,
     required int rating,
-    required bool provisional,
+    int? aiLevel,
+    bool? provisional,
     String? title,
   }) = _LichessGameEventPlayer;
 

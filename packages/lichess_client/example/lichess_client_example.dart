@@ -51,6 +51,13 @@ class MyCustomGamesService implements GamesService {
   void noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }
 
+class MyCustomBoardService implements BoardService {
+  /// A cool custom service implementation...
+
+  @override
+  void noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
+}
+
 class MyCustomLichessClient extends LichessClient {
   @override
   AccountService get account => MyCustomAccountService();
@@ -77,6 +84,9 @@ class MyCustomLichessClient extends LichessClient {
 
   @override
   GamesService get games => MyCustomGamesService();
+
+  @override
+  BoardService get board => MyCustomBoardService();
 }
 
 void main() => _tryRunAndThrowGhostImplementation();
