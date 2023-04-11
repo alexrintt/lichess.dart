@@ -4,7 +4,7 @@ import '../utils.dart';
 
 ResponseBody createResponse() {
   return ResponseBody(
-    createSimulatedNdjsonUsingMockDir('test/responses/streamBoardGameState'),
+    createSimulatedNdjsonUsingMockDir('test/responses/streamIncomingEvents'),
     200,
   );
 }

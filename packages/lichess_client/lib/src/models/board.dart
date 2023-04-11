@@ -126,8 +126,22 @@ class LichessGameEventInfo with _$LichessGameEventInfo {
 
 /// https://lichess.org/api#tag/Board
 @freezed
-class LichessGameChallengeEvent with _$LichessGameChallengeEvent {
-  const factory LichessGameChallengeEvent({
+class LichessChallengeEvent
+    with _$LichessChallengeEvent
+    implements LichessBoardGameIncomingEvent {
+  const factory LichessChallengeEvent({
+    required LichessBoardGameIncomingEventType type,
+    required LichessChallengeEventInfo challenge,
+  }) = _LichessChallengeEvent;
+
+  factory LichessChallengeEvent.fromJson(Map<String, dynamic> json) =>
+      _$LichessChallengeEventFromJson(json);
+}
+
+/// https://lichess.org/api#tag/Board
+@freezed
+class LichessChallengeEventInfo with _$LichessChallengeEventInfo {
+  const factory LichessChallengeEventInfo({
     required String id,
     required String url,
     required LichessChallengeStatus status,
@@ -142,10 +156,38 @@ class LichessGameChallengeEvent with _$LichessGameChallengeEvent {
     LichessChallengeDirection? direction,
     String? initialFen,
     String? declineReason,
-  }) = _LichessGameChallengeEvent;
+  }) = _LichessChallengeEventInfo;
 
-  factory LichessGameChallengeEvent.fromJson(Map<String, dynamic> json) =>
-      _$LichessGameChallengeEventFromJson(json);
+  factory LichessChallengeEventInfo.fromJson(Map<String, dynamic> json) =>
+      _$LichessChallengeEventInfoFromJson(json);
+}
+
+/// https://lichess.org/api#tag/Board
+@freezed
+class LichessChallengeCanceledEvent
+    with _$LichessChallengeCanceledEvent
+    implements LichessBoardGameIncomingEvent {
+  const factory LichessChallengeCanceledEvent({
+    required LichessBoardGameIncomingEventType type,
+    required LichessChallengeEventInfo challenge,
+  }) = _LichessChallengeCanceledEvent;
+
+  factory LichessChallengeCanceledEvent.fromJson(Map<String, dynamic> json) =>
+      _$LichessChallengeCanceledEventFromJson(json);
+}
+
+/// https://lichess.org/api#tag/Board
+@freezed
+class LichessChallengeDeclinedEvent
+    with _$LichessChallengeDeclinedEvent
+    implements LichessBoardGameIncomingEvent {
+  const factory LichessChallengeDeclinedEvent({
+    required LichessBoardGameIncomingEventType type,
+    required LichessChallengeEventInfo challenge,
+  }) = _LichessChallengeDeclinedEvent;
+
+  factory LichessChallengeDeclinedEvent.fromJson(Map<String, dynamic> json) =>
+      _$LichessChallengeDeclinedEventFromJson(json);
 }
 
 /// https://lichess.org/api#tag/Board
@@ -427,10 +469,19 @@ enum LichessBoardGameEventType {
 /// https://lichess.org/api#tag/Games/operation/apiGamesUser
 @JsonEnum(valueField: 'raw')
 enum LichessBoardGameIncomingEventType {
+  /// [LichessGameStartEvent].
   gameStart('gameStart'),
+
+  /// [LichessGameFinishEvent].
   gameFinish('gameFinish'),
+
+  /// [LichessChallengeEvent].
   challenge('challenge'),
+
+  /// [LichessChallengeCanceledEvent].
   challengeCanceled('challengeCanceled'),
+
+  /// [LichessChallengeDeclinedEvent].
   challengeDeclined('challengeDeclined');
 
   const LichessBoardGameIncomingEventType(this.raw);

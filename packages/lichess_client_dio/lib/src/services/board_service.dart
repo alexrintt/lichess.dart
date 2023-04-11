@@ -53,7 +53,39 @@ abstract class BoardServiceDio implements BoardService {
   ///
   /// https://lichess.org/api#tag/Board/operation/apiStreamEvent
   Stream<LichessBoardGameIncomingEvent> streamIncomingEvents() async* {
-    throw NotImplemented();
+    final Response<ResponseBody> response = await dio.get(
+      '/api/stream/event',
+      options: createNdjsonDioOptions(),
+    );
+
+    await for (final NdjsonLine ndjsonLine
+        in response.data?.stream.parseNdjson() ??
+            const Stream<NdjsonLine>.empty()) {
+      if (!ndjsonLine.isMap) {
+        // Not json obj, ignore.
+        continue;
+      }
+
+      final Map<String, dynamic> rawData = ndjsonLine.asMap();
+
+      switch (rawData['type']) {
+        case 'challenge':
+          yield LichessChallengeEvent.fromJson(rawData);
+          break;
+        case 'challengeCanceled':
+          yield LichessChallengeCanceledEvent.fromJson(rawData);
+          break;
+        case 'challengeDeclined':
+          yield LichessChallengeDeclinedEvent.fromJson(rawData);
+          break;
+        case 'gameStart':
+          yield LichessGameStartEvent.fromJson(rawData);
+          break;
+        case 'gameFinish':
+          yield LichessGameFinishEvent.fromJson(rawData);
+          break;
+      }
+    }
   }
 
   /// Stream the state of a game being played with the Board API, as [ndjson](https://lichess.org/api#section/Introduction/Streaming-with-ND-JSON).

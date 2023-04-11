@@ -12,7 +12,9 @@ import 'package:test/scaffolding.dart';
 )
 import 'lichess_client_dio_test.mocks.dart';
 import 'responses/streamBoardGameState/create_response.dart'
-    as streamBoardGameState;
+    as stream_board_game_state;
+import 'responses/streamIncomingEvents/create_response.dart'
+    as stream_incoming_events;
 
 void main() {
   group('Board', () {
@@ -25,14 +27,13 @@ void main() {
       when(
         mockDio.get<ResponseBody>(
           '/api/board/game/stream/$kSampleGameId',
-          options: anyNamed('options'),
-          // options: create,
+          options: argThat(isValidNdjsonOptions, named: 'options'),
         ),
       ).thenAnswer(
         (_) => Future<Response<ResponseBody>>.value(
           Response<ResponseBody>(
             requestOptions: RequestOptions(),
-            data: streamBoardGameState.createResponse(),
+            data: stream_board_game_state.createResponse(),
           ),
         ),
       );
@@ -59,5 +60,63 @@ void main() {
         equals(kSampleGameId),
       );
     });
+    test('https://lichess.org/api#tag/Board/operation/apiStreamEvent',
+        () async {
+      final MockDio mockDio = MockDio();
+
+      when(
+        mockDio.get<ResponseBody>(
+          '/api/stream/event',
+          options: argThat(isValidNdjsonOptions, named: 'options'),
+        ),
+      ).thenAnswer(
+        (_) => Future<Response<ResponseBody>>.value(
+          Response<ResponseBody>(
+            requestOptions: RequestOptions(),
+            data: stream_incoming_events.createResponse(),
+          ),
+        ),
+      );
+
+      final LichessClient lichessClient = LichessClientDio(mockDio);
+
+      final List<LichessBoardGameIncomingEvent> incomingBoardEvents =
+          await lichessClient.board.streamIncomingEvents().toList();
+
+      // Verify if all events were successfully loaded and converted.
+      expect(
+        incomingBoardEvents
+            .map((LichessBoardGameIncomingEvent e) => e.type)
+            .toSet()
+            .length,
+        equals(LichessBoardGameIncomingEventType.values.length),
+      );
+
+      // Verify if the game full event was provided as the first event.
+      expect(
+        incomingBoardEvents.first.type,
+        LichessBoardGameIncomingEventType.challenge,
+      );
+    });
   });
+}
+
+const _IsValidNdjsonOptions isValidNdjsonOptions = _IsValidNdjsonOptions();
+
+class _IsValidNdjsonOptions extends Matcher {
+  const _IsValidNdjsonOptions();
+
+  @override
+  bool matches(Object? item, Map<dynamic, dynamic> matchState) {
+    final Options ndjsonOptions = createNdjsonDioOptions();
+
+    return item is Options &&
+        item.responseType == ndjsonOptions.responseType &&
+        equals(ndjsonOptions.headers).matches(item.headers, matchState) &&
+        item.contentType == ndjsonOptions.contentType;
+  }
+
+  @override
+  Description describe(Description description) => description
+      .add('given options does not match options of [createNdjsonDioOptions]');
 }
