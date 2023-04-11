@@ -1,11 +1,8 @@
-import 'dart:convert';
-import 'dart:typed_data';
-
 import 'package:dio/dio.dart';
-import 'package:lichess_client/lichess_client.dart';
+import 'package:ndjson/ndjson.dart';
 import 'package:retrofit/http.dart';
 
-import '../utils/create_dio_client_with.dart';
+import '../../lichess_client_dio.dart';
 
 part 'puzzles_service.g.dart';
 
@@ -58,7 +55,7 @@ abstract class PuzzlesServiceDio implements PuzzlesService {
   Stream<PuzzleActivity> getPuzzleActivity({int? max}) async* {
     final Response<ResponseBody> response = await dio.get<ResponseBody>(
       '/api/puzzle/activity',
-      options: Options(responseType: ResponseType.stream),
+      options: createNdjsonDioOptions(),
       queryParameters: max == null
           ? null
           : <String, dynamic>{
@@ -66,33 +63,10 @@ abstract class PuzzlesServiceDio implements PuzzlesService {
             },
     );
 
-    final StringBuffer buffered = StringBuffer();
-
-    await for (final Uint8List part
-        in response.data?.stream ?? const Stream<Uint8List>.empty()) {
-      final String chunk = utf8.decode(part);
-
-      buffered.write(chunk);
-
-      late int i;
-
-      while ((i = buffered.toString().indexOf('\n')) != -1) {
-        final String obj = buffered.toString().substring(0, i);
-        final String rest = buffered.toString().substring(i + 1);
-
-        buffered.clear();
-        buffered.write(rest);
-
-        if (obj.isEmpty) {
-          continue;
-        }
-
-        final dynamic raw = jsonDecode(obj);
-
-        if (raw is Map<String, dynamic>) {
-          yield PuzzleActivity.fromJson(Map<String, dynamic>.from(raw));
-        }
-      }
+    if (response.data != null) {
+      yield* response.data!.stream.parseNdjsonWithConverter<PuzzleActivity>(
+        whenMap: PuzzleActivity.fromJson,
+      );
     }
   }
 
