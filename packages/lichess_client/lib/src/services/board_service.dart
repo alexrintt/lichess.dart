@@ -87,9 +87,14 @@ abstract class BoardService with CloseableMixin {
   ///
   /// [1]: https://lichess.org/api#operation/apiStreamEvent
   Stream<LichessBoardGameEvent> createRealTimeSeek({
-    required bool rated,
-    double? time,
-    double? increment,
+    required double increment,
+    required int time,
+    DaysPerTurn? days,
+    bool rated = false,
+    LichessVariantKey variant = LichessVariantKey.standard,
+    LichessChallengeColor color = LichessChallengeColor.random,
+    int? maxRating,
+    int? minRating,
   });
 
   /// {@macro createseek}
@@ -116,5 +121,3 @@ abstract class BoardService with CloseableMixin {
     int? minRating,
   });
 }
-
-class RatingRange {}
