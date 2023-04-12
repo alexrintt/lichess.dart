@@ -138,6 +138,79 @@ abstract class BoardServiceDio implements BoardService {
     }
   }
 
+  /// {@template createseek}
+  /// ## Create a seek
+  ///
+  /// Create a public seek, to start a game with a random player.
+  ///
+  /// ### Real-time seek
+  ///
+  /// Specify the `time` and `increment` clock values. The response is streamed but doesn't contain any information.
+  ///
+  /// **Keep the connection open to keep the seek active.**
+  ///
+  /// If the client closes the connection, the seek is canceled. This way, if the client terminates, the user won't be paired in a game they wouldn't play. When the seek is accepted, or expires, the server closes the connection.
+  ///
+  /// **Make sure to also have an [Event stream](1) open**, to be notified when a game starts. We recommend opening the Event stream first, then the seek stream. This way, you won't miss the game event if the seek is accepted immediately.
+  ///
+  /// https://lichess.org/api#tag/Board/operation/apiBoardSeek
+  ///
+  /// ### Correspondence seek
+  ///
+  /// Specify the `days` per turn value. The response is not streamed, it immediately completes with the seek ID. The seek remains active on the server until it is joined by someone.
+  ///
+  /// {@endtemplate}
+  ///
+  /// **Parameters of the seek:**
+  ///
+  /// - [rated] Whether the game is rated and impacts players ratings (Default: false).
+  /// - [time] Clock initial time in minutes. Required for real-time seeks (Number between 0 and 180).
+  /// - [increment] Clock increment in seconds. Required for real-time seeks (Integer between 0 and 180).
+  /// - [days] Days per turn. Required for correspondence seeks (Enum: 1, 2, 3, 5, 7, 10, 14).
+  /// - [variant] Variant key of this game (Enum: [LichessVariantKey]).
+  /// - [color] The color to play. Better left empty to automatically get 50% white.
+  /// - [ratingRange] The rating range of potential opponents. Better left empty. Example: 1500-1800.
+  ///
+  /// [1]: https://lichess.org/api#operation/apiStreamEvent
+  Stream<LichessBoardGameEvent> createRealTimeSeek({
+    required double increment,
+    required int time,
+    DaysPerTurn? days,
+    bool rated = false,
+    LichessVariantKey variant = LichessVariantKey.standard,
+    LichessChallengeColor color = LichessChallengeColor.random,
+    int? maxRating,
+    int? minRating,
+  }) {
+    throw NotImplemented();
+  }
+
+  /// {@macro createseek}
+  ///
+  /// **Parameters of the seek:**
+  ///
+  /// - [rated] Whether the game is rated and impacts players ratings (Default: false).
+  /// - [time] Clock initial time in minutes (Number between 0 and 180).
+  /// - [increment] Clock increment in seconds (Integer between 0 and 180).
+  /// - [days] Days per turn (Enum: 1, 2, 3, 5, 7, 10, 14).
+  /// - [variant] Variant key of this game (Enum: [LichessVariantKey]).
+  /// - [color] The color to play. Better left empty to automatically get 50% white.
+  /// - [ratingRange] The rating range of potential opponents. Better left empty. Example: 1500-1800.
+  ///
+  /// [1]: https://lichess.org/api#operation/apiStreamEvent
+  Stream<LichessBoardGameEvent> createCorrespondenceSeek({
+    required DaysPerTurn days,
+    bool rated = false,
+    LichessVariantKey variant = LichessVariantKey.standard,
+    LichessChallengeColor color = LichessChallengeColor.random,
+    double? time,
+    double? increment,
+    int? maxRating,
+    int? minRating,
+  }) {
+    throw NotImplemented();
+  }
+
   /// Close the [dio] instance associated with this service instance.
   ///
   /// Note that you will not be able to use other service that uses this same [dio] instance.

@@ -99,6 +99,25 @@ void main() {
       );
     });
   });
+  group('OAuth', () {
+    test('https://lichess.org/api#tag/OAuth/operation/apiTokenDelete',
+        () async {
+      final MockDio mockDio = MockDio();
+      when(mockDio.options).thenReturn(
+        BaseOptions(
+          baseUrl: 'https://lichess.org',
+          headers: <String, String>{'Authorization': 'Bearer 12345'},
+        ),
+      );
+
+      final LichessClient lichessClient = LichessClientDio(mockDio);
+      await lichessClient.oauth.revokeAccessToken();
+
+      verify(
+        mockDio.fetch<void>(argThat(matchRevokeTokenEndpointArgs)),
+      ).called(1);
+    });
+  });
 }
 
 const _IsValidNdjsonOptions isValidNdjsonOptions = _IsValidNdjsonOptions();
@@ -114,6 +133,33 @@ class _IsValidNdjsonOptions extends Matcher {
         item.responseType == ndjsonOptions.responseType &&
         equals(ndjsonOptions.headers).matches(item.headers, matchState) &&
         item.contentType == ndjsonOptions.contentType;
+  }
+
+  @override
+  Description describe(Description description) => description
+      .add('given options does not match options of [createNdjsonDioOptions]');
+}
+
+const _MatchRevokeTokenEndpointArgs matchRevokeTokenEndpointArgs =
+    _MatchRevokeTokenEndpointArgs();
+
+class _MatchRevokeTokenEndpointArgs extends Matcher {
+  const _MatchRevokeTokenEndpointArgs();
+
+  @override
+  bool matches(Object? item, Map<dynamic, dynamic> matchState) {
+    const Map<String, dynamic> emptyMap = <String, dynamic>{};
+
+    return item is RequestOptions &&
+        item.responseType == ResponseType.json &&
+        item.baseUrl == 'https://lichess.org' &&
+        item.path == '/api/token' &&
+        item.data == null &&
+        item.cancelToken == null &&
+        equals(item.extra).matches(emptyMap, matchState) &&
+        equals(item.headers).matches(<String, String>{
+          'Authorization': 'Bearer 12345',
+        }, matchState);
   }
 
   @override

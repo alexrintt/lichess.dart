@@ -58,6 +58,13 @@ class MyCustomBoardService implements BoardService {
   void noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }
 
+class MyCustomOAuthService implements OAuthService {
+  /// A cool custom service implementation...
+
+  @override
+  void noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
+}
+
 class MyCustomLichessClient extends LichessClient {
   @override
   AccountService get account => MyCustomAccountService();
@@ -87,6 +94,9 @@ class MyCustomLichessClient extends LichessClient {
 
   @override
   BoardService get board => MyCustomBoardService();
+
+  @override
+  OAuthService get oauth => MyCustomOAuthService();
 }
 
 void main() => _tryRunAndThrowGhostImplementation();

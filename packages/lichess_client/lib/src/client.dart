@@ -29,6 +29,9 @@ abstract class LichessClient with CloseableMixin {
   /// {@macro board}
   BoardService get board;
 
+  /// {@macro oauth}
+  OAuthService get oauth;
+
   /// Alternative name to [relations].
   RelationsService get social => relations;
 }

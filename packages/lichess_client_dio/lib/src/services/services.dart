@@ -1,6 +1,7 @@
 export 'account_service.dart';
 export 'board_service.dart';
 export 'games_service.dart';
+export 'oauth_service.dart';
 export 'puzzles_service.dart';
 export 'relations_service.dart';
 export 'teams_service.dart';

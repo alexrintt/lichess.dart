@@ -23,6 +23,7 @@ class LichessClientDio extends LichessClient {
   PuzzlesServiceDio? _puzzleService;
   GamesServiceDio? _gamesService;
   BoardServiceDio? _boardService;
+  OAuthServiceDio? _oauthService;
 
   /// {@macro account}
   @override
@@ -54,7 +55,11 @@ class LichessClientDio extends LichessClient {
 
   /// {@macro board}
   @override
-  BoardService get board => _boardService ??= BoardServiceDio(dio);
+  BoardServiceDio get board => _boardService ??= BoardServiceDio(dio);
+
+  /// {@macro board}
+  @override
+  OAuthServiceDio get oauth => _oauthService ??= OAuthServiceDio(dio);
 
   /// Call [close] on the [dio] instance associated with this client.
   @override
