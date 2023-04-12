@@ -380,6 +380,22 @@ class LichessGameOpening with _$LichessGameOpening {
       _$LichessGameOpeningFromJson(json);
 }
 
+/// https://lichess.org/api#tag/Board/operation/apiBoardSeek
+@JsonEnum(valueField: 'raw')
+enum DaysPerTurn {
+  one('1'),
+  two('2'),
+  three('3'),
+  five('5'),
+  seven('7'),
+  ten('10'),
+  fourteen('14');
+
+  const DaysPerTurn(this.raw);
+
+  final String raw;
+}
+
 /// https://lichess.org/api#tag/TV/operation/tvFeed
 @JsonEnum(valueField: 'raw')
 enum ChessColor {
