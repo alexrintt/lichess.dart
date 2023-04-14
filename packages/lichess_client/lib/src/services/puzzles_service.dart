@@ -12,12 +12,12 @@ abstract class PuzzlesService {
   /// Get the Daily puzzle.
   ///
   /// https://lichess.org/api#tag/Puzzles/operation/apiPuzzleDaily
-  Future<Puzzle> getDailyPuzzle();
+  Future<LichessPuzzle> getDailyPuzzle();
 
   /// Get a puzzle by its ID.
   ///
   /// https://lichess.org/api#tag/Puzzles/operation/apiPuzzleId
-  Future<Puzzle> getPuzzleById({required String id});
+  Future<LichessPuzzle> getPuzzleById({required String id});
 
   /// Download you puzzle activity
   /// Puzzle activity is sorted by reverse chronological order (most recent first)
@@ -26,7 +26,7 @@ abstract class PuzzlesService {
   /// If not specified, all puzzle activities will be returned.
   ///
   /// https://lichess.org/api#tag/Puzzles/operation/apiPuzzleActivity
-  Stream<PuzzleActivity> getPuzzleActivity({int? max});
+  Stream<LichessPuzzleActivity> getPuzzleActivity({int? max});
 
   /// Get your puzzle dashboard
   ///
@@ -34,5 +34,5 @@ abstract class PuzzlesService {
   /// If not specified, the puzzle dashboard will be returned for the last 30 days.
   ///
   /// https://lichess.org/api#tag/Puzzles/operation/apiPuzzleDashboard
-  Future<PuzzleDashboard> getPuzzleDashboard({int days = 30});
+  Future<LichessPuzzleDashboard> getPuzzleDashboard({int days = 30});
 }

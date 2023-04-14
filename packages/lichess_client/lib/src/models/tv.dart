@@ -35,7 +35,7 @@ class LichessTvGameSummary with _$LichessTvGameSummary {
 class LichessTvGameSummaryData with _$LichessTvGameSummaryData {
   const factory LichessTvGameSummaryData({
     String? id,
-    ChessColor? orientation,
+    LichessColor? orientation,
     List<LichessGamePlayer>? players,
     String? fen,
   }) = _LichessTvGameSummaryData;

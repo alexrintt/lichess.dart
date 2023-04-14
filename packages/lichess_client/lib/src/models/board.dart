@@ -12,7 +12,7 @@ const String kStandardChessInitialFen =
 @freezed
 class LichessGamePlayer with _$LichessGamePlayer {
   const factory LichessGamePlayer({
-    ChessColor? color,
+    LichessColor? color,
     User? user,
     int? rating,
     int? ratingDiff,
@@ -50,7 +50,7 @@ class LichessGame with _$LichessGame {
     required LichessGamePlayers players,
     List<int>? clocks,
     String? initialFen,
-    ChessColor? winner,
+    LichessColor? winner,
     LichessGameOpening? opening,
     String? moves,
     LichessGameClock? clock,
@@ -327,7 +327,7 @@ class LichessGameStateEvent
     required int winc,
     required int binc,
     required LichessGameStatus status,
-    ChessColor? winner,
+    LichessColor? winner,
     bool? wdraw,
     bool? bdraw,
     bool? wtakeback,
@@ -410,11 +410,11 @@ enum DaysPerTurn {
 
 /// https://lichess.org/api#tag/TV/operation/tvFeed
 @JsonEnum(valueField: 'raw')
-enum ChessColor {
+enum LichessColor {
   white('white'),
   black('black');
 
-  const ChessColor(this.raw);
+  const LichessColor(this.raw);
 
   bool get isWhite => this == white;
   bool get isBlack => this == black;
