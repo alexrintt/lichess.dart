@@ -120,4 +120,71 @@ abstract class BoardService with CloseableMixin {
     int? maxRating,
     int? minRating,
   });
+
+  /// Make a move in a game being played with the Board API.
+  ///
+  /// The move can also contain a draw offer/agreement.
+  ///
+  /// Params:
+  ///
+  /// - [gameId] Target game ID. Example: `5IrD6Gzz`.
+  /// - [move] The move to play, in UCI format. Example: `e2e4`.
+  ///
+  /// https://lichess.org/api#tag/Board/operation/boardGameMove
+  Future<void> makeBoardMove({
+    required String gameId,
+    required String move,
+    bool? offeringDraw,
+  });
+
+  /// Resign a game being played with the Board API.
+  ///
+  /// Params:
+  ///
+  /// - [gameId] Target game ID. Example: `5IrD6Gzz`.
+  ///
+  /// https://lichess.org/api#tag/Board/operation/boardGameResign
+  Future<void> resignGame(String gameId);
+
+  /// Abort a game being played with the Board API.
+  ///
+  /// Params:
+  ///
+  /// - [gameId] Target game ID. Example: `5IrD6Gzz`.
+  ///
+  /// https://lichess.org/api#tag/Board/operation/boardGameAbort
+  Future<void> abortGame(String gameId);
+
+  /// Post a message to the player or spectator chat, in a game being played with the Board API.
+  ///
+  /// Params:
+  ///
+  /// - [gameId] Target game ID. Example: `5IrD6Gzz`.
+  /// - [room] Target game room. Enum: "player" "spectator".
+  /// - [text] Chat message text.
+  ///
+  /// https://lichess.org/api#tag/Board/operation/boardGameChatPost
+  Future<void> writeInTheChat({
+    required String gameId,
+    required LichessChatLineRoom room,
+    required String text,
+  });
+
+  /// Get the messages posted in the game chat.
+  ///
+  /// Params:
+  ///
+  /// - [gameId] Target game ID. Example: `5IrD6Gzz`.
+  ///
+  /// https://lichess.org/api#tag/Board/operation/boardGameChatGet
+  Stream<LichessGameChatMessage> fetchGameChat(String gameId);
+
+  /// Claim victory when the opponent has left the game for a while.
+  ///
+  /// Params:
+  ///
+  /// - [gameId] Target game ID. Example: `5IrD6Gzz`.
+  ///
+  /// https://lichess.org/api#tag/Board/operation/boardGameClaimVictory
+  Future<void> claimVictory(String gameId);
 }

@@ -350,6 +350,18 @@ class LichessGamePlayers with _$LichessGamePlayers {
       _$LichessGamePlayersFromJson(json);
 }
 
+/// https://lichess.org/api#tag/Board/operation/boardGameChatGet
+@freezed
+class LichessGameChatMessage with _$LichessGameChatMessage {
+  const factory LichessGameChatMessage({
+    required String text,
+    required String user,
+  }) = _LichessGameChatMessage;
+
+  factory LichessGameChatMessage.fromJson(Map<String, dynamic> json) =>
+      _$LichessGameChatMessageFromJson(json);
+}
+
 /// https://lichess.org/api#tag/TV/operation/tvFeed
 /// https://lichess.org/api#tag/Board
 @freezed

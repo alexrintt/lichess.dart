@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:dio/dio.dart' hide Headers;
 import 'package:dio/dio.dart';
@@ -234,6 +235,110 @@ abstract class BoardServiceDio implements BoardService {
       variant: variant,
     );
   }
+
+  /// Make a move in a game being played with the Board API.
+  ///
+  /// The move can also contain a draw offer/agreement.
+  ///
+  /// Params:
+  ///
+  /// - [gameId] Target game ID. Example: `5IrD6Gzz`.
+  /// - [move] The move to play, in UCI format. Example: `e2e4`.
+  ///
+  /// https://lichess.org/api#tag/Board/operation/boardGameMove
+  @override
+  @POST('/api/board/game/{gameId}/move/{move}')
+  Future<void> makeBoardMove({
+    @Path() required String gameId,
+    @Path() required String move,
+    @Query('offeringDraw') bool? offeringDraw,
+  });
+
+  /// Resign a game being played with the Board API.
+  ///
+  /// Params:
+  ///
+  /// - [gameId] Target game ID. Example: `5IrD6Gzz`.
+  ///
+  /// https://lichess.org/api#tag/Board/operation/boardGameResign
+  @override
+  @POST('/api/board/game/{gameId}/resign')
+  Future<void> resignGame(@Path() String gameId);
+
+  /// Abort a game being played with the Board API.
+  ///
+  /// Params:
+  ///
+  /// - [gameId] Target game ID. Example: `5IrD6Gzz`.
+  ///
+  /// https://lichess.org/api#tag/Board/operation/boardGameAbort
+  @override
+  @POST('/api/board/game/{gameId}/abort')
+  Future<void> abortGame(@Path() String gameId);
+
+  /// Post a message to the player or spectator chat, in a game being played with the Board API.
+  ///
+  /// Params:
+  ///
+  /// - [gameId] Target game ID. Example: `5IrD6Gzz`.
+  /// - [room] Target game room. Enum: "player" "spectator".
+  /// - [text] Chat message text.
+  ///
+  /// https://lichess.org/api#tag/Board/operation/boardGameChatPost
+  @override
+  Future<void> writeInTheChat({
+    required String gameId,
+    required LichessChatLineRoom room,
+    required String text,
+  }) async {
+    final Map<String, String> body = <String, String>{
+      'room': room.raw,
+      'text': text,
+    };
+
+    await dio.post<void>(
+      '/api/board/game/$gameId/abort',
+      data: body,
+      options: Options(contentType: Headers.formUrlEncodedContentType),
+    );
+  }
+
+  /// Get the messages posted in the game chat.
+  ///
+  /// Params:
+  ///
+  /// - [gameId] Target game ID. Example: `5IrD6Gzz`.
+  ///
+  /// https://lichess.org/api#tag/Board/operation/boardGameChatGet
+  @override
+  Stream<LichessGameChatMessage> fetchGameChat(String gameId) async* {
+    final Response<ResponseBody> response = await dio.get(
+      '/api/board/game/$gameId/chat',
+      options: createNdjsonDioOptions(),
+    );
+
+    await for (final NdjsonLine ndjsonLine
+        in response.data?.stream.parseNdjson() ??
+            const Stream<NdjsonLine>.empty()) {
+      if (!ndjsonLine.isMap) {
+        // Not json obj, ignore.
+        continue;
+      }
+
+      yield LichessGameChatMessage.fromJson(ndjsonLine.asMap());
+    }
+  }
+
+  /// Claim victory when the opponent has left the game for a while.
+  ///
+  /// Params:
+  ///
+  /// - [gameId] Target game ID. Example: `5IrD6Gzz`.
+  ///
+  /// https://lichess.org/api#tag/Board/operation/boardGameClaimVictory
+  @override
+  @POST('/api/board/game/{gameId}/claim-victory')
+  Future<void> claimVictory(@Path() String gameId);
 
   Future<Dio> _createSeekRequestWithFreshClient({
     bool rated = false,
