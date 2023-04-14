@@ -86,9 +86,9 @@ abstract class BoardService with CloseableMixin {
   /// - [ratingRange] The rating range of potential opponents. Better left empty. Example: 1500-1800.
   ///
   /// [1]: https://lichess.org/api#operation/apiStreamEvent
-  Stream<LichessBoardGameEvent> createRealTimeSeek({
-    required double increment,
-    required int time,
+  Future<Future<void> Function()> createRealTimeSeek({
+    required double time,
+    required int increment,
     DaysPerTurn? days,
     bool rated = false,
     LichessVariantKey variant = LichessVariantKey.standard,
@@ -110,13 +110,13 @@ abstract class BoardService with CloseableMixin {
   /// - [ratingRange] The rating range of potential opponents. Better left empty. Example: 1500-1800.
   ///
   /// [1]: https://lichess.org/api#operation/apiStreamEvent
-  Stream<LichessBoardGameEvent> createCorrespondenceSeek({
+  Future<Future<void> Function()> createCorrespondenceSeek({
     required DaysPerTurn days,
     bool rated = false,
     LichessVariantKey variant = LichessVariantKey.standard,
     LichessChallengeColor color = LichessChallengeColor.random,
     double? time,
-    double? increment,
+    int? increment,
     int? maxRating,
     int? minRating,
   });

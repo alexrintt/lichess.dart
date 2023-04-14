@@ -1,6 +1,10 @@
+import 'dart:async';
+import 'dart:io';
+
 import 'package:dio/dio.dart' hide Headers;
+import 'package:dio/dio.dart';
 import 'package:ndjson/ndjson.dart';
-import 'package:retrofit/http.dart';
+import 'package:retrofit/http.dart' hide Headers;
 
 import '../../lichess_client_dio.dart';
 
@@ -52,6 +56,7 @@ abstract class BoardServiceDio implements BoardService {
   /// When the stream opens, all current challenges and games are sent.
   ///
   /// https://lichess.org/api#tag/Board/operation/apiStreamEvent
+  @override
   Stream<LichessBoardGameIncomingEvent> streamIncomingEvents() async* {
     final Response<ResponseBody> response = await dio.get(
       '/api/stream/event',
@@ -103,6 +108,7 @@ abstract class BoardServiceDio implements BoardService {
   /// The server closes the stream when the game ends, or if the game has already ended.
   ///
   /// https://lichess.org/api#tag/Board/operation/boardGameStream
+  @override
   Stream<LichessBoardGameEvent> streamBoardGameState({
     required String gameId,
   }) async* {
@@ -172,17 +178,26 @@ abstract class BoardServiceDio implements BoardService {
   /// - [ratingRange] The rating range of potential opponents. Better left empty. Example: 1500-1800.
   ///
   /// [1]: https://lichess.org/api#operation/apiStreamEvent
-  Stream<LichessBoardGameEvent> createRealTimeSeek({
-    required double increment,
-    required int time,
+  Future<Future<void> Function()> createRealTimeSeek({
+    required int increment,
+    required double time,
     DaysPerTurn? days,
     bool rated = false,
     LichessVariantKey variant = LichessVariantKey.standard,
     LichessChallengeColor color = LichessChallengeColor.random,
     int? maxRating,
     int? minRating,
-  }) {
-    throw NotImplemented();
+  }) async {
+    return _createSeekRequestWithCancelableCallback(
+      color: color,
+      days: days,
+      increment: increment,
+      maxRating: maxRating,
+      minRating: minRating,
+      rated: rated,
+      time: time,
+      variant: variant,
+    );
   }
 
   /// {@macro createseek}
@@ -198,17 +213,118 @@ abstract class BoardServiceDio implements BoardService {
   /// - [ratingRange] The rating range of potential opponents. Better left empty. Example: 1500-1800.
   ///
   /// [1]: https://lichess.org/api#operation/apiStreamEvent
-  Stream<LichessBoardGameEvent> createCorrespondenceSeek({
+  Future<Future<void> Function()> createCorrespondenceSeek({
     required DaysPerTurn days,
     bool rated = false,
     LichessVariantKey variant = LichessVariantKey.standard,
     LichessChallengeColor color = LichessChallengeColor.random,
     double? time,
-    double? increment,
+    int? increment,
     int? maxRating,
     int? minRating,
   }) {
-    throw NotImplemented();
+    return _createSeekRequestWithCancelableCallback(
+      color: color,
+      days: days,
+      increment: increment,
+      maxRating: maxRating,
+      minRating: minRating,
+      rated: rated,
+      time: time,
+      variant: variant,
+    );
+  }
+
+  Future<Dio> _createSeekRequestWithFreshClient({
+    bool rated = false,
+    double? time,
+    int? increment,
+    DaysPerTurn? days,
+    LichessVariantKey variant = LichessVariantKey.standard,
+    LichessChallengeColor color = LichessChallengeColor.random,
+    int? maxRating,
+    int? minRating,
+  }) async {
+    assert(
+      (() {
+        if (time != null) {
+          return time >= 0 && time <= 180;
+        }
+        return true;
+      })(),
+      'Range for [time] is between [0] and [180].',
+    );
+    assert(
+      (() {
+        if (increment != null) {
+          return increment >= 0 && increment <= 180;
+        }
+        return true;
+      })(),
+      'Range for [increment] is between [0] and [180].',
+    );
+    assert(
+      (maxRating != null && minRating != null) ||
+          (maxRating == null && minRating == null),
+      '''You must either provide both ([maxRating] AND [minRating]) OR set both to null (recommended).''',
+    );
+    assert(
+      (() {
+        if (maxRating != null && minRating != null) {
+          return maxRating >= minRating && minRating >= 0;
+        }
+        return true;
+      })(),
+      '''[maxRating] must be greather or equal to [minRating]. [minRating] also MUST BE greather or equal to [0].''',
+    );
+
+    final Dio requestDioClient = Dio(dio.options);
+
+    final Map<String, String> body = <String, String>{
+      'rated': rated.toString(),
+      if (time != null) 'time': time.toString(),
+      if (increment != null) 'increment': increment.toString(),
+      if (days?.raw != null) 'days': days!.raw.toString(),
+      'variant': variant.raw,
+      'color': color.raw,
+      'ratingRange': '$minRating-$maxRating',
+    };
+
+    await requestDioClient.get<void>(
+      '/api/board/seek',
+      options: Options(
+        contentType: Headers.formUrlEncodedContentType,
+      ),
+      data: body,
+    );
+
+    // Returns a callback that closes the connection which cancels the seek request.
+    return requestDioClient;
+  }
+
+  Future<Future<void> Function()> _createSeekRequestWithCancelableCallback({
+    bool rated = false,
+    double? time,
+    int? increment,
+    DaysPerTurn? days,
+    LichessVariantKey variant = LichessVariantKey.standard,
+    LichessChallengeColor color = LichessChallengeColor.random,
+    int? maxRating,
+    int? minRating,
+  }) async {
+    final Dio requestDioClient = await _createSeekRequestWithFreshClient(
+      color: color,
+      days: days,
+      increment: increment,
+      maxRating: maxRating,
+      minRating: minRating,
+      rated: rated,
+      time: time,
+      variant: variant,
+    );
+
+    // Returns a callback that closes the connection which cancels the seek request.
+    return () async => requestDioClient.close(force: true);
   }
 
   /// Close the [dio] instance associated with this service instance.
