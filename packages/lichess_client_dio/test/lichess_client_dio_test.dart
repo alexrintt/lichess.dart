@@ -157,9 +157,12 @@ class _MatchRevokeTokenEndpointArgs extends Matcher {
         item.data == null &&
         item.cancelToken == null &&
         equals(item.extra).matches(emptyMap, matchState) &&
-        equals(item.headers).matches(<String, String>{
-          'Authorization': 'Bearer 12345',
-        }, matchState);
+        equals(item.headers).matches(
+          <String, String>{
+            'Authorization': 'Bearer 12345',
+          },
+          matchState,
+        );
   }
 
   @override

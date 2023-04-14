@@ -33,14 +33,14 @@ abstract class PuzzlesServiceDio implements PuzzlesService {
   /// https://lichess.org/api#tag/Puzzles/operation/apiPuzzleDaily
   @override
   @GET('/api/puzzle/daily')
-  Future<Puzzle> getDailyPuzzle();
+  Future<LichessPuzzle> getDailyPuzzle();
 
   /// Get a puzzle by its ID.
   ///
   /// https://lichess.org/api#tag/Puzzles/operation/apiPuzzleId
   @override
   @GET('/api/puzzle/{id}')
-  Future<Puzzle> getPuzzleById({
+  Future<LichessPuzzle> getPuzzleById({
     @Path('id') required String id,
   });
 
@@ -52,7 +52,7 @@ abstract class PuzzlesServiceDio implements PuzzlesService {
   ///
   /// https://lichess.org/api#tag/Puzzles/operation/apiPuzzleActivity
   @override
-  Stream<PuzzleActivity> getPuzzleActivity({int? max}) async* {
+  Stream<LichessPuzzleActivity> getPuzzleActivity({int? max}) async* {
     final Response<ResponseBody> response = await dio.get<ResponseBody>(
       '/api/puzzle/activity',
       options: createNdjsonDioOptions(),
@@ -64,8 +64,9 @@ abstract class PuzzlesServiceDio implements PuzzlesService {
     );
 
     if (response.data != null) {
-      yield* response.data!.stream.parseNdjsonWithConverter<PuzzleActivity>(
-        whenMap: PuzzleActivity.fromJson,
+      yield* response.data!.stream
+          .parseNdjsonWithConverter<LichessPuzzleActivity>(
+        whenMap: LichessPuzzleActivity.fromJson,
       );
     }
   }
@@ -75,7 +76,7 @@ abstract class PuzzlesServiceDio implements PuzzlesService {
   /// https://lichess.org/api#tag/Puzzles/operation/apiPuzzleDashboard
   @override
   @GET('/api/puzzle/dashboard/{days}')
-  Future<PuzzleDashboard> getPuzzleDashboard({
+  Future<LichessPuzzleDashboard> getPuzzleDashboard({
     @Path('days') int? days = 30,
   });
 }
