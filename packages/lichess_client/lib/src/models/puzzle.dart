@@ -66,7 +66,7 @@ class PuzzleInfo with _$PuzzleInfo {
 class Puzzle with _$Puzzle {
   const factory Puzzle({
     PuzzleGame? game,
-    PuzzleInfo? info,
+    PuzzleInfo? puzzle,
   }) = _Puzzle;
 
   factory Puzzle.fromJson(Map<String, dynamic> json) => _$PuzzleFromJson(json);
