@@ -37,7 +37,7 @@ class MyCustomTvService implements TvService {
   void noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }
 
-class MyCustomPuzzleService implements PuzzleService {
+class MyCustomPuzzlesService implements PuzzlesService {
   /// A cool custom service implementation...
 
   @override
@@ -45,6 +45,20 @@ class MyCustomPuzzleService implements PuzzleService {
 }
 
 class MyCustomGamesService implements GamesService {
+  /// A cool custom service implementation...
+
+  @override
+  void noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
+}
+
+class MyCustomBoardService implements BoardService {
+  /// A cool custom service implementation...
+
+  @override
+  void noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
+}
+
+class MyCustomOAuthService implements OAuthService {
   /// A cool custom service implementation...
 
   @override
@@ -73,10 +87,16 @@ class MyCustomLichessClient extends LichessClient {
   TvService get tv => MyCustomTvService();
 
   @override
-  PuzzleService get puzzles => MyCustomPuzzleService();
+  PuzzlesService get puzzles => MyCustomPuzzlesService();
 
   @override
   GamesService get games => MyCustomGamesService();
+
+  @override
+  BoardService get board => MyCustomBoardService();
+
+  @override
+  OAuthService get oauth => MyCustomOAuthService();
 }
 
 void main() => _tryRunAndThrowGhostImplementation();

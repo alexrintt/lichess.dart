@@ -10,3 +10,4 @@ pubspec.lock
 *.g.dart
 *.freezed.dart
 *.freezed.g.dart
+*.mocks.dart

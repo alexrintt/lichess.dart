@@ -507,21 +507,21 @@ Future<void> _displayLoggedUserFollows(LichessClient lichess) async {
 
 Future<void> _displayDailyPuzzle(LichessClient lichess) async {
   _header('lichess.puzzle.getDailyPuzzle');
-  final Puzzle puzzle = await lichess.puzzles.getDailyPuzzle();
+  final LichessPuzzle puzzle = await lichess.puzzles.getDailyPuzzle();
   _print('Puzzle ID: ${puzzle.info?.id} with Pgn: ${puzzle.game?.pgn}');
   _footer('lichess.puzzle.getDailyPuzzle');
 }
 
 Future<void> _displayPuzzleById(String id, LichessClient lichess) async {
   _header('lichess.puzzle.getPuzzleById');
-  final Puzzle puzzle = await lichess.puzzles.getPuzzleById(id: id);
+  final LichessPuzzle puzzle = await lichess.puzzles.getPuzzleById(id: id);
   _print('Puzzle ID: ${puzzle.info?.id} with Pgn: ${puzzle.game?.pgn}');
   _footer('lichess.puzzle.getPuzzleById');
 }
 
 Future<void> _displayMyPuzzleActivity(LichessClient lichess, {int? max}) async {
   _header('lichess.puzzle.getMyPuzzleActivity');
-  await for (final PuzzleActivity data
+  await for (final LichessPuzzleActivity data
       in lichess.puzzles.getPuzzleActivity(max: max)) {
     _print('Puzzle activity: ${data.id} : ${data.puzzleRating}');
   }
@@ -530,7 +530,8 @@ Future<void> _displayMyPuzzleActivity(LichessClient lichess, {int? max}) async {
 
 Future<void> _displayMyPuzzleDashboard(LichessClient lichess) async {
   _header('lichess.puzzle.getMyPuzzleDashboard');
-  final PuzzleDashboard dashboard = await lichess.puzzles.getPuzzleDashboard();
+  final LichessPuzzleDashboard dashboard =
+      await lichess.puzzles.getPuzzleDashboard();
   _print('Puzzle dashboard: ${dashboard.toJson()}');
   _footer('lichess.puzzle.getMyPuzzleDashboard');
 }

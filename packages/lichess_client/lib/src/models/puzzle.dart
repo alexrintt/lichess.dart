@@ -8,7 +8,7 @@ part 'puzzle.g.dart';
 @freezed
 class LichessPuzzlePlayer with _$LichessPuzzlePlayer {
   const factory LichessPuzzlePlayer({
-    String? color,
+    LichessColor? color,
     String? name,
     String? userId,
   }) = _LichessPuzzlePlayer;
@@ -18,104 +18,103 @@ class LichessPuzzlePlayer with _$LichessPuzzlePlayer {
 }
 
 @freezed
-class PuzzleGame with _$PuzzleGame {
-  const factory PuzzleGame({
+class LichessPuzzleGame with _$LichessPuzzleGame {
+  const factory LichessPuzzleGame({
     String? id,
     String? clock,
     Perf? perf,
     String? pgn,
     @JsonKey(name: 'players') List<LichessPuzzlePlayer>? playersAsList,
     bool? rated,
-  }) = _PuzzleGame;
-  factory PuzzleGame.fromJson(Map<String, dynamic> json) =>
-      _$PuzzleGameFromJson(json);
+  }) = _LichessPuzzleGame;
+  factory LichessPuzzleGame.fromJson(Map<String, dynamic> json) =>
+      _$LichessPuzzleGameFromJson(json);
 
-  const PuzzleGame._();
+  const LichessPuzzleGame._();
 
-  LichessPuzzlePlayer? get white => playersAsList?.any(
-              (LichessPuzzlePlayer element) => element.color == 'white') ??
-          false
-      ? playersAsList?.firstWhere(
-          (LichessPuzzlePlayer element) => element.color == 'white')
-      : null;
+  LichessPuzzlePlayer? get white =>
+      playersAsList?.cast<LichessPuzzlePlayer?>().firstWhere(
+            (LichessPuzzlePlayer? element) => element?.color?.isWhite ?? false,
+            orElse: () => null,
+          );
 
-  LichessPuzzlePlayer? get black => playersAsList?.any(
-              (LichessPuzzlePlayer element) => element.color == 'black') ??
-          false
-      ? playersAsList?.firstWhere(
-          (LichessPuzzlePlayer element) => element.color == 'black')
-      : null;
+  LichessPuzzlePlayer? get black =>
+      playersAsList?.cast<LichessPuzzlePlayer?>().firstWhere(
+            (LichessPuzzlePlayer? element) => element?.color?.isBlack ?? false,
+            orElse: () => null,
+          );
 }
 
 @freezed
-class PuzzleInfo with _$PuzzleInfo {
-  const factory PuzzleInfo({
+class LichessPuzzleInfo with _$LichessPuzzleInfo {
+  const factory LichessPuzzleInfo({
     String? id,
     int? initialPly,
     int? plays,
     int? rating,
     List<String>? solution,
     List<String>? themes,
-  }) = _PuzzleInfo;
+  }) = _LichessPuzzleInfo;
 
-  factory PuzzleInfo.fromJson(Map<String, dynamic> json) =>
-      _$PuzzleInfoFromJson(json);
+  factory LichessPuzzleInfo.fromJson(Map<String, dynamic> json) =>
+      _$LichessPuzzleInfoFromJson(json);
 }
 
 @freezed
-class Puzzle with _$Puzzle {
-  const factory Puzzle({
-    PuzzleGame? game,
-    PuzzleInfo? puzzle,
-  }) = _Puzzle;
+class LichessPuzzle with _$LichessPuzzle {
+  const factory LichessPuzzle({
+    LichessPuzzleGame? game,
+    LichessPuzzleInfo? puzzle,
+  }) = _LichessPuzzle;
 
-  factory Puzzle.fromJson(Map<String, dynamic> json) => _$PuzzleFromJson(json);
+  factory LichessPuzzle.fromJson(Map<String, dynamic> json) =>
+      _$LichessPuzzleFromJson(json);
 }
 
 @freezed
-class PuzzleActivity with _$PuzzleActivity {
-  const factory PuzzleActivity({
+class LichessPuzzleActivity with _$LichessPuzzleActivity {
+  const factory LichessPuzzleActivity({
     String? id,
     int? date,
     bool? win,
     int? puzzleRating,
-  }) = _PuzzleActivity;
+  }) = _LichessPuzzleActivity;
 
-  factory PuzzleActivity.fromJson(Map<String, dynamic> json) =>
-      _$PuzzleActivityFromJson(json);
+  factory LichessPuzzleActivity.fromJson(Map<String, dynamic> json) =>
+      _$LichessPuzzleActivityFromJson(json);
 }
 
 @freezed
-class PuzzleResult with _$PuzzleResult {
-  const factory PuzzleResult({
+class LichessPuzzleResult with _$LichessPuzzleResult {
+  const factory LichessPuzzleResult({
     int? firstWins,
     int? nb,
     int? perfomance,
     int? puzzleRatingAvg,
     int? replayWins,
-  }) = _PuzzleResult;
+  }) = _LichessPuzzleResult;
 
-  factory PuzzleResult.fromJson(Map<String, dynamic> json) =>
-      _$PuzzleResultFromJson(json);
+  factory LichessPuzzleResult.fromJson(Map<String, dynamic> json) =>
+      _$LichessPuzzleResultFromJson(json);
 }
 
 @freezed
-class PuzzleTheme with _$PuzzleTheme {
-  const factory PuzzleTheme({
-    PuzzleResult? results,
+class LichessPuzzleTheme with _$LichessPuzzleTheme {
+  const factory LichessPuzzleTheme({
+    LichessPuzzleResult? results,
     String? theme,
-  }) = _PuzzleTheme;
+  }) = _LichessPuzzleTheme;
 
-  factory PuzzleTheme.fromJson(Map<String, dynamic> json) =>
-      _$PuzzleThemeFromJson(json);
+  factory LichessPuzzleTheme.fromJson(Map<String, dynamic> json) =>
+      _$LichessPuzzleThemeFromJson(json);
 }
 
 @freezed
-class PuzzleDashboard with _$PuzzleDashboard {
-  const factory PuzzleDashboard({
-    Map<String, PuzzleTheme>? themes,
-  }) = _PuzzleDashboard;
+class LichessPuzzleDashboard with _$LichessPuzzleDashboard {
+  const factory LichessPuzzleDashboard({
+    Map<String, LichessPuzzleTheme>? themes,
+  }) = _LichessPuzzleDashboard;
 
-  factory PuzzleDashboard.fromJson(Map<String, dynamic> json) =>
-      _$PuzzleDashboardFromJson(json);
+  factory LichessPuzzleDashboard.fromJson(Map<String, dynamic> json) =>
+      _$LichessPuzzleDashboardFromJson(json);
 }

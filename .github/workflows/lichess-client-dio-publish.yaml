@@ -1,6 +1,6 @@
 name: Publish lichess_client_dio to pub.dev
 run-name: >-
-  [lichess_client_dio] package publish (${{  github.ref_name }}) triggered by @${{ github.actor }}
+  [lichess_client_dio] package publish (${{ github.ref_name }}) triggered by @${{ github.actor }}
 
 on:
   push:

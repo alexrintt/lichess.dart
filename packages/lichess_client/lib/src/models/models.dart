@@ -1,3 +1,4 @@
+export 'board.dart';
 export 'common.dart';
 export 'puzzle.dart';
 export 'rating_history.dart';
