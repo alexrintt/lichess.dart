@@ -508,14 +508,14 @@ Future<void> _displayLoggedUserFollows(LichessClient lichess) async {
 Future<void> _displayDailyPuzzle(LichessClient lichess) async {
   _header('lichess.puzzle.getDailyPuzzle');
   final LichessPuzzle puzzle = await lichess.puzzles.getDailyPuzzle();
-  _print('Puzzle ID: ${puzzle.info?.id} with Pgn: ${puzzle.game?.pgn}');
+  _print('Puzzle ID: ${puzzle.puzzle?.id} with Pgn: ${puzzle.game?.pgn}');
   _footer('lichess.puzzle.getDailyPuzzle');
 }
 
 Future<void> _displayPuzzleById(String id, LichessClient lichess) async {
   _header('lichess.puzzle.getPuzzleById');
   final LichessPuzzle puzzle = await lichess.puzzles.getPuzzleById(id: id);
-  _print('Puzzle ID: ${puzzle.info?.id} with Pgn: ${puzzle.game?.pgn}');
+  _print('Puzzle ID: ${puzzle.puzzle?.id} with Pgn: ${puzzle.game?.pgn}');
   _footer('lichess.puzzle.getPuzzleById');
 }
 
