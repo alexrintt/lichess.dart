@@ -2,7 +2,7 @@ name: lichess_client
 description: >-
   Lichess API typed interface signatures and class/data models.
   Written in pure Dart with no HTTP dependencies.
-version: 0.0.23
+version: 0.0.24
 repository: https://github.com/alexrintt/lichess.dart
 homepage: https://github.com/alexrintt/lichess.dart/tree/master/packages/lichess_client
 documentation: https://github.com/alexrintt/lichess.dart/tree/master/packages/lichess_client

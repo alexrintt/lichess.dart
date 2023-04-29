@@ -89,7 +89,7 @@ class LichessPuzzleResult with _$LichessPuzzleResult {
   const factory LichessPuzzleResult({
     int? firstWins,
     int? nb,
-    int? perfomance,
+    int? performance,
     int? puzzleRatingAvg,
     int? replayWins,
   }) = _LichessPuzzleResult;
